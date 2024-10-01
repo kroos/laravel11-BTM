@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Settings;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 // models
-use App\Models\Staff;
+// use App\Models\Staff;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +31,7 @@ use Exception;
 use Log;
 
 
-class SettingController extends Controller
+class AddItemController extends Controller
 {
 	function __construct()
 	{

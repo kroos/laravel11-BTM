@@ -1,5 +1,5 @@
 <x-guest-layout>
-	<form method="POST" action="{{ route('login') }}" id="form" class="" >
+	<form method="POST" action="{{ route('login') }}" id="form" class="col-sm-4" >
 		@csrf
 
 		<!-- Username -->

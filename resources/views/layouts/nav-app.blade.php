@@ -9,7 +9,7 @@
 		<i class="fa-solid fa-gear"></i> Setting
 	</a>
 	<div class="dropdown-menu">
-		<a class="dropdown-item" href="{{ route('settings.index') }}">Add Item</a>
+		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Item</a>
 		<a class="dropdown-item" href="#">Another action</a>
 		<a class="dropdown-item" href="#">Something else here</a>
 		<div class="dropdown-divider"></div>
