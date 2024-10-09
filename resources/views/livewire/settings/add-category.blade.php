@@ -1,11 +1,11 @@
 <div>
-	<div class="col-sm-12 table-responsive mt-3 border border-primary">
+	<div class="col-sm-12 table-responsive mt-3">
 		<table class="table table-sm table-hover" id="category" style="font-size: 12px;">
 			<thead>
 				<tr>
 					<th class="scope">ID</th>
 					<th class="scope">Category</th>
-					<th class="scope">Ops</th>
+					<th class="scope">#</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -15,7 +15,7 @@
 							<td class="scope">{{ $index + 1 }}</td>
 							<td class="scope">{{ $category->category }}</td>
 							<td class="scope">
-								<x-primary-button class=" text-danger m-3" ><i class="fa-2xs fa-solid fa-trash-can fa-beat"></i></x-primary-button>
+								<i class="fa-1xs fa-solid fa-trash-can fa-beat" wire:click="del({{$category->id}})" wire:confirm="Are you sure?"></i>
 							</td>
 						</tr>
 					@endforeach

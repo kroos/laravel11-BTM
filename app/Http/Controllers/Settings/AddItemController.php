@@ -42,7 +42,7 @@ class AddItemController extends Controller
 	{
 		// $cicategories = ConditionalIncentiveCategory::all();
 		// return view('settings.index', ['cicategories' => $cicategories]);
-		return view('settings.index');
+		return view('settings.additem');
 	}
 
 }

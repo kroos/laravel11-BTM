@@ -10,9 +10,10 @@
 	</a>
 	<div class="dropdown-menu">
 		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Item</a>
-		<a class="dropdown-item" href="#">Another action</a>
-		<a class="dropdown-item" href="#">Something else here</a>
+		<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Approver</a>
+<!--
 		<div class="dropdown-divider"></div>
 		<a class="dropdown-item" href="#">Separated link</a>
+ -->
 	</div>
 </li>

@@ -13,14 +13,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Staff extends Model
 {
 	protected $connection = 'mysql2';
 	protected $table = 'staf_peribadi';
+	protected $primaryKey = 'nostaf';
 
-	use HasFactory, SoftDeletes;
+	use HasFactory/*, SoftDeletes*/;
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// hasone relationship
+	// public function hasmanyapproval(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Login::class, 'nostaf');
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
@@ -29,9 +37,19 @@ class Staff extends Model
 		return $this->hasMany(\App\Models\Login::class, 'nostaf');
 	}
 
-
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
+	public function belongstojabatan(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// BelongsToMany relationship
+	public function belongstomanydepartment(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'kod_jab', 'nostaf')->withPivot('terkini')/*->withTimestamps()*/;
+	}
 
 
 

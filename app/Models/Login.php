@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 // custom email reset password in
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
@@ -26,6 +26,8 @@ class Login extends Authenticatable
 {
 	protected $connection = 'mysql1';
 	protected $table = 'users';
+	// protected $primaryKey = 'id';
+
 	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 	/**
@@ -83,6 +85,14 @@ class Login extends Authenticatable
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation belongsToMany
+	// public function belongstodept(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_pivotdepts', 'staff_id', 'pivot_dept_id')->withPivot('active', 'id')->withTimestamps();;
+	// }
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// custom email reset password in

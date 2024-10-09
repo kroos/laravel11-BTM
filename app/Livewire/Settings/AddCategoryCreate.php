@@ -4,7 +4,7 @@ namespace App\Livewire\Settings;
 
 use Livewire\Component;
 
-use App\Models\Settings\Categories;
+use App\Models\Settings\Category;
 
 use Illuminate\Support\Str;
 use Livewire\Attributes\Rule;
@@ -25,9 +25,10 @@ class AddCategoryCreate extends Component
 	public function store()
 	{
 		$this->validate();
-		Categories::create(['category' => $this->category]);
+		Category::create(['category' => $this->category]);
 		$this->reset();
 		$this->dispatch('AddCategoryCreate');
+		$this->dispatch('AddItemCreate');
 		// $this->redirect(route('cicategory.index'), $navigate = true)->with('flash_message', 'Success create Category');
 		// return redirect()->route('cicategory.index')->with('flash_message', 'Success create Category');
 	}
