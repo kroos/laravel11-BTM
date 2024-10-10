@@ -51,6 +51,11 @@ class Staff extends Model
 		return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'kod_jab', 'nostaf')->withPivot('terkini')/*->withTimestamps()*/;
 	}
 
+	public function belongstomanydeptappr(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Jabatan::class, 'dept_approval', 'kod_jabatan', 'nostaf')->withPivot('active')->withTimestamps();
+	}
+
 
 
 

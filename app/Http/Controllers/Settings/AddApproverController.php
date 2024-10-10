@@ -60,9 +60,9 @@ class AddApproverController extends Controller
 		//
 	}
 
-	public function edit(HRLeaveAnnual $staff): View
+	public function edit(Approver $approver): View
 	{
-		// return view('humanresources.hrdept.setting.Staff.edit', ['Staff' => $Staff]);
+		return view('settings.addapprover.edit', ['approvers' => $approver]);
 	}
 
 	public function update(Request $request, Staff $staff): RedirectResponse
@@ -72,7 +72,7 @@ class AddApproverController extends Controller
 		// return Redirect::route('Staff.index');
 	}
 
-	public function destroy(Staff $staff): JsonResponse
+	public function destroy(Approver $approver): JsonResponse
 	{
 		//
 	}

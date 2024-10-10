@@ -23,7 +23,14 @@
 					<td>{{ $appr->belongstoappr->nostaf }}</td>
 					<td>{{ $appr->belongstoappr->nama }}</td>
 					<td>{{ $appr->belongstodeptappr->namajabatan }}</td>
-					<td>1</td>
+					<td>
+						<x-link href="{{ route('addapprover.edit', $appr->id) }}" class="approver_btn" data-id="{{ $appr->id }}">
+							<i class="fa-regular fa-pen-to-square"></i>
+						</x-link>
+						<x-danger-button type="button" class="delete_approver" data-id="{{ $appr->id }}" >
+							<i class="fa-regular fa-trash-can"></i>
+						</x-danger-button>
+					</td>
 				</tr>
 				@endforeach
 				@endif
@@ -34,7 +41,7 @@
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-$(document).on('click', '.rapprover_btn', function(e){
+$(document).on('click', '.delete_approver', function(e){
 	var ackID = $(this).data('id');
 	SwalDeleteR(ackID);
 	e.preventDefault();
@@ -42,8 +49,8 @@ $(document).on('click', '.rapprover_btn', function(e){
 
 function SwalDeleteR(ackID){
 	swal.fire({
-		title: 'Approve Leave',
-		text: 'Are you sure to approve this leave?',
+		title: 'Delete Approver',
+		text: 'Are you sure to delete approver?',
 		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',
@@ -55,12 +62,11 @@ function SwalDeleteR(ackID){
 		preConfirm: function() {
 			return new Promise(function(resolve) {
 				$.ajax({
-					url: '{{ url('leaverapprove') }}' + '/' + ackID,
-					type: 'PATCH',
+					url: '{{ url('addapprover') }}' + '/' + ackID,
+					type: 'DELETE',
 					dataType: 'json',
 					data: {
 							id: ackID,
-							cancel: 3,
 							_token : $('meta[name=csrf-token]').attr('content')
 					},
 				})
@@ -80,7 +86,7 @@ function SwalDeleteR(ackID){
 	})
 	.then((result) => {
 		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Leave is still active.', 'info')
+			swal.fire('Cancel Action', 'Approver is still active.', 'info')
 		}
 	});
 }

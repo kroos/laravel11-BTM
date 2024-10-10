@@ -51,7 +51,10 @@ class Jabatan extends Model
 		return $this->belongsToMany(\App\Models\Staff::class, 'stf_jabatan', 'nostaf', 'kod_jab')->withPivot('terkini'/*, 'id'*/)/*->withTimestamps()*/;
 	}
 
-
+	public function belongstomanyappr(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Staff::class, 'dept_approval', 'nostaf', 'kod_jabatan')->withPivot('active')->withTimestamps();
+	}
 
 
 
