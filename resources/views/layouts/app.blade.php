@@ -96,6 +96,18 @@
 		@endif
 	</div>
 
+	@if(count($errors) > 0 )
+	<div class="col-sm-12 d-flex align-items-center justify-content-center">
+		<ul class="list-group">
+			@foreach($errors->all() as $err)
+				<li class="list-group-item list-group-item-danger">
+					{!! $err !!}
+				</li>
+			@endforeach
+		</ul>
+	</div>
+	@endif
+
 	<div class="container d-flex align-items-center justify-content-center row rounded">
 
 		<!-- Page Heading -->

@@ -11,9 +11,6 @@ Route::resources([
 
 Route::middleware('auth')->group(function () {
 	Route::get('/additem', [AddItemController::class, 'index'])->name('additem.index');
-	// Route::get('/addapprover', [AddApproverController::class, 'index'])->name('addapprover.index');
 });
 
-Route::middleware('auth')->group(function () {
-});
 

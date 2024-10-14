@@ -20,6 +20,8 @@ class Jabatan extends Model
 	protected $connection = 'mysql2';
 	protected $table = 'jabatan';
 	protected $primaryKey = 'kodjabatan';
+	protected $keyType = 'string';
+
 
 	use HasFactory/*, SoftDeletes*/;
 

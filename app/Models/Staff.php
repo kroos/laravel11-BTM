@@ -20,6 +20,7 @@ class Staff extends Model
 	protected $connection = 'mysql2';
 	protected $table = 'staf_peribadi';
 	protected $primaryKey = 'nostaf';
+	protected $keyType = 'string';
 
 	use HasFactory/*, SoftDeletes*/;
 

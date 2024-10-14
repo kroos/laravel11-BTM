@@ -56,6 +56,7 @@ class AjaxDBController extends Controller
 	public function listjabatan(Request $request): JsonResponse
 	{
 		$values = Jabatan::where('aktif', 1)->where('namajabatan','LIKE','%'.$request->search.'%')->orderBy('namajabatan')->get();
+		// dd($values);
 		foreach ($values as $value) {
 				$g['children'][] = [
 									'id' => $value->kodjabatan,

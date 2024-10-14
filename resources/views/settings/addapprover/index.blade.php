@@ -6,6 +6,12 @@
 		</h2>
 	</x-slot>
 
+	<div class="col-sm-12">
+		<a class="btn btn-primary" href="{{ route('addapprover.create') }}">
+			Create Approver to a Department
+		</a>
+	</div>
+	<p>&nbsp;</p>
 	<div class="table-responsive align-items-center">
 		<table class="table table-sm table-hover table-border" id="approver">
 			<thead>
@@ -19,6 +25,7 @@
 			<tbody>
 				@if($apprs->count() > 0)
 				@foreach($apprs as $appr)
+				{{ -- $appr->belongstoappr()->get() -- }}
 				<tr>
 					<td>{{ $appr->belongstoappr->nostaf }}</td>
 					<td>{{ $appr->belongstoappr->nama }}</td>
