@@ -19,7 +19,8 @@ class Approver extends Model
 {
 	protected $connection = 'mysql3';
 	protected $table = 'dept_approval';
-	// protected $primaryKey = 'flight_id';
+	// protected $primaryKey = 'nostaf';
+	// protected $keyType = 'string';
 
 	use HasFactory/*, SoftDeletes*/;
 

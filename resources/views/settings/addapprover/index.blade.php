@@ -25,7 +25,6 @@
 			<tbody>
 				@if($apprs->count() > 0)
 				@foreach($apprs as $appr)
-				{{ -- $appr->belongstoappr()->get() -- }}
 				<tr>
 					<td>{{ $appr->belongstoappr->nostaf }}</td>
 					<td>{{ $appr->belongstoappr->nama }}</td>

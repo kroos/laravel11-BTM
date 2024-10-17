@@ -23,7 +23,7 @@
 
 </head>
 <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center">
-	<div class="container-fluid rounded">
+	<div class="container-fluid ">
 
 		<!-- navigator -->
 		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
@@ -48,12 +48,18 @@
 						@endauth
 					</ul>
 					@auth
-						<form method="POST" action="{{ route('logout') }}">
-							@csrf
-							<a href="{{ route('logout') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0" type="submit" onclick="event.preventDefault();this.closest('form').submit();">
-								Log Out
-							</a>
-						</form>
+						<div class="dropdown">
+							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->name }}</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#"><i class="fa-regular fa-comment"></i> Notifications</a></li>
+								<form method="POST" action="{{ route('logout') }}">
+									@csrf
+									<li>
+										<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fas fa-light fa-right-from-bracket"></i> Log Out</a>
+									</li>
+								</form>
+							</ul>
+						</div>
 					@else
 						<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
 					@endauth

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Settings;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
@@ -15,25 +15,34 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Item extends Model
+class LoanApplication extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'equipments';
+	protected $table = 'loan_applications';
 
-	use HasFactory/*, SoftDeletes*/;
+	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	// public function hasmanylogin(): HasMany
+	// public function hasmanyapprover(): HasMany
 	// {
-	// 	return $this->hasMany(\App\Models\Item::class, 'category_id');
+	// 	return $this->hasMany(\App\Models\Staff::class, 'nostaf');
+	// }
+
+	// public function hasmanydept(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Jabatan::class, 'kodjabatan', 'kod_jabatan');
 	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
-	public function belongstocategory(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Settings\Category::class, 'category_id')->withDefault();
-	}
+	// public function belongstoappr(): BelongsTo
+	// {
+	// 	return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
+	// }
 
+	// public function belongstodeptappr(): BelongsTo
+	// {
+	// 	return $this->belongsTo(\App\Models\Jabatan::class, 'kod_jabatan')->withDefault();
+	// }
 }

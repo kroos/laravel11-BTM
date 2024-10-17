@@ -44,10 +44,10 @@ class AjaxDBController extends Controller
 	{
 		$values = Staff::where('status', 'A')->where('nama','LIKE','%'.$request->search.'%')->orderBy('nama')->get();
 		foreach ($values as $value) {
-				$g['children'][] = [
-									'id' => $value->nostaf,
-									'text' => $value->nama,
-								];
+			$g['children'][] = [
+								'id' => $value->nostaf,
+								'text' => $value->nama,
+							];
 		}
 		$staff['results'][] = $g;
 		return response()->json($staff);
@@ -65,6 +65,20 @@ class AjaxDBController extends Controller
 		}
 		$jabatan['results'][] = $g;
 		return response()->json($jabatan);
+	}
+
+	public function equipmentstatus(Request $request): JsonResponse
+	{
+		$values = Item::where('status_item','LIKE','%'.$request->search.'%')->orderBy('id')->get();
+		// dd($values);
+		foreach ($values as $value) {
+				$g['children'][] = [
+									'id' => $value->id,
+									'text' => $value->status_item,
+								];
+		}
+		$equipments['results'][] = $g;
+		return response()->json($equipments);
 	}
 
 

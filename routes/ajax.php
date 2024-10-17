@@ -26,3 +26,4 @@ Route::apiResources([
 
 Route::get('/liststaff', [AjaxDBController::class, 'liststaff'])->name('liststaff');
 Route::get('/listjabatan', [AjaxDBController::class, 'listjabatan'])->name('listjabatan');
+Route::get('/equipmentstatus', [AjaxDBController::class, 'listjabatan'])->name('equipmentstatus');

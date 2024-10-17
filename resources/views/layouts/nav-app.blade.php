@@ -1,11 +1,8 @@
-<!--
 <li class="nav-item">
-	<a class="nav-link {{ (request()->route()->uri == '')?'active':NULL }}" href="#">AUTH</a>
+	<a class="nav-link {{ (request()->route()->uri == 'loanapps')?'active':NULL }}" href="{{ route('loanapps.index') }}">Equipment Loan Application and Status</a>
 </li>
- -->
-
 <li class="nav-item dropdown">
-	<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+	<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
 		<i class="fa-solid fa-gear"></i> Setting
 	</a>
 	<div class="dropdown-menu">

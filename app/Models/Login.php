@@ -26,7 +26,8 @@ class Login extends Authenticatable
 {
 	protected $connection = 'mysql1';
 	protected $table = 'users';
-	// protected $primaryKey = 'id';
+	protected $primaryKey = 'nostaf';
+	protected $keyType = 'string';
 
 	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 

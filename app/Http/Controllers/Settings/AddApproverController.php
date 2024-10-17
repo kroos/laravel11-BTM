@@ -34,10 +34,10 @@ use Log;
 
 class AddApproverController extends Controller
 {
-	// function __construct()
-	// {
-	// 	$this->middleware(['auth']);
-	// }
+	function __construct()
+	{
+		$this->middleware(['auth']);
+	}
 
 	public function index(): View
 	{
@@ -50,7 +50,7 @@ class AddApproverController extends Controller
 		return view('settings.addapprover.create');
 	}
 
-	public function store(Request $request)/*: RedirectResponse*/
+	public function store(Request $request): RedirectResponse
 	{
 		$request->validate([
 				'approver.*.nostaf' => 'required',
@@ -98,7 +98,9 @@ class AddApproverController extends Controller
 	public function destroy(Approver $addapprover): JsonResponse
 	{
 		// dd($addapprover);
-		$addapprover->delete();
+		// $addapprover->delete();
+		$data = ['active' => 0];
+		$addapprover->update($data);
 		// Approver::destroy($addapprover->id);
 		return response()->json([
 			'message' => 'Data deleted',
