@@ -40,24 +40,22 @@ class Staff extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
-	public function belongstojabatan(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
-	}
+	// public function belongstojabatan(): BelongsTo
+	// {
+	// 	return $this->belongsTo(\App\Models\Jabatan::class, 'nostaf');
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// BelongsToMany relationship
-	public function belongstomanydepartment(): BelongsToMany
-	{
-		return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'kod_jab', 'nostaf')->withPivot('terkini')/*->withTimestamps()*/;
-	}
-
 	public function belongstomanydeptappr(): BelongsToMany
 	{
 		return $this->belongsToMany(\App\Models\Jabatan::class, 'dept_approval', 'kod_jabatan', 'nostaf')->withPivot('active')->withTimestamps();
 	}
 
-
+	public function belongstomanydepartment(): BelongsToMany
+	{
+			return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'nostaf', 'kod_jab')->using(\App\Models\StaffJabatan::class)->withPivot('nostaf', 'kod_jab', 'terkini')->wherePivot('terkini', 1);
+	}
 
 
 

@@ -34,6 +34,8 @@ use Throwable;
 // load model
 use App\Models\Jabatan;
 use App\Models\Staff;
+use App\Models\Settings\Category;
+use App\Models\Settings\Item;
 
 class AjaxDBController extends Controller
 {
@@ -67,19 +69,49 @@ class AjaxDBController extends Controller
 		return response()->json($jabatan);
 	}
 
-	public function equipmentstatus(Request $request): JsonResponse
+	public function listcategory(Request $request): JsonResponse
 	{
-		$values = Item::where('status_item','LIKE','%'.$request->search.'%')->orderBy('id')->get();
+		$values = Category::where('category','LIKE','%'.$request->search.'%')->get();
 		// dd($values);
 		foreach ($values as $value) {
 				$g['children'][] = [
 									'id' => $value->id,
-									'text' => $value->status_item,
+									'text' => $value->category,
+								];
+		}
+		$cat['results'][] = $g;
+		return response()->json($cat);
+	}
+
+	public function equipmentstatus(Request $request): JsonResponse
+	{
+		$values = Item::where('status', 1)->where('item','LIKE','%'.$request->search.'%')->get();
+		// dd($values);
+		foreach ($values as $value) {
+				$g['children'][] = [
+									'id' => $value->id,
+									'text' => $value->item,
+									'class' => $value->category_id,
 								];
 		}
 		$equipments['results'][] = $g;
 		return response()->json($equipments);
 	}
+
+	public function equipmentdescription(Request $request): JsonResponse
+	{
+		$values = Item::find($request->id);
+		// dd($values);
+		$equipmentsdesc = [
+			'item' => $values->item,
+			'brand' => $values->brand,
+			'model' => $values->model,
+			'serial_number' => $values->serial_number,
+			'description' => $values->description,
+		];
+		return response()->json($equipmentsdesc);
+	}
+
 
 
 

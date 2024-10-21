@@ -8,10 +8,10 @@
 
 	<form action="{{ route('loanapps.store') }}" method="POST">
 			@csrf
-		<div class="container row justify-content-between border border-primary">
+		<div class="container row justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1 border border-primary">
-
+			<div class="col-sm-6 m-0 p-1">
+				<h3>Applicant</h3>
 				<!-- staff id -->
 				<div class="col-sm-12 mt-2 row">
 					<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
@@ -56,84 +56,66 @@
 						<x-input-error :messages="$errors->get('loan_purpose')" />
 					</div>
 				</div>
-
-
-
-
-
 			</div>
 
-
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1 border border-primary">
-				<div class="wrap_approver">
+			<div class="col-sm-6 m-0 p-1">
+				<h3>Equipments</h3>
+
+				<div class="wrap_equipments">
 					<div class="col-sm-12 row mt-3">
-						<!-- Staff -->
-						<div class="col-sm-5 m-0 row">
-							<x-input-label for="staf_1" class="col-sm-4" :value="__('Staff : ')" />
+
+						<!-- equipment -->
+						<div class="col-sm-11 m-0 row">
+							<x-input-label for="equip_1" class="col-sm-4" :value="__('Equipment : ')" />
 							<div class="col-sm-8">
-								<x-select-input id="staf_1" name="approver[1][nostaf]" class="{{ ($errors->has('approver.*.nostaf')?'is-invalid':NULL) }}" >
-								</x-select-input>
+								<select id="equip_1" name="lequ[1][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+								</select>
 							</div>
 						</div>
-						<!-- department -->
-						<div class="col-sm-5 m-0 row">
-							<x-input-label for="dep_1" class="col-sm-4" :value="__('Department : ')" />
-							<div class="col-sm-8">
-								<x-select-input id="dep_1" name="approver[1][kod_jabatan]" class="{{ ($errors->has('approver.*.kod_jabatan')?'is-invalid':NULL) }}" >
-								</x-select-input>
-							</div>
-						</div>
-						<!-- opt -->
-						<div class="col-sm-2 m-0 ">
-							<x-danger-button type="button" class="remove_approver">
+						<!-- remove button -->
+						<div class="col-sm-1 m-0">
+							<x-danger-button type="button" class="remove_equipments">
 								<i class="fa-regular fa-trash-can"></i>
 							</x-danger-button>
+						</div>
+
+						<!-- equipment description -->
+						<div class="col-sm-12 m-0" id="desc_1">
+							<div id="desc_wrap_1">
+								<p>Brand :</p>
+								<p>Model :</p>
+								<p>Serial Number :</p>
+								<p>Description :</p>
+							</div>
 						</div>
 					</div>
 
 				</div>
 
 				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_approver">
-						<i class="fa-solid fa-user-plus"></i>&nbsp;Add Approver
+					<x-primary-button type="button" class="add_equipments">
+						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
 					</x-primary-button>
 				</div>
 			</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			<!-- 2nd column -->
+			<div class="col-sm-6 m-0 p-1 border border-primary">
+				<h3>Department</h3>
+				<div class="col-sm-12 m-0 p-1 border border-primary">
+					<p>Department :
+					@php
+					$r = \App\Models\Staff::find(Auth::user()->nostaf);
+					echo $r->belongstomanydepartment()->first()->namajabatan;
+					@endphp
+					</p>
+					<h3>Approval From Director/Dean/Head of Department</h3>
+					<p>Approver : </p>
+					<p>Date : </p>
+					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+				</div>
+			</div>
 
 			<div class="col-sm-12 text-center">
 				<x-primary-button class="m-2">
@@ -146,12 +128,15 @@
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-//enable select 2 for backup
-$('#staf_1').select2({
-	placeholder: 'Please Choose Staff',
+// ajax category
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//enable select 2
+$('#equip_1').select2({
+	placeholder: 'Please Choose Equipment',
 	width: '100%',
 	ajax: {
-		url: '{{ route('liststaff') }}',
+		url: '{{ route('equipmentstatus') }}',
 		// data: { '_token': '{!! csrf_token() !!}' },
 		// theme: 'bootstrap5',
 		type: 'GET',
@@ -167,30 +152,41 @@ $('#staf_1').select2({
 	},
 	allowClear: true,
 	closeOnSelect: true,
-});
+}).on('change', function(e) {
+	$('#desc_wrap_1').remove();
+	var id = $("#equip_1 option:selected").val();
 
-$('#dep_1').select2({
-	placeholder: 'Please Choose Department',
-	width: '100%',
-	ajax: {
-		url: '{{ route('listjabatan') }}',
-		// data: { '_token': '{!! csrf_token() !!}' },
-		// theme: 'bootstrap5',
-		type: 'GET',
+	var dat1 = $.ajax({
+		url: "{{ route('equipmentdescription') }}",
+		type: "GET",
+		data : { 'id': id },
 		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-				type: 'public'
-			}
-			return query;
+		global: false,
+		async:false,
+		success: function (response) {
+			return response;
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log(textStatus, errorThrown);
 		}
-	},
-	allowClear: true,
-	closeOnSelect: true,
+	}).responseText;
+
+	// this is how u cange from json to array type data
+	var dat2 = $.parseJSON( dat1 );
+
+		$('#desc_1').append(
+						'<div id="desc_wrap_1">' +
+							'<p>Brand : '+ dat2.brand +'</p>' +
+							'<p>Model : '+ dat2.model +'</p>' +
+							'<p>Serial Number : '+ dat2.serial_number +'</p>' +
+							'<p>Description : '+ dat2.description +'</p>' +
+						'</div>'
+		);
 });
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 // datepicker
 $('#dafrom').datepicker({
@@ -210,8 +206,8 @@ $('#dato').datepicker({
 /////////////////////////////////////////////////////////////////////////////////////////
 // add item
 var apprv_max_fields = 10;						//maximum input boxes allowed
-var appr_btn = $(".add_approver");
-var apprv_wrapper = $(".wrap_approver");
+var appr_btn = $(".add_equipments");
+var apprv_wrapper = $(".wrap_equipments");
 
 var counter = 2;
 $(appr_btn).click(function(){
@@ -221,78 +217,89 @@ $(appr_btn).click(function(){
 	if(counter < apprv_max_fields){
 		counter++;
 		apprv_wrapper.append(
-				'<div class="col-sm-12 row mt-3">' +
-					'<div class="col-sm-5 m-0 row">' +
-						'<label class="form-label form-label-sm col-sm-4" for="staf_' + counter + '">Staff : </label>' +
-						'<div class="col-sm-8">' +
-							'<select id="staf_' + counter + '" name="approver[' + counter + '][nostaf]" class="{{ ($errors->has('approver.*.nostaf')?'is-invalid':NULL) }}" >' +
-							'</select>' +
-							'@error('approver.*.nostaf')' +
-								'<div class="invalid-feedback text-sm" id="staf_' + counter + '">{{ $message }}</div>' +
-							'@enderror' +
-						'</div>' +
+			'<div class="col-sm-12 row mt-3">' +
+				'<!-- equipment -->' +
+				'<div class="col-sm-11 m-0 row">' +
+					'<label class="form-label form-label-sm col-sm-4" for="equip_' + counter + '">Equipment :</label>' +
+					'<div class="col-sm-8">' +
+						'<select id="equip_' + counter + '" name="lequ[' + counter + '][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>' +
+						'</select>' +
 					'</div>' +
-					'<div class="col-sm-5 m-0 row">' +
-						'<label class="form-label form-label-sm col-sm-4" for="dep_' + counter + '">Department : </label>' +
-						'<div class="col-sm-8">' +
-							'<select id="dep_' + counter + '" name="approver[' + counter + '][kod_jabatan]" class="{{ ($errors->has('approver.*.kod_jabatan')?'is-invalid':NULL) }}" >' +
-							'</select>' +
-							'@error('approver.*.kod_jabatan')' +
-								'<div class="invalid-feedback text-sm" id="dep_' + counter + '">{{ $message }}</div>' +
-							'@enderror' +
-						'</div>' +
+				'</div>' +
+				'<!-- remove button -->' +
+				'<div class="col-sm-1 m-0">' +
+					'<button type="button" class="btn btn-sm btn-danger remove_equipments">' +
+						'<i class="fa-regular fa-trash-can"></i>' +
+					'</button>' +
+				'</div>' +
+				'<!-- equipment description -->' +
+				'<div class="col-sm-12 m-0" id="desc_' + counter + '">' +
+					'<div id="desc_wrap_' + counter + '">' +
+						'<p>Brand :</p>' +
+						'<p>Model :</p>' +
+						'<p>Serial Number :</p>' +
+						'<p>Description :</p>' +
 					'</div>' +
-					'<div class="col-sm-2 m-0 ">' +
-						'<button type="button" class="btn btn-sm btn-danger remove_approver">' +
-							'<i class="fa-regular fa-trash-can"></i>' +
-						'</button>' +
-					'</div>' +
-				'</div>'
+				'</div>' +
+			'</div>'
 		);
 
-		// $('.form-check').find('[name="jobdesc[' + counter + '][sales_get_item_id][]"]').css('border', '3px solid red');
+		$('#equip_' + counter + '').select2({
+			placeholder: 'Please Choose Equipment',
+			width: '100%',
+			ajax: {
+				url: '{{ route('equipmentstatus') }}',
+				// data: { '_token': '{!! csrf_token() !!}' },
+				// theme: 'bootstrap5',
+				type: 'GET',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+						type: 'public'
+					}
+					return query;
+				}
+			},
+			allowClear: true,
+			closeOnSelect: true,
+		}).on('change', function(e) {
+			$('#desc_wrap_' + counter + '').remove();
+			var id = $('#equip_' + counter + ' option:selected').val();
 
-		$('#staf_' + counter ).select2({
-			placeholder: 'Please Choose Staff',
-			width: '100%',
-			allowClear: true,
-			closeOnSelect: true,
-			ajax: {
-				url: '{{ route('liststaff') }}',
-				type: 'GET',
+			var dat1 = $.ajax({
+				url: "{{ route('equipmentdescription') }}",
+				type: "GET",
+				data : { 'id': id },
 				dataType: 'json',
-				data: function (params) {
-					var query = {
-						_token: '{!! csrf_token() !!}',
-						search: params.term,
-					}
-					return query;
+				global: false,
+				async:false,
+				success: function (response) {
+					return response;
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log(textStatus, errorThrown);
 				}
-			},
-		});
-		$('#dep_' + counter ).select2({
-			placeholder: 'Please Choose Department',
-			width: '100%',
-			allowClear: true,
-			closeOnSelect: true,
-			ajax: {
-				url: '{{ route('listjabatan') }}',
-				type: 'GET',
-				dataType: 'json',
-				data: function (params) {
-					var query = {
-						_token: '{!! csrf_token() !!}',
-						search: params.term,
-					}
-					return query;
-				}
-			},
+			}).responseText;
+
+			// this is how u cange from json to array type data
+			var dat2 = $.parseJSON( dat1 );
+
+				$('#desc_' + counter + '').append(
+								'<div id="desc_wrap_' + counter + '">' +
+									'<p>Brand : '+ dat2.brand +'</p>' +
+									'<p>Model : '+ dat2.model +'</p>' +
+									'<p>Serial Number : '+ dat2.serial_number +'</p>' +
+									'<p>Description : '+ dat2.description +'</p>' +
+								'</div>'
+				);
 		});
 
 	}
 })
 
-$(apprv_wrapper).on("click",".remove_approver", function(e){
+$(apprv_wrapper).on("click",".remove_equipments", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();
