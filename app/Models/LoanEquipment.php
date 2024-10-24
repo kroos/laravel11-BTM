@@ -15,21 +15,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class LoanApplication extends Model
+class LoanEquipment extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'loan_applications';
+	protected $table = 'loan_equipments';
 
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyequipments(): HasMany
+	public function hasmanyapprover(): HasMany
 	{
-		return $this->hasMany(\App\Models\LoanEquipment::class, 'application_id');
+		return $this->hasMany(\App\Models\Staff::class, 'nostaf');
 	}
 
-	// public function hasmanyapprover(): HasMany
+	// public function hasmany(): HasMany
 	// {
 	// 	return $this->hasMany(\App\Models\Staff::class, 'nostaf');
 	// }
@@ -41,13 +41,18 @@ class LoanApplication extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
-	public function belongstoappr(): BelongsTo
+	public function belongstoloan(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
+		return $this->belongsTo(\App\Models\LoanApplication::class, 'application_id')->withDefault();
 	}
 
-	public function belongstostaff(): BelongsTo
+	public function belongstoequipment(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
+		return $this->belongsTo(\App\Models\Settings\Item::class, 'equipment_id')->withDefault();
+	}
+
+	public function belongstoequipmentstatus(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\StatusEquipment::class, 'status_item_id')->withDefault();
 	}
 }

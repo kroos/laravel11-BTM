@@ -10,17 +10,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Staff extends Model
+class StatusEquipment extends Model
 {
-	protected $connection = 'mysql2';
-	protected $table = 'staf_peribadi';
-	protected $primaryKey = 'nostaf';
-	protected $keyType = 'string';
+	protected $connection = 'mysql3';
+	protected $table = 'status_equipments';
+	// protected $primaryKey = 'kodjabatan';
+	// protected $keyType = 'string';
+
 
 	use HasFactory/*, SoftDeletes*/;
 
@@ -33,35 +34,29 @@ class Staff extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanylogin(): HasMany
+	public function hasmanyequipmentstatus(): HasMany
 	{
-		return $this->hasMany(\App\Models\Login::class, 'nostaf');
-	}
-
-	public function hasmanyloan(): HasMany
-	{
-		return $this->hasMany(\App\Models\LoanApplication::class, 'nostaf');
+		return $this->hasMany(\App\Models\Settings\Item::class, 'status_item_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
 	// public function belongstojabatan(): BelongsTo
 	// {
-	// 	return $this->belongsTo(\App\Models\Jabatan::class, 'nostaf');
+	// 	return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
 	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// BelongsToMany relationship
-	public function belongstomanydeptappr(): BelongsToMany
-	{
-			return $this->belongsToMany(\App\Models\Jabatan::class, env('DB_DATABASE_3').'.dept_approval', 'nostaf', 'kod_jabatan')->using(\App\Models\DepartmentApproval::class)->withPivot('nostaf', 'kod_jabatan', 'active')->wherePivot('active', 1);
-	}
+	// public function belongstomanyappr(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\Staff::class, env('DB_DATABASE_3').'.dept_approval', 'kod_jabatan', 'nostaf')->using(\App\Models\DepartmentApproval::class)->withPivot( 'kod_jabatan', 'nostaf', 'active')->wherePivot('active', 1);
+	// }
 
-	public function belongstomanydepartment(): BelongsToMany
-	{
-			return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'nostaf', 'kod_jab')->using(\App\Models\StaffJabatan::class)->withPivot('nostaf', 'kod_jab', 'terkini')->wherePivot('terkini', 1);
-	}
-
+	// public function belongstomanystaff(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\Staff::class, 'stf_jabatan', 'kod_jab', 'nostaf')->using(\App\Models\StaffJabatan::class)->withPivot( 'kod_jab', 'nostaf', 'terkini')->wherePivot('terkini', 1);
+	// }
 
 
 

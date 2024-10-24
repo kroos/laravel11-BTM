@@ -16,8 +16,8 @@
 				<div class="col-sm-12 mt-2 row">
 					<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
 					<div class="col-sm-8">
-						<x-text-input id="id" name="username" value="{{ Auth::user()->username }}" class="{{ ($errors->has('username')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('username')" />
+						<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+						<x-input-error :messages="$errors->get('nostaf')" />
 					</div>
 				</div>
 
@@ -25,8 +25,8 @@
 				<div class="col-sm-12 mt-2 row">
 					<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
 					<div class="col-sm-8">
-						<x-text-input id="staf" name="nostaf" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('nostaf')" />
+						<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+						<x-input-error :messages="$errors->get('nama')" />
 					</div>
 				</div>
 
@@ -67,9 +67,11 @@
 
 						<!-- equipment -->
 						<div class="col-sm-11 m-0 row">
-							<x-input-label for="equip_1" class="col-sm-4" :value="__('Equipment : ')" />
+							<x-input-label for="equip_0" class="col-sm-4" :value="__('Equipment : ')" />
 							<div class="col-sm-8">
-								<select id="equip_1" name="lequ[1][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+								<select id="equip_0" name="lequ[0][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+									<!-- must have this to make sure $request catch the data -->
+									<option value="">Please Choose Equipment</option>
 								</select>
 							</div>
 						</div>
@@ -81,8 +83,8 @@
 						</div>
 
 						<!-- equipment description -->
-						<div class="col-sm-12 m-0" id="desc_1">
-							<div id="desc_wrap_1">
+						<div class="col-sm-12 m-0" id="desc_0">
+							<div id="desc_wrap_0">
 								<p>Brand :</p>
 								<p>Model :</p>
 								<p>Serial Number :</p>
@@ -100,30 +102,35 @@
 				</div>
 			</div>
 
-			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1 border border-primary">
+			<!-- 3rd column -->
+			<div class="col-sm-12 m-0 p-1">
 				<h3>Department</h3>
-				<div class="col-sm-12 m-0 p-1 border border-primary">
+				<div class="col-sm-12 m-0 p-1">
 					<p>Department :
 					@php
 					$r = \App\Models\Staff::find(Auth::user()->nostaf);
 					echo $r->belongstomanydepartment()->first()->namajabatan;
+					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
 					@endphp
 					</p>
 					<h3>Approval From Director/Dean/Head of Department</h3>
-					<p>Approver : </p>
+					<p>Approver :
+					@php
+					$j = \App\Models\Jabatan::find($idj);
+					echo $j->belongstomanyappr()->first()->nama;
+					@endphp
+					</p>
 					<p>Date : </p>
 					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
 				</div>
 			</div>
 
 			<div class="col-sm-12 text-center">
-				<x-primary-button class="m-2">
-					{{ __('Save') }}
+				<x-primary-button type="submit" class="m-2">
+					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
 				</x-primary-button>
 			</div>
 		</div>
-	</form>
 
 
 @section('js')
@@ -132,7 +139,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //enable select 2
-$('#equip_1').select2({
+$('#equip_0').select2({
 	placeholder: 'Please Choose Equipment',
 	width: '100%',
 	ajax: {
@@ -153,8 +160,8 @@ $('#equip_1').select2({
 	allowClear: true,
 	closeOnSelect: true,
 }).on('change', function(e) {
-	$('#desc_wrap_1').remove();
-	var id = $("#equip_1 option:selected").val();
+	$('#desc_wrap_0').remove();
+	var id = $("#equip_0 option:selected").val();
 
 	var dat1 = $.ajax({
 		url: "{{ route('equipmentdescription') }}",
@@ -174,8 +181,8 @@ $('#equip_1').select2({
 	// this is how u cange from json to array type data
 	var dat2 = $.parseJSON( dat1 );
 
-		$('#desc_1').append(
-						'<div id="desc_wrap_1">' +
+		$('#desc_0').append(
+						'<div id="desc_wrap_0">' +
 							'<p>Brand : '+ dat2.brand +'</p>' +
 							'<p>Model : '+ dat2.model +'</p>' +
 							'<p>Serial Number : '+ dat2.serial_number +'</p>' +
@@ -192,6 +199,10 @@ $('#equip_1').select2({
 $('#dafrom').datepicker({
 	dateFormat: 'yy-mm-dd',
 	minDate: 3,
+	//disable friday and saturday
+	beforeShowDay: function(d) {
+		return [!(d.getDay()==5||d.getDay()==6)]
+	},
 }).on('change', function() {
 	$('#dato').datepicker('option', 'minDate', this.value);
 });
@@ -199,6 +210,10 @@ $('#dafrom').datepicker({
 $('#dato').datepicker({
 	dateFormat: 'yy-mm-dd',
 	minDate: 3,
+	//disable friday and saturday
+	beforeShowDay: function(d) {
+		return [!(d.getDay()==5 || d.getDay()==6)]
+	}
 }).on('change', function() {
 	$('#dafrom').datepicker('option', 'maxDate', this.value);
 });
@@ -209,7 +224,7 @@ var apprv_max_fields = 10;						//maximum input boxes allowed
 var appr_btn = $(".add_equipments");
 var apprv_wrapper = $(".wrap_equipments");
 
-var counter = 2;
+var counter = 0;
 $(appr_btn).click(function(){
 	// e.preventDefault();
 
@@ -223,6 +238,7 @@ $(appr_btn).click(function(){
 					'<label class="form-label form-label-sm col-sm-4" for="equip_' + counter + '">Equipment :</label>' +
 					'<div class="col-sm-8">' +
 						'<select id="equip_' + counter + '" name="lequ[' + counter + '][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>' +
+							'<option value="">Please Choose Equipment</option>' +
 						'</select>' +
 					'</div>' +
 				'</div>' +
@@ -309,4 +325,5 @@ $(apprv_wrapper).on("click",".remove_equipments", function(e){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
+	</form>
 </x-app-layout>

@@ -74,7 +74,6 @@ class AddApproverController extends Controller
 		} else {
 			return redirect()->back()->with('danger', 'There are some error.');
 		}
-
 		return redirect()->route('addapprover.index')->with('success', 'Successfully Add Approver');
 	}
 

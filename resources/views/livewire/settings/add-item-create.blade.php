@@ -38,7 +38,7 @@
 			</x-textarea-input>
 			<x-input-error id="desc" :messages="$errors->get('description')" />
 
-			<x-primary-button class="m-3">
+			<x-primary-button type="submit" class="m-3">
 				{{ __('Add Item') }}
 			</x-primary-button>
 		</form>

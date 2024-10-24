@@ -50,7 +50,7 @@ class Jabatan extends Model
 	// BelongsToMany relationship
 	public function belongstomanyappr(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'dept_approval', 'nostaf', 'kod_jabatan')->withPivot('active')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Staff::class, env('DB_DATABASE_3').'.dept_approval', 'kod_jabatan', 'nostaf')->using(\App\Models\DepartmentApproval::class)->withPivot( 'kod_jabatan', 'nostaf', 'active')->wherePivot('active', 1);
 	}
 
 	public function belongstomanystaff(): BelongsToMany
