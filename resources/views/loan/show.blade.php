@@ -186,6 +186,11 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
+					<td colspan="2">
+						Tujuan Pinjaman : <span class="bold">{{ $loanapp->loan_purpose }}</span>
+					</td>
+				</tr>
+				<tr>
 					<td>
 						Tarikh Mula Pinjam : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_from)->format('D, j F Y') }}</span>
 					</td>
@@ -195,12 +200,61 @@ tr:nth-child(even) {
 				</tr>
 				<tr>
 					<td colspan="2">
-						Tempoh : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_to)->daysUntil($loanapp->date_loan_from, 1)->count() }} hari</span>.
+						Tempoh : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_to)->daysUntil($loanapp->date_loan_from, 1)->count() }} hari</span>
 					</td>
 				</tr>
 				<tr>
+					<th colspan="2"><span class="center">Alatan</span></th>
+				</tr>
+@foreach($loanapp->hasmanyequipments()->get() as $eq)
+				<tr>
+					<td>{{ $eq->belongstoequipment->item }}</td>
+					<td>
+						<table>
+							<thead>
+								<tr>
+									<th>Brand</th>
+									<th>Model</th>
+									<th>Serial No</th>
+									<th>Description</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{{ $eq->belongstoequipment->brand }}</td>
+									<td>{{ $eq->belongstoequipment->model }}</td>
+									<td>{{ $eq->belongstoequipment->serial_number }}</td>
+									<td>{{ $eq->belongstoequipment->description }}</td>
+									<td>{{ $eq->belongstoequipmentstatus->status_item }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+@endforeach
+				<tr>
+					<th colspan="2"><span class="center">Kelulusan Pengarah/Dekan/Ketua Jabatan</span></th>
+				</tr>
+				<tr>
+					<td colspan="2">Nama : </td>
+				</tr>
+				<tr>
+					<td colspan="2" rowspan="1" style="height: 150px;">&nbsp</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td>Nama : </td>
+					<td>Tarikh :</td>
+				</tr>
+				<tr>
+					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
+				</tr>
+				<tr>
 					<td colspan="2">
-						Tujuan Pinjaman : {{ $loanapp->loan_purpose }}
+						Permohonan Diluluskan
+
 					</td>
 				</tr>
 			</tbody>
