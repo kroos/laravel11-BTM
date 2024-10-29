@@ -34,7 +34,6 @@ $('.cnostaf').change(function() {
 		data : {
 					nostaf: $(this).data('id'),
 					active: $(this).prop('checked'),
-					active: $(this).prop('checked'),
 					_token: '{!! csrf_token() !!}',
 				},
 		dataType: 'json',
