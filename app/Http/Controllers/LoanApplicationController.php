@@ -19,15 +19,21 @@ use Illuminate\Http\JsonResponse;
 // load pdf
 use Barryvdh\DomPDF\Facade\Pdf;
 
-// load array helper
+// send email
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ToApplicant;
+
+// load helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
-// send email
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ToApplicant;
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
 
 use Session;
 use Throwable;
@@ -82,8 +88,9 @@ class LoanApplicationController extends Controller
 		]);
 
 		$data = $request->only(['date_loan_from', 'date_loan_to']);
-		$data += ['loan_purpose' => ucwords(Str::lower($request->loan_purpose))];
+		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
 		$data += ['active' => 1];
+		$data += ['status_loan_id' => 3];
 		if ($request->has('lequ')) {
 			$r = \Auth::user()->belongstostaff->hasmanyloan()->create($data);
 			foreach ($request->lequ as $k => $v) {
@@ -93,13 +100,16 @@ class LoanApplicationController extends Controller
 				]);
 			}
 
-			Mail::to(\Auth::user())
+			Pdf::loadView('loan.show', ['loanapp' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+
+			Mail::to($r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)
 				->send(new ToApplicant($r));
 
 		} else {
-			return redirect()->back()->with('danger', 'There are some error.');
+			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
 		return redirect()->route('loanapps.index')->with('success', 'Successfully Apply Loan Equipment');
 	}
@@ -107,11 +117,11 @@ class LoanApplicationController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(LoanApplication $loanapp)
+	public function show(LoanApplication $loanapp): View
 	{
-		// $pdf = Pdf::loadView('loan.show', ['loanapp' => $loanapp]);
-		// return $pdf->download('invoice.pdf');
-		return view('loan.show', ['loanapp' => $loanapp]);
+		$pdf = Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120]);
+		return $pdf->stream('BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// return view('loan.show', ['loanapp' => $loanapp]);
 	}
 
 	/**

@@ -2,13 +2,13 @@
 
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Add Approver') }}
+			{{ __('Add BTM Approver') }}
 		</h2>
 	</x-slot>
 
 	<div class="col-sm-12">
-		<a class="btn btn-primary" href="{{ route('addapprover.create') }}">
-			Create Approver to a Department
+		<a class="btn btn-primary" href="{{ route('btmapprover.create') }}">
+			Create BTM Approver
 		</a>
 	</div>
 	<p>&nbsp;</p>
@@ -18,28 +18,15 @@
 				<tr>
 					<th>ID</th>
 					<th>Approver</th>
-					<th>Department</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				@if($apprs->count() > 0)
-				@foreach($apprs as $appr)
 				<tr>
-					<td>{{ $appr->belongstoappr->nostaf }}</td>
-					<td>{{ $appr->belongstoappr->nama }}</td>
-					<td>{{ $appr->belongstodeptappr->namajabatan }}</td>
-					<td>
-						<x-link href="{{ route('addapprover.edit', $appr->id) }}" class="btn btn-sm btn-primary approver_btn" data-id="{{ $appr->id }}">
-							<i class="fa-regular fa-pen-to-square"></i>
-						</x-link>
-						<x-danger-button type="button" class="delete_approver" data-id="{{ $appr->id }}" >
-							<i class="fa-regular fa-trash-can"></i>
-						</x-danger-button>
-					</td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
-				@endforeach
-				@endif
 			</tbody>
 		</table>
 	</div>

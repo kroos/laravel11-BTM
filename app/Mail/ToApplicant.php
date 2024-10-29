@@ -9,11 +9,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-// address
+// mailer
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Address;
 
 // load model
 use App\Models\Staff;
+
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
 
 class ToApplicant extends Mailable
 {
@@ -63,6 +69,8 @@ class ToApplicant extends Mailable
 	 */
 	public function attachments(): array
 	{
-		return [];
+		return [
+			Attachment::fromPath(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($this->data->created_at)->format('ym').str_pad( $this->data->id, 3, "0", STR_PAD_LEFT).'.pdf'),
+		];
 	}
 }

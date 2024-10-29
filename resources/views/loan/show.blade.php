@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>BTM Equipment Loan Form</title>
 	<style>
 /* Set A4 size */
@@ -14,7 +14,7 @@
 }
 
 @page {
-	size: A4;
+	size:  21cm 29.7cm;
 	margin: 0;
 }
 
@@ -28,17 +28,31 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-size: 14px; /* Set default font size for the body */
+	font-size: 12px; /* Set default font size for the body */
 }
 
 /* Style content with shaded background */
 .content {
-	width: 80%;
-	height: 80%;
-	padding: 20px;
+	width: 90%;
+	height: 90%;
+	padding: 30;
 	box-sizing: border-box;
 	font-family: Arial, sans-serif;
 	background-color: #f0f0f0; /* Light gray shade */
+}
+
+/* Center class for centering elements */
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+/* Page break styles */
+.page-break {
+    page-break-before: always; /* Start a new page before the element */
+    page-break-after: always; /* Or, start a new page after the element */
 }
 
 /* Headings styles with font sizes */
@@ -81,14 +95,6 @@ p {
 	text-decoration: underline;
 }
 
-/* Center class for centering elements */
-.center {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-}
-
 /* Unordered list styles */
 ul {
 	list-style-type: disc;
@@ -111,6 +117,7 @@ table {
 	border-collapse: collapse;
 	margin-bottom: 20px;
 	font-size: 14px; /* Set font size for table content */
+	page-break-inside: auto;
 }
 
 th,
@@ -118,6 +125,7 @@ td {
 	border: 1px solid #ccc;
 	padding: 10px;
 	text-align: left;
+	page-break-inside: avoid;
 }
 
 th {
@@ -144,27 +152,33 @@ tr:nth-child(even) {
 					</tr>
 			</thead>
 			<tbody>
-					<tr>
-							<td colspan="2">
-									<p class="bold underline">Terma & Syarat :</p>
-									<ul>
-											<li>Permohonan hendaklah diterima oleh BTM dalam tempoh <span class="bold underline">TIGA (3) hari</span> bekerja sebelum program berlangsung. <span class="bold underline">Permohonan lewat tidak akan dilayan.</span></li>
-											<li>Permohonan yang tidak lengkap tidak akan diproses</li>
-											<li class="bold">Sila ambil perhatian dan pulangkan semula ke pejabat BTM sperti yang telah ditetapkan</li>
-									</ul>
-							</td>
-					</tr>
-					<tr>
-							<td colspan="2">
-								<p>Peralatan yang disediakan :</p>
-								<ol>
-									<li>Peralatan Komputer</li>
-									<li>Peralatan Jaringan (Network Appliances)</li>
-									<li>Peranti Audio Visual</li>
-								</ol>
-								<p class="bold red">*Untuk makluman, pihak BTM <span class="underline">tidak menyediakan Wire Extension</span>.</p>
-							</td>
-					</tr>
+				<tr>
+					<td>No Rujukan : <span class="bold red">
+						{{ 'BTM-LE-'.\Carbon\Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT) }}
+					</span>
+					</td>
+				</tr>
+				<tr>
+						<td colspan="2">
+								<p class="bold underline">Terma & Syarat :</p>
+								<ul>
+										<li>Permohonan hendaklah diterima oleh BTM dalam tempoh <span class="bold underline">TIGA (3) hari</span> bekerja sebelum program berlangsung. <span class="bold underline">Permohonan lewat tidak akan dilayan.</span></li>
+										<li>Permohonan yang tidak lengkap tidak akan diproses</li>
+										<li class="bold">Sila ambil perhatian dan pulangkan semula ke pejabat BTM sperti yang telah ditetapkan</li>
+								</ul>
+						</td>
+				</tr>
+				<tr>
+						<td colspan="2">
+							<span>Peralatan yang disediakan :</span>
+							<ol>
+								<li>Peralatan Komputer</li>
+								<li>Peralatan Jaringan (Network Appliances)</li>
+								<li>Peranti Audio Visual</li>
+							</ol>
+							<p class="bold red">*Untuk makluman, pihak BTM <span class="underline">tidak menyediakan Wire Extension</span>.</p>
+						</td>
+				</tr>
 			</tbody>
 			<thead>
 				<tr>
@@ -195,12 +209,12 @@ tr:nth-child(even) {
 						Tarikh Mula Pinjam : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_from)->format('D, j F Y') }}</span>
 					</td>
 					<td>
-						Tarikh Tamat Pinjam : : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_to)->format('D, j F Y') }}</span>
+						Tarikh Tamat Pinjam : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_to)->format('D, j F Y') }}</span>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						Tempoh : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_to)->daysUntil($loanapp->date_loan_from, 1)->count() }} hari</span>
+						Tempoh : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_from)->daysUntil($loanapp->date_loan_to, 1)->count() }} hari</span>
 					</td>
 				</tr>
 				<tr>
@@ -209,8 +223,8 @@ tr:nth-child(even) {
 @foreach($loanapp->hasmanyequipments()->get() as $eq)
 				<tr>
 					<td>{{ $eq->belongstoequipment->item }}</td>
-					<td>
-						<table>
+					<td style="padding: 0px;">
+						<table style="margin-bottom: 0px;">
 							<thead>
 								<tr>
 									<th>Brand</th>
@@ -237,29 +251,28 @@ tr:nth-child(even) {
 					<th colspan="2"><span class="center">Kelulusan Pengarah/Dekan/Ketua Jabatan</span></th>
 				</tr>
 				<tr>
-					<td colspan="2">Nama : </td>
 				</tr>
 				<tr>
-					<td colspan="2" rowspan="1" style="height: 150px;">&nbsp</td>
+					<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa peralatan yang dipinjam adalah untuk urusan rasmi.</span></td>
 				</tr>
 				<tr>
-				</tr>
-				<tr>
-					<td>Nama : </td>
-					<td>Tarikh :</td>
+					<td>Nama : <span class="bold">{{ ($loanapp->approver_date)??NULL }}</span></td>
+					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</span></td>
 				</tr>
 				<tr>
 					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
 				</tr>
 				<tr>
 					<td colspan="2">
-						Permohonan Diluluskan
-
+						Status Permohonan : <span class="bold">{{ $loanapp->belongstostatusloan->status_loan }}</span>
 					</td>
+				</tr>
+				<tr>
+					<td>Nama : </td>
+					<td>Tarikh : </td>
 				</tr>
 			</tbody>
 	</table>
 </div>
 </body>
-
 </html>

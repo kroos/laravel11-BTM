@@ -9,8 +9,9 @@
 		<i class="fa-solid fa-gear fa-beat"></i>&nbsp;Setting
 	</a>
 	<div class="dropdown-menu">
-		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Item</a>
-		<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Approver</a>
+		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Equipment</a>
+		<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Department Approver</a>
+		<a class="dropdown-item" href="{{ route('btmapprover.index') }}">Add BTM Approver</a>
 <!--
 		<div class="dropdown-divider"></div>
 		<a class="dropdown-item" href="#">Separated link</a>
