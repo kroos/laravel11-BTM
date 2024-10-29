@@ -56,7 +56,7 @@ class AddBTMApproverController extends Controller
 		return view('settings.btmapprover.create', ['stfbtm' => $stfbtm]);
 	}
 
-	public function store(Request $request)/*: RedirectResponse*/
+	public function store(Request $request):JsonResponse
 	{
 		// dd($request->all());
 		$data = $request->validate([
