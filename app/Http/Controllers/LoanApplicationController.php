@@ -45,6 +45,7 @@ class LoanApplicationController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
+		$this->middleware('loanOwner', ['only' => ['show', 'edit', 'update', 'destroy']]);
 	}
 
 	/**

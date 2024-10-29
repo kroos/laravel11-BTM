@@ -159,8 +159,9 @@ class Login extends Authenticatable
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here
-	public function isOwner( $id ) {
-		if ( auth()->user()->belongstostaff->id == $id ) {
+	public function isLoanOwner($id) {
+		$lo = \Auth::user()->belongstostaff->hasmanyloan()->where('id', $id)->get();
+		if ($lo->count()) {
 			return true;
 		}
 	}
