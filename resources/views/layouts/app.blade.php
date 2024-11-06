@@ -24,7 +24,6 @@
 </head>
 <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center">
 	<div class="container-fluid ">
-
 		<!-- navigator -->
 		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
@@ -37,7 +36,7 @@
 				<div class="collapse navbar-collapse" id="navbarColor01">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link {{ (request()->route()->uri == '/')?'active':NULL }}" href="{{ url('/') }}">Home
+							<a class="nav-link {{ (request()->route()->uri == 'dashboard')?'active':NULL }}" href="{{ url('/dashboard') }}">Home
 								<span class="visually-hidden">(current)</span>
 							</a>
 						</li>
@@ -103,16 +102,16 @@
 	</div>
 
 	@if(count($errors) > 0 )
-	<div class="col-sm-12 d-flex align-items-center justify-content-center">
-		<ul class="list-group">
-			@foreach($errors->all() as $err)
-				<li class="list-group-item list-group-item-danger">
-					{!! $err !!}
-				</li>
-			@endforeach
-		</ul>
-	</div>
-	@endif
+		<div class="col-sm-12 d-flex align-items-center justify-content-center">
+			<ul class="list-group">
+				@foreach($errors->all() as $err)
+					<li class="list-group-item list-group-item-danger">
+						{!! $err !!}
+					</li>
+				@endforeach
+			</ul>
+		</div>
+		@endif
 
 	<div class="container d-flex align-items-center justify-content-center row rounded">
 

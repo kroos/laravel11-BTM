@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
 
-class RedirectIfNotLoanOwner
+class RedirectIfNotBTMAdmin
 {
 	/**
 	 * Handle an incoming request.
@@ -20,8 +20,7 @@ class RedirectIfNotLoanOwner
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		// dd($request->route()->parameters['loanapp']['nostaf'] );
-		if( ($request->route()->parameters['loanapp']['nostaf'] == \Auth::user()->nostaf) || ($request->user()->isBTMAdmin()) ) {
+		if($request->user()->isBTMAdmin()) {
 			return $next($request);
 		}
 		// return redirect()->back();

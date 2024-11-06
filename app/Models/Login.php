@@ -159,11 +159,25 @@ class Login extends Authenticatable
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here
-	public function isLoanOwner($id) {
-		$lo = \Auth::user()->belongstostaff->hasmanyloan()->where('id', $id)->get();
-		if ($lo->count()) {
+	public function isBTMAdmin() {
+		$btmadmins = \Auth::user()->belongstostaff->hasmanybtmapprover()->where('active', 1)->get();
+		if($btmadmins->count()) {
 			return true;
 		}
+		return false;
+	}
+
+	public function isDeptApprover() {
+		$deptapprvs = \Auth::user()->belongstostaff->belongstomanydeptappr()->get();
+		if($deptapprvs->count()) {
+			$m = [];
+			foreach ($deptapprvs as $deptapprv) {
+				$m[] = $deptapprv->kodjabatan;
+			}
+			// dd($m);
+			return $m;
+		}
+		return false;
 	}
 
 

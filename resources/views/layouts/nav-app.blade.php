@@ -4,6 +4,12 @@
 		Equipment Loan Application and Status
 	</a>
 </li>
+<li>
+	<a class="nav-link {{ (request()->route()->uri == 'loanapprvs')?'active':NULL }}" href="{{ route('loanapprvs.index') }}">
+		<i class="fa-solid fa-user-tie fa-beat"></i>&nbsp;
+		Department Approver
+	</a>
+</li>
 <li class="nav-item dropdown">
 	<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
 		<i class="fa-solid fa-gear fa-beat"></i>&nbsp;Setting

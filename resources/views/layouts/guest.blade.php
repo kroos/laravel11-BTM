@@ -37,7 +37,6 @@
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
 							<a class="nav-link {{ (request()->route()->uri == '/')?'active':NULL }}" href="{{ url('/') }}">Home
-								<span class="visually-hidden">(current)</span>
 							</a>
 						</li>
 						@auth
