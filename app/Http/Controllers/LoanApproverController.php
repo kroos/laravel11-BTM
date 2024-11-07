@@ -47,7 +47,7 @@ class LoanApproverController extends Controller
 	{
 		// $this->middleware(['auth']);
 		// $this->middleware('loanOwner', ['only' => ['show', 'edit', 'update', 'destroy']]);
-		$this->middleware('deptApproverApprv');
+		// $this->middleware('deptApprover');
 		// $this->middleware('BTMAdmin');
 	}
 

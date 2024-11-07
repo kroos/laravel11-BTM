@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 // models
 use App\Models\LoanApplication;
 use App\Models\LoanEquipment;
+use App\Models\Jabatan;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 // send email
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicant;
+use App\Mail\ToApplicantUpdate;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -47,7 +49,7 @@ class LoanApplicationController extends Controller
 	{
 		// $this->middleware(['auth']);
 		$this->middleware('loanOwner', ['only' => ['show', 'edit', 'update', 'destroy']]);
-		$this->middleware('deptApprover', ['only' => ['show', 'edit']]);
+		// $this->middleware('deptApprover', ['only' => ['show', 'edit']]);
 		// $this->middleware('BTMAdmin');
 	}
 
@@ -65,7 +67,14 @@ class LoanApplicationController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('loan.create');
+		// need to find approver -> find jabatan and then find approver
+		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
+		$apprv = Jabatan::find($dept);
+		if($apprv->belongstomanyappr()->count()) {
+			return view('loan.create');
+		} else {
+			return view('loan.create')->with('danger', 'Please inform BTM there are no Approver for you. BTM need to set the Approver.');
+		}
 	}
 
 	/**
@@ -73,7 +82,7 @@ class LoanApplicationController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		// dd($request->all());
+		// dd(Jabatan::find(\Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan)->belongstomanyappr->first());
 		$request->validate([
 				'date_loan_from' => 'required|date_format:"Y-m-d"',
 				'date_loan_to' => 'required|date_format:"Y-m-d"',
@@ -111,6 +120,17 @@ class LoanApplicationController extends Controller
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)
 				->send(new ToApplicant($r));
+
+			// need to find approver -> find jabatan and then find approver
+			$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
+			$apprv = Jabatan::find($dept)->belongstomanyappr;
+			if($apprv->count()) {
+				// send to approver
+				Mail::to($apprv->first()->email, $apprv->first()->nama)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToApprover($r, $apprv));
+			}
 
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
@@ -181,6 +201,7 @@ class LoanApplicationController extends Controller
 
 			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
+			// mail to self
 			Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)

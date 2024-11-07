@@ -128,8 +128,8 @@
 					<p>Approver :
 					@php
 					$j = \App\Models\Jabatan::find($idj);
-					if(!$j){
-						echo $j->belongstomanyappr()->first()->nama;
+					if($j->belongstomanyappr->count()){
+						echo $j->belongstomanyappr->first()->nama;
 					} else {
 						echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
 					}

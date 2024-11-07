@@ -21,19 +21,21 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
-class ToApplicantUpdate extends Mailable
+class ToApprover extends Mailable
 {
 	use Queueable, SerializesModels;
 
-		public $data;
+		public $data1;
+		public $data2;
 
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct($data)
+	public function __construct($data1, $data2)
 	{
-		// dd($data->nostaf, $this->data);
-		$this->data = $data;
+		// dd($data1->nostaf, $this->data1);
+		$this->data1 = $data1;
+		$this->data2 = $data2;
 		// dd($this->data);
 	}
 
@@ -44,7 +46,7 @@ class ToApplicantUpdate extends Mailable
 	{
 		return new Envelope(
 			from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-			subject: 'BTM Equipment Loan Application Form : Updating Form',
+			subject: 'Approval Request for Equipment Loan Application',
 		);
 	}
 
@@ -54,10 +56,11 @@ class ToApplicantUpdate extends Mailable
 	public function content(): Content
 	{
 		return new Content(
-			markdown: 'mail.LoanApplicationFormUpdate',
+			markdown: 'mail.LoanApplicationFormToApprove',
 			with: [
-				'name' => Staff::find($this->data->nostaf)->nama,
-				'link' => route('loanapps.show', $this->data->id),
+				'apprv' =>$this->data2->nama,
+				'name' => Staff::find($this->data1->nostaf)->nama,
+				'link' => route('loanapps.show', $this->data1->id),
 			]
 		);
 	}
@@ -70,7 +73,7 @@ class ToApplicantUpdate extends Mailable
 	public function attachments(): array
 	{
 		return [
-			Attachment::fromPath(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($this->data->created_at)->format('ym').str_pad( $this->data->id, 3, "0", STR_PAD_LEFT).'.pdf'),
+			Attachment::fromPath(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($this->data1->created_at)->format('ym').str_pad( $this->data1->id, 3, "0", STR_PAD_LEFT).'.pdf'),
 		];
 	}
 }

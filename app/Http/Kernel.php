@@ -70,7 +70,6 @@ class Kernel extends HttpKernel
 
 		'loanOwner' => \App\Http\Middleware\Authorization\RedirectIfNotLoanOwner::class,
 		'deptApprover' => \App\Http\Middleware\Authorization\RedirectIfNotDeptApprover::class,
-		'deptApproverApprv' => \App\Http\Middleware\Authorization\RedirectIfNotDeptApproverApprv::class,
 		'BTMAdmin' => \App\Http\Middleware\Authorization\RedirectIfNotBTMAdmin::class,
 
 	];
