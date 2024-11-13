@@ -36,7 +36,7 @@ class AddApproverController extends Controller
 {
 	function __construct()
 	{
-		$this->middleware(['auth']);
+		// $this->middleware(['auth']);
 		$this->middleware('BTMAdmin');
 	}
 

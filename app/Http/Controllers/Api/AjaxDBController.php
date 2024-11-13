@@ -15,6 +15,14 @@ use \Carbon\CarbonInterval;
 // use Illuminate\Bus\Batch;
 // use Illuminate\Support\Facades\Bus;
 
+// load pdf
+use Barryvdh\DomPDF\Facade\Pdf;
+
+// send email
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ToApplicantUnApproved;
+use App\Mail\ToApplicantUpdate;
+
 // for controller output
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -143,6 +151,15 @@ class AjaxDBController extends Controller
 				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
 				'status_loan_id' => 2,
 			]);
+
+			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+			// mail to loan owner of unapproved loan
+			Mail::to($loanapp->belongstostaff->email, $loanapp->belongstostaff->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApplicantUnApproved($loanapp));
+
 		} elseif ($request->status == 1) {
 			$loanapp->update([
 				'approver_staff' => $request->approver_staff,

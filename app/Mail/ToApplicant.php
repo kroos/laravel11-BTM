@@ -57,7 +57,7 @@ class ToApplicant extends Mailable
 			markdown: 'mail.LoanApplicationForm',
 			with: [
 				'name' => Staff::find($this->data->nostaf)->nama,
-				'link' => route('loanapps.show', $this->data->id),
+				'link' => route('loanapp.show', $this->data->id),
 			]
 		);
 	}

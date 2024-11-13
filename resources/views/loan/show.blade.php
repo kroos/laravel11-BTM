@@ -157,6 +157,9 @@ tr:nth-child(even) {
 						{{ 'BTM-LE-'.\Carbon\Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT) }}
 					</span>
 					</td>
+					<td>
+						Tarikh Permohonan : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->created_at)->format('D, j F Y') }}</span>
+					</td>
 				</tr>
 				<tr>
 						<td colspan="2">
@@ -192,11 +195,6 @@ tr:nth-child(even) {
 					</td>
 					<td style="width: 50%;">
 						Kuliyyah : <span class="bold">{{ $loanapp->belongstostaff->belongstomanydepartment->first()->namajabatan }}</span>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						Tarikh Permohonan : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->created_at)->format('D, j F Y') }}</span>
 					</td>
 				</tr>
 				<tr>
@@ -251,11 +249,12 @@ tr:nth-child(even) {
 					<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa peralatan yang dipinjam adalah untuk urusan rasmi.</span></td>
 				</tr>
 				<tr>
-					<td>Nama : <span class="bold">{{ ($loanapp->approver_staff) }}</span></td>
+					<td>Nama : <span class="bold">{{ ($loanapp->belongstoappr->nama) }}</span></td>
 					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</span></td>
 				</tr>
 				<tr>
-					<td colspan="2">Catatan : {{ $loanapp->approver_remarks }}</td>
+					<td>Catatan : {{ $loanapp->approver_remarks }}</td>
+					<td>Status : <span class="bold">{{ $loanapp->belongstostatusloan->status_loan }}</span></td>
 				</tr>
 				<tr>
 					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>

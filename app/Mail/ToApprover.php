@@ -60,7 +60,7 @@ class ToApprover extends Mailable
 			with: [
 				'apprv' =>$this->data2->nama,
 				'name' => Staff::find($this->data1->nostaf)->nama,
-				'link' => route('loanapps.show', $this->data1->id),
+				'link' => route('loanapp.show', $this->data1->id),
 			]
 		);
 	}

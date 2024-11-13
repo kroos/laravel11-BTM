@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AjaxDBController;
 
 Route::middleware('auth')->group(function () {
+// Route::middleware('auth:api')->group(function () {
 	Route::apiResources([
 		// 'ppls' => PplController::class,
 		// 'posts' => PostController::class,

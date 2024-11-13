@@ -12,9 +12,7 @@
 		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Equipment</a>
 		<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Department Approver</a>
 		<a class="dropdown-item" href="{{ route('btmapprover.index') }}">Add BTM Approver</a>
-<!--
 		<div class="dropdown-divider"></div>
-		<a class="dropdown-item" href="#">Separated link</a>
- -->
+		<a class="dropdown-item" href="{{ route('btmloanapplications.index') }}">BTM Loan Approval</a>
 	</div>
 </li>

@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('loanapps.store') }}" method="POST">
+	<form action="{{ route('loanapp.store') }}" method="POST">
 			@csrf
 		<div class="container row justify-content-between">
 			<!-- 1st column -->
@@ -140,6 +140,11 @@
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 // ajax category
+$.ajaxSetup({
+		headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+		}
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //enable select 2
@@ -156,7 +161,7 @@ $('#equip_0').select2({
 			var query = {
 				_token: '{!! csrf_token() !!}',
 				search: params.term,
-				type: 'public'
+				// type: 'public'
 			}
 			return query;
 		}

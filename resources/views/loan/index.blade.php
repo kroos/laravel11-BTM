@@ -176,6 +176,7 @@ $(".form").on('submit', function(e){
 	$.ajax({
 		url: '{{ url('api/loanappapprv') }}' + '/' + ids,
 		type: 'PATCH',
+		headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
 		data: {
 				_token: '{!! csrf_token() !!}',
 				id: ids,
@@ -198,7 +199,7 @@ $(".form").on('submit', function(e){
 		error: function(resp) {
 			const res = resp.responseJSON;
 			$('#apprv' + ids).modal('hide');
-			swal.fire('Error!', resp.message,'error');
+			swal.fire('Error!', res.message,'error');
 		}
 	});
 });
@@ -230,7 +231,7 @@ function SwalDeleteR(ackID){
 					dataType: 'json',
 					data: {
 							id: ackID,
-							_token : $('meta[name=csrf-token]').attr('content')
+							_token : $('meta[name=csrf-token]').attr('content'),
 					},
 				})
 				.done(function(response){
