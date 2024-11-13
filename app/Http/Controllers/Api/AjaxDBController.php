@@ -34,14 +34,16 @@ use Throwable;
 // load model
 use App\Models\Jabatan;
 use App\Models\Staff;
+use App\Models\LoanApplication;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
 
 class AjaxDBController extends Controller
 {
-	/**
-	 * Display a listing of the resource.
-	 */
+	function __construct()
+	{
+	}
+
 	public function liststaff(Request $request): JsonResponse
 	{
 		$values = Staff::where('status', 'A')->where('nama','LIKE','%'.$request->search.'%')->orderBy('nama')->get();
@@ -112,7 +114,47 @@ class AjaxDBController extends Controller
 		return response()->json($equipmentsdesc);
 	}
 
+	public function loanappsapprv(Request $request, LoanApplication $loanapp): JsonResponse
+	{
+		// dd($request->all(), \Auth::user());
+		// return response()->json([]);
+		$request->validate([
+				'acknowledge' => 'required|accepted',
+				'status' => 'required',
+				'remarks_approver' => 'required_if:status,2',
+				'approver_staff' => 'required',
+			], [
+				'acknowledge' => 'Please :attribute',
+				'status' => 'Please choose your :attribute',
+				'remarks_approver' => 'Please fill up :attribute',
+				'approver_staff' => 'Missing :attribute'
+			], [
+				'acknowledge' => 'Acknowledgement',
+				'status' => 'Approval',
+				'remarks_approver' => 'Remarks',
+				'approver_staff' => 'Staff ID',
+		]);
 
+		if ($request->status == 2) {
+			$loanapp->update([
+				'status_loan_id' => 2,
+				'approver_staff' => $request->approver_staff,
+				'approver_date' => now(),
+				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+				'status_loan_id' => 2,
+			]);
+		} elseif ($request->status == 1) {
+			$loanapp->update([
+				'approver_staff' => $request->approver_staff,
+				'approver_date' => now(),
+				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+			]);
+		}
+		return response()->json([
+			'message' => 'Success granted approval for the loan',
+			'status' => 'success'
+		]);
+	}
 
 
 

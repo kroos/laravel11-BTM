@@ -213,11 +213,6 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						Tempoh : <span class="bold">{{ \Carbon\Carbon::parse($loanapp->date_loan_from)->daysUntil($loanapp->date_loan_to, 1)->count() }} hari</span>
-					</td>
-				</tr>
-				<tr>
 					<th colspan="2"><span class="center">Alatan</span></th>
 				</tr>
 @foreach($loanapp->hasmanyequipments()->get() as $eq)
@@ -256,8 +251,11 @@ tr:nth-child(even) {
 					<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa peralatan yang dipinjam adalah untuk urusan rasmi.</span></td>
 				</tr>
 				<tr>
-					<td>Nama : <span class="bold">{{ ($loanapp->approver_date)??NULL }}</span></td>
+					<td>Nama : <span class="bold">{{ ($loanapp->approver_staff) }}</span></td>
 					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</span></td>
+				</tr>
+				<tr>
+					<td colspan="2">Catatan : {{ $loanapp->approver_remarks }}</td>
 				</tr>
 				<tr>
 					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
@@ -268,8 +266,11 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td>Nama : </td>
-					<td>Tarikh : </td>
+					<td>Nama : <span class="bold">{{ $loanapp->btm_approver }}</span></td>
+					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->btm_date))?\Carbon\Carbon::parse($loanapp->btm_date)->format('D, j F Y'):NULL }}</span></td>
+				</tr>
+				<tr>
+					<td colspan="2">Catatan : {{ $loanapp->btm_remarks }}</td>
 				</tr>
 			</tbody>
 	</table>

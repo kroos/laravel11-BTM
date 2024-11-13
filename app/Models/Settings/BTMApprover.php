@@ -26,10 +26,10 @@ class BTMApprover extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	// public function hasmanyapprover(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\Staff::class, 'nostaf');
-	// }
+	public function hasmanyloanapplication(): HasMany
+	{
+		return $this->hasMany(\App\Models\LoanApplication::class, 'btm_approver');
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship

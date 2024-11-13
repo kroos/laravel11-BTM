@@ -170,12 +170,7 @@ class Login extends Authenticatable
 	public function isDeptApprover() {
 		$deptapprvs = \Auth::user()->belongstostaff->belongstomanydeptappr()->get();
 		if($deptapprvs->count()) {
-			$m = [];
-			foreach ($deptapprvs as $deptapprv) {
-				$m[] = $deptapprv->kodjabatan;
-			}
-			// dd($m);
-			return $m;
+			return true;
 		}
 		return false;
 	}

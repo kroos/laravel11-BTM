@@ -43,12 +43,12 @@ class LoanApplication extends Model
 	// belongsto relationship
 	public function belongstoappr(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
+		return $this->belongsTo(\App\Models\Staff::class, 'approver_staff')->withDefault();
 	}
 
 	public function belongstobtmappr(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
+		return $this->belongsTo(\App\Models\Staff::class, 'btm_approver')->withDefault();
 	}
 
 	public function belongstostaff(): BelongsTo

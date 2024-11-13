@@ -1,11 +1,11 @@
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Equipment Status') }}
+			{{ __('Loan Equipment List') }}
 		</h2>
 	</x-slot>
 	<div class="col-sm-12">
-		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('loanapps.create') }}">
+		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('loanapp.create') }}">
 			Loan Application
 		</x-link>
 	</div>
@@ -61,13 +61,78 @@ $loaneqs = $loan->hasmanyequipments()->get();
 								</table>
 							</td>
 							<td>
-								<x-link href="{{ route('loanapps.show', $loan->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
+								<x-link href="{{ route('loanapp.show', $loan->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 									<i class="fa-regular fa-file-pdf"></i>
 								</x-link>
 								@if((is_null($loan->approver_staff) && is_null($loan->approver_date)) && (is_null($loan->btm_approver) && is_null($loan->btm_date)))
-									<x-link href="{{ route('loanapps.edit', $loan->id) }}" class="btn btn-primary btn-sm" title="Edit">
+									<x-link href="{{ route('loanapp.edit', $loan->id) }}" class="btn btn-primary btn-sm" title="Edit">
 										<i class="fa-regular fa-pen-to-square"></i>
 									</x-link>
+									@if(request()->user()->isDeptApprover())
+										<?php
+											$deptapprvs = \Auth::user()->belongstostaff->belongstomanydeptappr()->get();
+											$m = [];
+											foreach ($deptapprvs as $deptapprv) {
+												$m[] = $deptapprv->kodjabatan;
+											}
+												$stafs = \App\Models\Staff::find($loan->nostaf);
+												$stafdepts = $stafs->belongstomanydepartment()->first()->kodjabatan;
+
+												// find the same between session and url
+												$stafdeptapprv = in_array($stafdepts, $m);
+										?>
+										@if($stafdeptapprv)
+										<x-primary-button type="button" class="approval" title="Approval" data-bs-toggle="modal" data-bs-target="#apprv{{ $loan->id }}">
+											<i class="fa-solid fa-person-circle-check"></i>
+										</x-primary-button>
+										<!-- Modal -->
+										<div class="modal fade" id="apprv{{ $loan->id }}" tabindex="-1" aria-labelledby="label_{{ $loan->id }}" aria-hidden="true">
+											<div class="modal-dialog modal-lg">
+												<form action="{{ route('loanappsapprv', $loan->id) }}" method="PATCH" class="form" data-id="{{ $loan->id }}">
+													@csrf
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="label_{{ $loan->id }}">HOD/Director/Dean Approval</h1>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+													</div>
+													<div class="modal-body">
+														<div class="col-sm-12 m-0 p-1">
+															<fieldset>
+																@foreach(\App\Models\StatusLoan::whereNot('id', 3)->get() as $v)
+																	<div class="form-check">
+																		<input name="status" class="form-check-input" type="radio" id="rd_{{ $loan->id }}_{{ $v->id }}" value="{{ $v->id }}">
+																		<label class="form-check-label" for="rd_{{ $loan->id }}_{{ $v->id }}">
+																			{{ $v->status_loan }}
+																		</label>
+																	</div>
+																@endforeach
+															</fieldset>
+															<div class="col-sm-12 m-2 row">
+																<x-input-label for="txtareaid{{ $loan->id }}" class="col-sm-4" :value="__('Remarks : ')" />
+																<div class="col-sm-8">
+																	<x-textarea-input id="txtareaid{{ $loan->id }}" name="remarks_approver" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" />
+																	<x-input-error :messages="$errors->get('nostaf')" />
+																</div>
+															</div>
+															<div class="form-check">
+																<input name="acknowledge" class="form-check-input {{ ($errors->has('acknowledge')?'is-invalid':NULL) }}" type="checkbox" value="true" id="cb_{{ $loan->id }}">
+																<label class="form-check-label text-sm fs-6 fw-bolder" for="cb_{{ $loan->id }}">
+																	I hereby confirm that the loaned equipment is intended for official purposes.
+																</label>
+																<x-input-error :messages="$errors->get('acknowledge')" />
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+														<button type="submit" class="btn btn-primary">Save changes</button>
+													</div>
+												</div>
+											</form>
+											</div>
+										</div>
+										@endif
+									@endif
 									<x-danger-button type="button" class="delete_loan" data-id="{{ $loan->id }}" title="Delete">
 										<i class="fa-regular fa-trash-can"></i>
 									</x-danger-button>
@@ -104,6 +169,41 @@ $('#loanapp').DataTable({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// form submit via ajax
+$(".form").on('submit', function(e){
+	var ids = $(this).data('id');
+	e.preventDefault();
+	$.ajax({
+		url: '{{ url('api/loanappapprv') }}' + '/' + ids,
+		type: 'PATCH',
+		data: {
+				_token: '{!! csrf_token() !!}',
+				id: ids,
+				approver_staff: '{{ \Auth::user()->nostaf }}',
+				// acknowledge: $(':input[name="leave_status_id"]:checked').val(),
+				acknowledge: $(':input[name="acknowledge"]:checked').val(),
+				status: $(':input[name="status"]:checked').val(),
+				remarks_approver: $(':input[name="remarks_approver"]').val()
+		},
+		dataType: 'json',
+		global: false,
+		async:false,
+		success: function (response) {
+			$('#apprv' + ids).modal('hide');
+			var row = $('#apprv' + ids).parent().parent();
+			// row.css('border', '5px solid red');
+			row.remove();
+			swal.fire('Success!', response.message, response.status);
+		},
+		error: function(resp) {
+			const res = resp.responseJSON;
+			$('#apprv' + ids).modal('hide');
+			swal.fire('Error!', resp.message,'error');
+		}
+	});
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 $(document).on('click', '.delete_loan', function(e){
 	var ackID = $(this).data('id');
 	SwalDeleteR(ackID);
@@ -125,7 +225,7 @@ function SwalDeleteR(ackID){
 		preConfirm: function() {
 			return new Promise(function(resolve) {
 				$.ajax({
-					url: '{{ url('loanapps') }}' + '/' + ackID,
+					url: '{{ url('loanapp') }}' + '/' + ackID,
 					type: 'DELETE',
 					dataType: 'json',
 					data: {

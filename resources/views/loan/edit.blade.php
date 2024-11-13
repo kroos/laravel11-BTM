@@ -138,9 +138,10 @@
 					<p>Date : </p>
 					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
 				</div>
+
 			</div>
 
-			<div class="col-sm-12 text-center">
+			<div class="col-sm-12 m-0 p-1 text-center">
 				<x-primary-button type="submit" class="m-2">
 					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
 				</x-primary-button>

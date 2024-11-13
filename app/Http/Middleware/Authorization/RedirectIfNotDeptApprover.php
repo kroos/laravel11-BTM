@@ -25,34 +25,33 @@ class RedirectIfNotDeptApprover
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		// dd($request->route()->parameters);
-		if ($request->user()->isDeptApprover() == false) {
-			return abort(401);
-		} else {
+		if ($request->user()->isDeptApprover() == true) {
+			// find dept for user
+			$deptapprvs = \Auth::user()->belongstostaff->belongstomanydeptappr()->get();
+			$m = [];
+			foreach ($deptapprvs as $deptapprv) {
+				$m[] = $deptapprv->kodjabatan;
+			}
 
-			if (($request->route()->uri == 'loanapprvs' || $request->route()->uri == 'loanapp') && (count($request->route()->parameters) == 0)) {
-				return $next($request);
-			} elseif(($request->route()->uri == 'loanapprvs' || $request->route()->uri == 'loanapp') && (count($request->route()->parameters) != 0)) {
-				// get uri
-				$uri = $request->route()->uri;
+			// find dept from the uri
+			$ruri = $request->route()->uri;
+			$uri = trim(explode('/', $ruri)[0], 's');
+			// dd($m, $ruri, $uri, $request->route()->parameters);
+
+			if (count($request->route()->parameters)) {
 				$stafs = Staff::find($request->route()->parameters["$uri"]['nostaf']);
 				$stafdepts = $stafs->belongstomanydepartment()->first()->kodjabatan;
-				// $stafdeptapprv = Arr::has($request->user()->isDeptApprover(), $stafdepts);
-				$stafdeptapprv = in_array($stafdepts, $request->user()->isDeptApprover());
+				$stafdeptapprv = in_array($stafdepts, $m);
 				// dd($request->user()->isDeptApprover(), $request->route()->parameters['loanapp']['nostaf'], $stafdepts, $stafdeptapprv);
-				if ($stafdeptapprv == false) {
-					return abort(401);
+				if ($stafdeptapprv) {
+					return $next($request);
 				}
 			}
-			return $next($request);
+
+
+
+
 		}
+		return abort(401);
 	}
-
-if (expr) {
-
-} elseif (expr) {
-
-}
-
-
 }

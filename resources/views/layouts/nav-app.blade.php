@@ -1,13 +1,7 @@
 <li class="nav-item">
-	<a class="nav-link {{ (request()->route()->uri == 'loanapps')?'active':NULL }}" href="{{ route('loanapps.index') }}">
+	<a class="nav-link {{ (request()->route()->uri == 'loanapp')?'active':NULL }}" href="{{ route('loanapp.index') }}">
 		<i class="fa-solid fa-gavel fa-beat"></i>&nbsp;
 		Equipment Loan Application and Status
-	</a>
-</li>
-<li>
-	<a class="nav-link {{ (request()->route()->uri == 'loanapprvs')?'active':NULL }}" href="{{ route('loanapprvs.index') }}">
-		<i class="fa-solid fa-user-tie fa-beat"></i>&nbsp;
-		Department Approver
 	</a>
 </li>
 <li class="nav-item dropdown">
