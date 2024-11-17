@@ -43,6 +43,7 @@ use Throwable;
 use App\Models\Jabatan;
 use App\Models\Staff;
 use App\Models\LoanApplication;
+use App\Models\StatusEquipment;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
 
@@ -108,6 +109,20 @@ class AjaxDBController extends Controller
 		return response()->json($equipments);
 	}
 
+	public function status(Request $request): JsonResponse
+	{
+		$values = StatusEquipment::where('status_item','LIKE','%'.$request->search.'%')->get();
+		// dd($values);
+		foreach ($values as $value) {
+				$g['children'][] = [
+									'id' => $value->id,
+									'text' => $value->status_item,
+								];
+		}
+		$equipments['results'][] = $g;
+		return response()->json($equipments);
+	}
+
 	public function equipmentdescription(Request $request): JsonResponse
 	{
 		$values = Item::find($request->id);
@@ -154,8 +169,9 @@ class AjaxDBController extends Controller
 
 			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
+			// dd($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama);
 			// mail to loan owner of unapproved loan
-			Mail::to($loanapp->belongstostaff->email, $loanapp->belongstostaff->nama)
+			Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama)
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)
 				->send(new ToApplicantUnApproved($loanapp));

@@ -47,7 +47,6 @@ class BTMLoanApplicationController extends Controller
 {
 	function __construct()
 	{
-		// $this->middleware(['auth']);
 		$this->middleware('BTMAdmin');
 	}
 
@@ -56,8 +55,8 @@ class BTMLoanApplicationController extends Controller
 	 */
 	public function index(): View
 	{
-		$loans = LoanApplication::where('active', 1)->get();
-		return view('loan.index', ['loans' => $loans]);
+		$loans = LoanApplication::where('active', 1)->whereIn('status_loan_id', [1,3])->get();
+		return view('settings.btm.index', ['loans' => $loans]);
 	}
 
 	/**
@@ -65,7 +64,7 @@ class BTMLoanApplicationController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('loan.create');
+		return view('settings.btm.create');
 	}
 
 	/**
@@ -79,31 +78,99 @@ class BTMLoanApplicationController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(LoanApplication $loanapp)/*: View*/
+	public function show(LoanApplication $btmloanapplication)/*: View*/
 	{
-
+		$pdf = Pdf::loadView('settings.btm.show', ['btmloanapplication' => $btmloanapplication])->setOption(['dpi' => 120]);
+		return $pdf->stream('BTM-LE-'.Carbon::parse($btmloanapplication->created_at)->format('ym').str_pad( $btmloanapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// return view('settings.btm.show', ['btmloanapplication' => $btmloanapplication]);
 	}
 
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(LoanApplication $loanapp): View
+	public function edit(LoanApplication $btmloanapplication): View
 	{
-
+		return view('settings.btm.edit', ['loanapp' => $btmloanapplication]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, LoanApplication $loanapp): RedirectResponse
+	public function update(Request $request, LoanApplication $btmloanapplication): RedirectResponse
 	{
+		// dd($request->all());
+		$request->validate([
+				'date_loan_from' => 'required|date_format:"Y-m-d"',
+				'date_loan_to' => 'required|date_format:"Y-m-d"',
+				'loan_purpose' => 'required',
+				'lequ.*.equipment_id' => 'required',
+				'lequ.*.taken_on' => 'nullable|date_format:"Y-m-d"',
+				'lequ.*.return_on' => 'nullable|date_format:"Y-m-d"',
+				'lequ.*.status_item_id' => 'nullable',
+				'lequ.*.status_condition_remarks' => 'required_if:"lequ.*.status_item_id", [2,3,4]',
+				'status_loan_id' => 'required',
+				'btm_remarks' => 'required_if:status_loan_id, 2',
+			], [
+				'date_loan_from' => 'Please insert :attribute',
+				'date_loan_to' => 'Please insert :attribute',
+				'loan_purpose' => 'Please insert :attribute',
+				'lequ.*.equipment_id' => 'Please choose :attribute at #:position',	//:index
+				'lequ.*.taken_on' => 'Please choose :attribute at #:position',
+				'lequ.*.return_on' => 'Please choose :attribute at #:position',
+				'lequ.*.status_item_id' => 'Please choose :attribute at #:position',
+				'lequ.*.status_condition_remarks' => 'Please choose :attribute at #:position',
+				'status_loan_id' => 'Please choose :attribute',
+				'btm_remarks' => 'Please insert :attribute',
+			], [
+				'date_loan_from' => 'Date From',
+				'date_loan_to' => 'Date To',
+				'loan_purpose' => 'Purpose of Loan',
+				'lequ.*.equipment_id' => 'Equipment',
+				'lequ.*.taken_on' => 'Equipment Taken On',
+				'lequ.*.return_on' => 'Equipment Return On',
+				'lequ.*.status_item_id' => 'Equipment Status After Return',
+				'lequ.*.status_condition_remarks' => 'Equipment Remarks',
+				'status_loan_id' => 'Loan Status',
+				'btm_remarks' => 'BTM Remarks',
+		]);
 
+//		$data = $request->only(['date_loan_from', 'date_loan_to']);
+//		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
+//		$data += ['active' => 1];
+//		$data += ['status_loan_id' => 3];
+//		if ($request->has('lequ')) {
+//			$loanapp->update($data);
+//			foreach ($request->lequ as $k => $v) {
+//				// $loanapp->hasmanyequipments()->updateOrCreate(
+//				LoanEquipment::updateOrCreate(
+//					[
+//						'id' => $v['id'],
+//						'application_id' => $loanapp->id,
+//					],
+//					[
+//						'equipment_id' => $v['equipment_id'],
+//						'status_item_id' => 1,
+//					]
+//				);
+//			}
+//
+//			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon//::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+//
+//			// mail to self
+//			Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->hasmanylogin()->//where('is_active', 1)->first()->nama)
+//				// ->cc($moreUsers)
+//				// ->bcc($evenMoreUsers)
+//				->send(new ToApplicantUpdate($loanapp));
+//		} else {
+//			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
+//		}
+//		return redirect()->route('loanapps.index')->with('success', 'Successfully Update Loan Equipment');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(LoanApplication $loanapp): JsonResponse
+	public function destroy(LoanApplication $btmloanapplication): JsonResponse
 	{
 
 	}

@@ -33,5 +33,6 @@ Route::middleware('auth')->group(function () {
 	Route::get('/equipmentstatus', [AjaxDBController::class, 'equipmentstatus'])->name('equipmentstatus');
 	Route::get('/listcategory', [AjaxDBController::class, 'listcategory'])->name('listcategory');
 	Route::get('/equipmentdescription', [AjaxDBController::class, 'equipmentdescription'])->name('equipmentdescription');
+	Route::get('/status', [AjaxDBController::class, 'status'])->name('status');
 	Route::patch('/loanappapprv/{loanapp}', [AjaxDBController::class, 'loanappsapprv'])->name('loanappsapprv');
 

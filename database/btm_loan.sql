@@ -11,7 +11,7 @@
  Target Server Version : 80035 (8.0.35-27.1)
  File Encoding         : 65001
 
- Date: 13/11/2024 16:06:10
+ Date: 17/11/2024 16:42:52
 */
 
 SET NAMES utf8mb4;
@@ -135,7 +135,7 @@ CREATE TABLE `loan_applications`  (
 -- ----------------------------
 INSERT INTO `loan_applications` VALUES (1, '10772014', '2024-11-09 00:00:00', '2024-11-11 00:00:00', NULL, 'Sdfsdfsdf Sdf Sdf Sdf Sdf Dsf\r\nDf Sdf Sdf Sdf Sdf Zxczxc Zc Zxc Zxc Zxczxc Zx Czxc\r\nZxc Zxc Zxc Zxczxc', NULL, NULL, NULL, NULL, NULL, NULL, 3, 0, NULL, '2024-10-29 09:32:57', '2024-11-07 15:20:58');
 INSERT INTO `loan_applications` VALUES (3, '10772014', '2024-11-10 00:00:00', '2024-11-11 00:00:00', NULL, 'Sdf Sdf Sdf Sdf Rtert Eert\r\nErt Ertfghfgh Fgh Fgh Fgh', NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, '2024-11-06 15:46:10', '2024-11-06 15:46:10');
-INSERT INTO `loan_applications` VALUES (4, '12362020', '2024-11-10 00:00:00', '2024-11-10 00:00:00', NULL, 'Asd Asd Asdasd', NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, '2024-11-07 14:38:38', '2024-11-13 15:06:58');
+INSERT INTO `loan_applications` VALUES (4, '12362020', '2024-11-10 00:00:00', '2024-11-10 00:00:00', NULL, 'Asd Asd Asdasd', '0021995', '2024-11-17 11:31:22', '', NULL, NULL, NULL, 3, 1, NULL, '2024-11-07 14:38:38', '2024-11-17 11:31:22');
 
 -- ----------------------------
 -- Table structure for loan_equipments
@@ -146,8 +146,7 @@ CREATE TABLE `loan_equipments`  (
   `application_id` int NULL DEFAULT NULL,
   `equipment_id` int NULL DEFAULT NULL,
   `taken_on` datetime NULL DEFAULT NULL,
-  `approved_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'nostaf',
-  `approved_on` datetime NULL DEFAULT NULL,
+  `return_on` datetime NULL DEFAULT NULL,
   `status_item_id` int NULL DEFAULT NULL,
   `status_condition_remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
@@ -159,12 +158,12 @@ CREATE TABLE `loan_equipments`  (
 -- ----------------------------
 -- Records of loan_equipments
 -- ----------------------------
-INSERT INTO `loan_equipments` VALUES (1, 1, 4, NULL, NULL, NULL, 1, NULL, NULL, '2024-10-29 09:32:57', '2024-11-06 14:01:04');
-INSERT INTO `loan_equipments` VALUES (3, 1, 3, NULL, NULL, NULL, 1, NULL, NULL, '2024-11-06 12:34:02', '2024-11-06 14:01:04');
-INSERT INTO `loan_equipments` VALUES (4, 1, 4, NULL, NULL, NULL, 1, NULL, NULL, '2024-11-06 13:59:54', '2024-11-06 14:01:04');
-INSERT INTO `loan_equipments` VALUES (5, 1, 3, NULL, NULL, NULL, 1, NULL, NULL, '2024-11-06 14:01:04', '2024-11-07 12:54:04');
-INSERT INTO `loan_equipments` VALUES (7, 3, 3, NULL, NULL, NULL, 1, NULL, NULL, '2024-11-06 15:46:10', '2024-11-06 15:46:10');
-INSERT INTO `loan_equipments` VALUES (8, 4, 3, NULL, NULL, NULL, 1, NULL, NULL, '2024-11-07 14:38:39', '2024-11-07 14:38:39');
+INSERT INTO `loan_equipments` VALUES (1, 1, 4, NULL, NULL, 1, NULL, NULL, '2024-10-29 09:32:57', '2024-11-06 14:01:04');
+INSERT INTO `loan_equipments` VALUES (3, 1, 3, NULL, NULL, 1, NULL, NULL, '2024-11-06 12:34:02', '2024-11-06 14:01:04');
+INSERT INTO `loan_equipments` VALUES (4, 1, 4, NULL, NULL, 1, NULL, NULL, '2024-11-06 13:59:54', '2024-11-06 14:01:04');
+INSERT INTO `loan_equipments` VALUES (5, 1, 3, NULL, NULL, 1, NULL, NULL, '2024-11-06 14:01:04', '2024-11-07 12:54:04');
+INSERT INTO `loan_equipments` VALUES (7, 3, 3, NULL, NULL, 1, NULL, NULL, '2024-11-06 15:46:10', '2024-11-06 15:46:10');
+INSERT INTO `loan_equipments` VALUES (8, 4, 3, NULL, NULL, 1, NULL, NULL, '2024-11-07 14:38:39', '2024-11-07 14:38:39');
 
 -- ----------------------------
 -- Table structure for status_equipments

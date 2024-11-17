@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('loanapps.update', $loanapp->id) }}" method="POST">
+	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST">
 			@csrf
 			@method('PATCH')
 		<div class="container row justify-content-between">
@@ -96,6 +96,36 @@
 									Description : {{ $k->belongstoequipment->description }}</p>
 							</div>
 						</div>
+						<div class="col-sm-12 m-0">
+							<div class="col-sm-12 mt-2 row">
+								<x-input-label for="take_{{ $i }}" class="col-sm-4" :value="__('Taken On : ')" />
+								<div class="col-sm-8">
+									<x-text-input id="take_{{ $i }}" name="lequ[{{ $i }}][taken_on]" value="{{ ($k->taken_on)?\Carbon\Carbon::parse($k->taken_on)->format('Y-m-d'):NULL }}" class="{{ ($errors->has('lequ.*.taken_on')?'is-invalid':NULL) }}"  />
+									<x-input-error :messages="$errors->get('taken_on')" />
+								</div>
+							</div>
+							<div class="col-sm-12 mt-2 row">
+								<x-input-label for="return_{{ $i }}" class="col-sm-4" :value="__('Return On : ')" />
+								<div class="col-sm-8">
+									<x-text-input id="return_{{ $i }}" name="lequ[{{ $i }}][return_on]" value="{{ ($k->return_on)?\Carbon\Carbon::parse($k->return_on)->format('Y-m-d'):NULL }}" class="{{ ($errors->has('lequ.*.return_on')?'is-invalid':NULL) }}"  />
+									<x-input-error :messages="$errors->get('return_on')" />
+								</div>
+							</div>
+							<div class="col-sm-12 mt-2 row">
+								<x-input-label for="status_{{ $i }}" class="col-sm-4" :value="__('Equipment Status After Return : ')" />
+								<div class="col-sm-8">
+									<x-select-input id="status_{{ $i }}" name="lequ[{{ $i }}][status_item_id]" class="{{ ($errors->has('lequ.*.status_item_id')?'is-invalid':NULL) }}" />
+									<x-input-error :messages="$errors->get('status_item_id')" />
+								</div>
+							</div>
+							<div class="col-sm-12 mt-2 row">
+								<x-input-label for="remarks_{{ $i }}" class="col-sm-4" :value="__('Equipment Remarks : ')" />
+								<div class="col-sm-8">
+									<x-textarea-input id="remarks_{{ $i }}" name="lequ[{{ $i }}][status_condition_remarks]" value="{{ ($k->status_condition_remarks) }}" class="{{ ($errors->has('lequ.*.status_condition_remarks')?'is-invalid':NULL) }}" />
+									<x-input-error :messages="$errors->get('status_condition_remarks')" />
+								</div>
+							</div>
+						</div>
 					</div>
 					<?php
 						$i++;
@@ -137,6 +167,33 @@
 					</p>
 					<p>Date : {{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</p>
 					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+				</div>
+			</div>
+
+			<!-- 4th column -->
+			<div class="col-sm-12 m-0 p-1">
+				<h3>BTM Used</h3>
+				<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
+				<div class="btn-group" role="group" aria-label="Loan Equipment Approval">
+					<?php
+						$p = 0;
+					?>
+					@foreach(\App\Models\StatusLoan::whereIn('id', [1,2])->get() as $v)
+						<input type="radio" class="btn-check {{ ($errors->has('status_loan_id')?'is-invalid':NULL) }}" name="status_loan_id" id="status_loan{{ $p }}" value="{{ $v->id }}" autocomplete="off">
+						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+						<?php
+							$p++;
+						?>
+					@endforeach
+					<x-input-error :messages="$errors->get('status_loan_id')" />
+				</div>
+
+				<div class="col-sm-12 mt-2 row">
+					<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
+					<div class="col-sm-8">
+						<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $loanapp->btm_remarks }}</textarea>
+						<x-input-error :messages="$errors->get('btm_remarks')" />
+					</div>
 				</div>
 
 			</div>
@@ -212,8 +269,45 @@
 			});
 			var newOption = new Option('{{ $t->belongstoequipment->item }}', {{ $t->equipment_id }}, true, true);
 			$('#equip_{{ $i }}').append(newOption).trigger('change');
+
+			$('#take_{{ $i }}').datepicker({
+				dateFormat: 'yy-mm-dd',
+				//disable friday and saturday
+				beforeShowDay: function(d) {
+					return [!(d.getDay()==5||d.getDay()==6)]
+				},
+			});
+
+			$('#return_{{ $i }}').datepicker({
+				dateFormat: 'yy-mm-dd',
+				//disable friday and saturday
+				beforeShowDay: function(d) {
+					return [!(d.getDay()==5||d.getDay()==6)]
+				},
+			});
+
+			$('#status_{{ $i }}').select2({
+				placeholder: 'Please Choose',
+				width: '100%',
+				ajax: {
+					url: '{{ route('status') }}',
+					type: 'GET',
+					dataType: 'json',
+					data: function (params) {
+						var query = {
+							_token: '{!! csrf_token() !!}',
+							search: params.term,
+							type: 'public'
+						}
+						return query;
+					}
+				},
+				allowClear: true,
+				closeOnSelect: true,
+			});
+
 		<?php
-		$i=1+$i;
+		$i++;
 		?>
 	@endforeach
 @endif
@@ -223,7 +317,7 @@
 // datepicker
 $('#dafrom').datepicker({
 	dateFormat: 'yy-mm-dd',
-	minDate: 3,
+	// minDate: 3,
 	//disable friday and saturday
 	beforeShowDay: function(d) {
 		return [!(d.getDay()==5||d.getDay()==6)]
@@ -234,7 +328,7 @@ $('#dafrom').datepicker({
 
 $('#dato').datepicker({
 	dateFormat: 'yy-mm-dd',
-	minDate: 3,
+	// minDate: 3,
 	//disable friday and saturday
 	beforeShowDay: function(d) {
 		return [!(d.getDay()==5 || d.getDay()==6)]
@@ -281,6 +375,34 @@ $(appr_btn).click(function(){
 						'Model :</br>' +
 						'Serial Number :</br>' +
 						'Description :</p>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+			'<div class="col-sm-12 m-0">' +
+				'<div class="col-sm-12 mt-2 row">' +
+					'<label for="take_' + counter + '" class="col-sm-4">Taken On : </label>' +
+					'<div class="col-sm-8">' +
+						'<input type="text" id="take_' + counter + '" name="lequ[' + counter + '][taken_on]" value="" class="form-control form-control-sm {{ ($errors->has('lequ.*.taken_on')?'is-invalid':NULL) }}"  />' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-sm-12 mt-2 row">' +
+					'<label for="return_' + counter + '" class="col-sm-4">Return On : </label>' +
+					'<div class="col-sm-8">' +
+						'<input type="type" id="return_' + counter + '" name="lequ[' + counter + '][return_on]" value="" class="form-control form-control-sm {{ ($errors->has('lequ.*.return_on')?'is-invalid':NULL) }}"/>' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-sm-12 mt-2 row">' +
+					'<label for="status_' + counter + '" class="col-sm-4">Status Item After Return : </label>' +
+					'<div class="col-sm-8">' +
+						'<select name="lequ[' + counter + '][status_condition_remarks]" id="status_' + counter + '" class="form-select form-select-sm {{ ($errors->has('lequ.*.status_condition_remarks')?'is-invalid':NULL) }}">' +
+							'<option value="">Please Choose</option>' +
+						'</select>' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-sm-12 mt-2 row">' +
+					'<label for="remarks_' + counter + '" class="col-sm-4">Remarks : </label>' +
+					'<div class="col-sm-8">' +
+						'<textarea id="remarks_' + counter + '" name="lequ[' + counter + '][status_condition_remarks]" value="" class="form-control form-control-sm {{ ($errors->has('lequ.*.status_condition_remarks')?'is-invalid':NULL) }}"></textarea>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -337,7 +459,41 @@ $(appr_btn).click(function(){
 								'</div>'
 				);
 		});
+		$('#take_' + counter + '').datepicker({
+			dateFormat: 'yy-mm-dd',
+			//disable friday and saturday
+			beforeShowDay: function(d) {
+				return [!(d.getDay()==5||d.getDay()==6)]
+			},
+		});
 
+		$('#return_' + counter + '').datepicker({
+			dateFormat: 'yy-mm-dd',
+			//disable friday and saturday
+			beforeShowDay: function(d) {
+				return [!(d.getDay()==5||d.getDay()==6)]
+			},
+		});
+
+		$('#status_' + counter + '').select2({
+			placeholder: 'Please Choose',
+			width: '100%',
+			ajax: {
+				url: '{{ route('status') }}',
+				type: 'GET',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+						type: 'public'
+					}
+					return query;
+				}
+			},
+			allowClear: true,
+			closeOnSelect: true,
+		});
 	}
 })
 
