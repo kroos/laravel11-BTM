@@ -133,10 +133,10 @@
 	<!-- footer end -->
 
 </body>
+<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
 <!-- <script type="module" src="{{ asset('js/fullcalendar/bootstrap5/index.global.js') }}"></script> -->
 <!-- <script type="module" src="{{ asset('js/fullcalendar/daygrid/index.global.js') }}"></script> -->
 <!-- <script type="module" src="{{ asset('js/fullcalendar/multimonth/index.global.js') }}"></script> -->
-<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
 <!-- <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script> -->
 <!-- <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script> -->
 <script src="{{ asset('js/chartjs/chart.umd.js') }}"></script>
@@ -151,6 +151,8 @@
 			@show
 		});
 	})(jQuery);
+	@section('nonjs')
+	@show
 </script>
 @livewireScripts
 </html>

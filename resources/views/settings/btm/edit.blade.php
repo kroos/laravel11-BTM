@@ -121,7 +121,9 @@
 							<div class="col-sm-12 mt-2 row">
 								<x-input-label for="remarks_{{ $i }}" class="col-sm-4" :value="__('Equipment Remarks : ')" />
 								<div class="col-sm-8">
-									<x-textarea-input id="remarks_{{ $i }}" name="lequ[{{ $i }}][status_condition_remarks]" value="{{ ($k->status_condition_remarks) }}" class="{{ ($errors->has('lequ.*.status_condition_remarks')?'is-invalid':NULL) }}" />
+									<x-textarea-input id="remarks_{{ $i }}" name="lequ[{{ $i }}][status_condition_remarks]" value="{{ ($k->status_condition_remarks) }}" class="{{ ($errors->has('lequ.*.status_condition_remarks')?'is-invalid':NULL) }}" >
+										{{ $k->status_condition_remarks }}
+									</x-textarea-input>
 									<x-input-error :messages="$errors->get('status_condition_remarks')" />
 								</div>
 							</div>
@@ -179,7 +181,7 @@
 						$p = 0;
 					?>
 					@foreach(\App\Models\StatusLoan::whereIn('id', [1,2])->get() as $v)
-						<input type="radio" class="btn-check {{ ($errors->has('status_loan_id')?'is-invalid':NULL) }}" name="status_loan_id" id="status_loan{{ $p }}" value="{{ $v->id }}" autocomplete="off">
+						<input type="radio" class="btn-check {{ ($errors->has('status_loan_id')?'is-invalid':NULL) }}" name="status_loan_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($loanapp->status_loan_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
 						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
 						<?php
 							$p++;
@@ -267,8 +269,8 @@
 									'</div>'
 					);
 			});
-			var newOption = new Option('{{ $t->belongstoequipment->item }}', {{ $t->equipment_id }}, true, true);
-			$('#equip_{{ $i }}').append(newOption).trigger('change');
+			var newOption1 = new Option('{{ $t->belongstoequipment->item }}', {{ $t->equipment_id }}, true, true);
+			$('#equip_{{ $i }}').append(newOption1).trigger('change');
 
 			$('#take_{{ $i }}').datepicker({
 				dateFormat: 'yy-mm-dd',
@@ -305,6 +307,8 @@
 				allowClear: true,
 				closeOnSelect: true,
 			});
+			var newOption2 = new Option('{{ $t->belongstoequipmentstatus->status_item }}', {{ $t->status_item_id }}, true, true);
+			$('#status_{{ $i }}').append(newOption2).trigger('change');
 
 		<?php
 		$i++;

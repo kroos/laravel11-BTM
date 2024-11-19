@@ -65,6 +65,18 @@
 				<div class="wrap_equipments">
 					<div class="col-sm-12 row mt-3">
 
+						<!-- chainedselect2 -->
+						<div class="col-sm-11 m-0 row">
+							<x-input-label for="catequip_0" class="col-sm-4" :value="__('Cat Equipment : ')" />
+							<div class="col-sm-8">
+								<select id="catequip_0" name="lequ[0][catequipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+									<!-- must have this to make sure $request catch the data -->
+									<option value="">Please Choose Equipment</option>
+								</select>
+							</div>
+						</div>
+
+
 						<!-- equipment -->
 						<div class="col-sm-11 m-0 row">
 							<x-input-label for="equip_0" class="col-sm-4" :value="__('Equipment : ')" />
@@ -148,6 +160,43 @@ $.ajaxSetup({
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //enable select 2
+$('#catequip_0').select2({
+	placeholder: 'Please Choose Equipment',
+	width: '100%',
+	ajax: {
+		url: '{{ route('cateq') }}',
+		// data: { '_token': '{!! csrf_token() !!}' },
+		// theme: 'bootstrap5',
+		type: 'GET',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+				// type: 'public'
+			}
+			return query;
+		},
+		processResults: function (data) {
+			// Transforms the top-level key of the response object from 'items' to 'results'
+			return {
+					results: [
+							{
+									children: data.map(function (item) {
+											return {
+													id: item.id,
+													text: item.cat,
+											};
+									}),
+							},
+					],
+			};
+		}
+	},
+	allowClear: true,
+	closeOnSelect: true,
+});
+
 $('#equip_0').select2({
 	placeholder: 'Please Choose Equipment',
 	width: '100%',
@@ -160,6 +209,8 @@ $('#equip_0').select2({
 		data: function (params) {
 			var query = {
 				_token: '{!! csrf_token() !!}',
+				datefrom: $('#dafrom').val(),
+				dateto: $('#dato').val(),
 				search: params.term,
 				// type: 'public'
 			}

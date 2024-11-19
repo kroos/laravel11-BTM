@@ -223,8 +223,10 @@ tr:nth-child(even) {
 									<th>Brand</th>
 									<th>Model</th>
 									<th>Serial No</th>
-									<th>Description</th>
+									<th>Taken On</th>
+									<th>Return On</th>
 									<th>Status</th>
+									<th>BTM Remarks</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -232,8 +234,10 @@ tr:nth-child(even) {
 									<td>{{ $eq->belongstoequipment->brand }}</td>
 									<td>{{ $eq->belongstoequipment->model }}</td>
 									<td>{{ $eq->belongstoequipment->serial_number }}</td>
-									<td>{{ $eq->belongstoequipment->description }}</td>
+									<td>{{ ($eq->taken_on)?\Carbon\Carbon::parse($eq->taken_on)->format('j M Y'):NULL }}</td>
+									<td>{{ ($eq->return_on)?\Carbon\Carbon::parse($eq->return_on)->format('j M Y'):NULL }}</td>
 									<td>{{ $eq->belongstoequipmentstatus->status_item }}</td>
+									<td>{{ $eq->status_condition_remarks }}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -265,7 +269,7 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td>Nama : <span class="bold">{{ $btmloanapplication->btm_approver }}</span></td>
+					<td>Nama : <span class="bold">{{ $btmloanapplication->belongstobtmappr->nama }}</span></td>
 					<td>Tarikh : <span class="bold">{{ (!is_null($btmloanapplication->btm_date))?\Carbon\Carbon::parse($btmloanapplication->btm_date)->format('D, j M Y'):NULL }}</span></td>
 				</tr>
 				<tr>

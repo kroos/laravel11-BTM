@@ -53,6 +53,18 @@ class AjaxDBController extends Controller
 	{
 	}
 
+	public function cateq()
+	{
+		$cat = Category::get();
+		foreach ($cat as $k) {
+			$cate[] = [
+				'id' => $k->id,
+				'cat' => $k->category,
+			];
+		}
+		return response()->json($cate);
+	}
+
 	public function liststaff(Request $request): JsonResponse
 	{
 		$values = Staff::where('status', 'A')->where('nama','LIKE','%'.$request->search.'%')->orderBy('nama')->get();
@@ -189,7 +201,39 @@ class AjaxDBController extends Controller
 		]);
 	}
 
+	public function loancalendar()
+	{
+		$outstation = LoanApplication::where([['active', 1], ['status_loan_id', 1]])->get();
+		if ($outstation->count()) {
+			foreach ($outstation as $v) {
+				$loanDetails = [
+							'title' => 'Loan by '.$v->belongstostaff->nama,
+							'start' => $v->date_loan_from,
+							'end' => Carbon::parse($v->date_loan_to)->addDay(),
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							// 'description' => 'Loan by '.$v->belongstostaff->nama,
+							'color' => 'blue',
+							'textColor' => 'white',
+							'borderColor' => 'blue',
+					];
+					// Get all equipment descriptions and join them as a single string
+					$descriptions = 'Loan by '.$v->belongstostaff->nama.' => '.$v->hasmanyequipments()->get()->pluck('belongstoequipment.item')->join(', ');
 
+					// Add the descriptions to the loan details
+					$loanDetails['description'] = $descriptions;
+
+					// Add the loan details to the output array
+					$out[] = $loanDetails;
+			}
+		} else {
+			$out[] = [];
+		}
+		return response()->json( $out );
+	}
 
 
 

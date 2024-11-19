@@ -24,7 +24,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 // send email
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicant;
-use App\Mail\ToApplicantUpdate;
+use App\Mail\ToApplicantBTMApproval;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -107,7 +107,7 @@ class BTMLoanApplicationController extends Controller
 				'lequ.*.taken_on' => 'nullable|date_format:"Y-m-d"',
 				'lequ.*.return_on' => 'nullable|date_format:"Y-m-d"',
 				'lequ.*.status_item_id' => 'nullable',
-				'lequ.*.status_condition_remarks' => 'required_if:"lequ.*.status_item_id", [2,3,4]',
+				'lequ.*.status_condition_remarks' => 'required_unless:lequ.*.status_item_id, 1',
 				'status_loan_id' => 'required',
 				'btm_remarks' => 'required_if:status_loan_id, 2',
 			], [
@@ -134,37 +134,42 @@ class BTMLoanApplicationController extends Controller
 				'btm_remarks' => 'BTM Remarks',
 		]);
 
-//		$data = $request->only(['date_loan_from', 'date_loan_to']);
-//		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
-//		$data += ['active' => 1];
-//		$data += ['status_loan_id' => 3];
-//		if ($request->has('lequ')) {
-//			$loanapp->update($data);
-//			foreach ($request->lequ as $k => $v) {
-//				// $loanapp->hasmanyequipments()->updateOrCreate(
-//				LoanEquipment::updateOrCreate(
-//					[
-//						'id' => $v['id'],
-//						'application_id' => $loanapp->id,
-//					],
-//					[
-//						'equipment_id' => $v['equipment_id'],
-//						'status_item_id' => 1,
-//					]
-//				);
-//			}
-//
-//			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon//::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
-//
-//			// mail to self
-//			Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->hasmanylogin()->//where('is_active', 1)->first()->nama)
-//				// ->cc($moreUsers)
-//				// ->bcc($evenMoreUsers)
-//				->send(new ToApplicantUpdate($loanapp));
-//		} else {
-//			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
-//		}
-//		return redirect()->route('loanapps.index')->with('success', 'Successfully Update Loan Equipment');
+		$data = $request->only(['date_loan_from', 'date_loan_to']);
+		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
+		$data += ['status_loan_id' => $request->status_loan_id];
+		$data += ['btm_approver' => \Auth::user()->nostaf];
+		$data += ['btm_date' => now()];
+		$data += ['btm_remarks' => ucwords(Str::lower(trim($request->btm_remarks)))];
+		if ($request->has('lequ')) {
+			$btmloanapplication->update($data);
+			foreach ($request->lequ as $k => $v) {
+				// $btmloanapplication->hasmanyequipments()->updateOrCreate(
+				LoanEquipment::updateOrCreate(
+					[
+						'id' => $v['id'],
+						'application_id' => $btmloanapplication->id,
+					],
+					[
+						'equipment_id' => $v['equipment_id'],
+						'status_item_id' => $v['status_item_id'],
+						'taken_on' => $v['taken_on'],
+						'return_on' => $v['return_on'],
+						'status_condition_remarks' => ucwords(Str::lower(trim($v['status_condition_remarks']))),
+					]
+				);
+			}
+
+			Pdf::loadView('settings.btm.show', ['btmloanapplication' => $btmloanapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($btmloanapplication->created_at)->format('ym').str_pad( $btmloanapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+			// mail to self
+			Mail::to($btmloanapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $btmloanapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApplicantBTMApproval($btmloanapplication));
+		} else {
+			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
+		}
+		return redirect()->route('btmloanapplications.index')->with('success', 'Successfully Update Loan Equipment');
 	}
 
 	/**

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AjaxDBController;
 
 Route::middleware('auth')->group(function () {
-// Route::middleware('auth:api')->group(function () {
 	Route::apiResources([
 		// 'ppls' => PplController::class,
 		// 'posts' => PostController::class,
@@ -19,7 +18,6 @@ Route::middleware('auth')->group(function () {
 
 });
 
-	// same as above
 	// Route::get('/ppls', [ItemController::class, 'index'])->name('loginuser');
 	// Route::prefix('/ppls')->group(function() {
 	// 	Route::post('/store', [ItemController::class, 'store']);
@@ -35,4 +33,6 @@ Route::middleware('auth')->group(function () {
 	Route::get('/equipmentdescription', [AjaxDBController::class, 'equipmentdescription'])->name('equipmentdescription');
 	Route::get('/status', [AjaxDBController::class, 'status'])->name('status');
 	Route::patch('/loanappapprv/{loanapp}', [AjaxDBController::class, 'loanappsapprv'])->name('loanappsapprv');
+	Route::get('/loancalendar', [AjaxDBController::class, 'loancalendar'])->name('loancalendar');
+	Route::get('/cateq', [AjaxDBController::class, 'cateq'])->name('cateq');
 

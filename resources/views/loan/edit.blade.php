@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('loanapps.update', $loanapp->id) }}" method="POST">
+	<form action="{{ route('loanapp.update', $loanapp->id) }}" method="POST">
 			@csrf
 			@method('PATCH')
 		<div class="container row justify-content-between">

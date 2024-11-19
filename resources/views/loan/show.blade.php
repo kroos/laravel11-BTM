@@ -265,8 +265,8 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td>Nama : <span class="bold">{{ $loanapp->btm_approver }}</span></td>
-					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->btm_date))?\Carbon\Carbon::parse($loanapp->btm_date)->format('D, j F Y'):NULL }}</span></td>
+					<td>Nama : <span class="bold">{{ $loanapp->belongstobtmappr->nama }}</span></td>
+					<td>Tarikh : <span class="bold">{{ (!is_null($loanapp->btm_date))?\Carbon\Carbon::parse($loanapp->btm_date)->format('D, j M Y'):NULL }}</span></td>
 				</tr>
 				<tr>
 					<td colspan="2">Catatan : {{ $loanapp->btm_remarks }}</td>
