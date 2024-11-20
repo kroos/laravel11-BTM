@@ -53,18 +53,6 @@ class AjaxDBController extends Controller
 	{
 	}
 
-	public function cateq()
-	{
-		$cat = Category::get();
-		foreach ($cat as $k) {
-			$cate[] = [
-				'id' => $k->id,
-				'cat' => $k->category,
-			];
-		}
-		return response()->json($cate);
-	}
-
 	public function liststaff(Request $request): JsonResponse
 	{
 		$values = Staff::where('status', 'A')->where('nama','LIKE','%'.$request->search.'%')->orderBy('nama')->get();
@@ -97,25 +85,34 @@ class AjaxDBController extends Controller
 		$values = Category::where('category','LIKE','%'.$request->search.'%')->get();
 		// dd($values);
 		foreach ($values as $value) {
-				$g['children'][] = [
+				$g[] = [
 									'id' => $value->id,
-									'text' => $value->category,
+									'cat' => $value->category,
 								];
 		}
-		$cat['results'][] = $g;
-		return response()->json($cat);
+		return response()->json($g);
 	}
 
 	public function equipmentstatus(Request $request): JsonResponse
 	{
-		$values = Item::where('status', 1)->where('item','LIKE','%'.$request->search.'%')->get();
-		// dd($values);
-		foreach ($values as $value) {
+		// Fetch subcategories with optional search
+		$values = Item::where('status', 1)->where('category_id', $request->categoryId)
+										->when($request->search, function ($query) use ($request) {
+												$query->where('name', 'LIKE', '%' . $request->search . '%');
+										})
+										// ->get(['id', 'name']);
+										->get();
+		// dd($values->count());
+		if ($values->count()) {
+			foreach ($values as $value) {
 				$g['children'][] = [
 									'id' => $value->id,
 									'text' => $value->item,
 									'class' => $value->category_id,
 								];
+			}
+		} else {
+				$g = [];
 		}
 		$equipments['results'][] = $g;
 		return response()->json($equipments);

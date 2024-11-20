@@ -67,11 +67,11 @@
 
 						<!-- chainedselect2 -->
 						<div class="col-sm-11 m-0 row">
-							<x-input-label for="catequip_0" class="col-sm-4" :value="__('Cat Equipment : ')" />
+							<x-input-label for="catequip_0" class="col-sm-4" :value="__('Equipment Category : ')" />
 							<div class="col-sm-8">
-								<select id="catequip_0" name="lequ[0][catequipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+								<select id="catequip_0" name="lequ[0][catequipment_id]" class="{{ ($errors->has('lequ.*.catequipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Category"/>
 									<!-- must have this to make sure $request catch the data -->
-									<option value="">Please Choose Equipment</option>
+									<option value="">Please choose category</option>
 								</select>
 							</div>
 						</div>
@@ -83,7 +83,7 @@
 							<div class="col-sm-8">
 								<select id="equip_0" name="lequ[0][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
 									<!-- must have this to make sure $request catch the data -->
-									<option value="">Please Choose Equipment</option>
+									<option value="">Please choose equipment</option>
 								</select>
 							</div>
 						</div>
@@ -151,72 +151,65 @@
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-// ajax category
-$.ajaxSetup({
-		headers: {
-				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-		}
-});
-
 /////////////////////////////////////////////////////////////////////////////////////////
 //enable select 2
-$('#catequip_0').select2({
-	placeholder: 'Please Choose Equipment',
+//		$('#catequip_0').select2({
+//			placeholder: 'Please choose category',
+//			width: '100%',
+//			ajax: {
+//				url: '{{ route('listcategory') }}',
+//				// data: { '_token': '{!! csrf_token() !!}' },
+//				// theme: 'bootstrap5',
+//				type: 'GET',
+//				dataType: 'json',
+//				data: function (params) {
+//					var query = {
+//						_token: '{!! csrf_token() !!}',
+//						search: params.term,
+//						// type: 'public'
+//					}
+//					return query;
+//				},
+//				processResults: function (data) {
+//					// Transforms the top-level key of the response object from 'items' to 'results'
+//					return {
+//						results: [
+//							{
+//								children: data.map(function (item) {
+//									return {
+//										id: item.id,
+//										text: item.cat,
+//									};
+//								}),
+//							},
+//						],
+//					};
+//				}
+//			},
+//			allowClear: true,
+//			closeOnSelect: true,
+//		});
+
+$("#catequip_0").select2({
+	placeholder: "Please choose category",
 	width: '100%',
-	ajax: {
-		url: '{{ route('cateq') }}',
-		// data: { '_token': '{!! csrf_token() !!}' },
-		// theme: 'bootstrap5',
-		type: 'GET',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-				// type: 'public'
-			}
-			return query;
-		},
-		processResults: function (data) {
-			// Transforms the top-level key of the response object from 'items' to 'results'
-			return {
-					results: [
-							{
-									children: data.map(function (item) {
-											return {
-													id: item.id,
-													text: item.cat,
-											};
-									}),
-							},
-					],
-			};
-		}
-	},
 	allowClear: true,
 	closeOnSelect: true,
+}).on('change', function(e) {
+	$('#desc_wrap_0').remove();
+	$('#desc_0').append(
+					'<div id="desc_wrap_0">' +
+						'<p>Brand : </p>' +
+						'<p>Model : </p>' +
+						'<p>Serial Number : </p>' +
+						'<p>Description : </p>' +
+					'</div>'
+	);
 });
 
-$('#equip_0').select2({
-	placeholder: 'Please Choose Equipment',
+$("#equip_0").select2({
+	placeholder: "Please choose equipment",
 	width: '100%',
-	ajax: {
-		url: '{{ route('equipmentstatus') }}',
-		// data: { '_token': '{!! csrf_token() !!}' },
-		// theme: 'bootstrap5',
-		type: 'GET',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				datefrom: $('#dafrom').val(),
-				dateto: $('#dato').val(),
-				search: params.term,
-				// type: 'public'
-			}
-			return query;
-		}
-	},
 	allowClear: true,
 	closeOnSelect: true,
 }).on('change', function(e) {
@@ -231,27 +224,95 @@ $('#equip_0').select2({
 		global: false,
 		async:false,
 		success: function (response) {
-			return response;
+			$('#desc_0').append(
+							'<div id="desc_wrap_0">' +
+								'<p>Brand : '+ response.brand +'</p>' +
+								'<p>Model : '+ response.model +'</p>' +
+								'<p>Serial Number : '+ response.serial_number +'</p>' +
+								'<p>Description : '+ response.description +'</p>' +
+							'</div>'
+			);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log(textStatus, errorThrown);
 		}
-	}).responseText;
-
-	// this is how u cange from json to array type data
-	var dat2 = $.parseJSON( dat1 );
-
-		$('#desc_0').append(
-						'<div id="desc_wrap_0">' +
-							'<p>Brand : '+ dat2.brand +'</p>' +
-							'<p>Model : '+ dat2.model +'</p>' +
-							'<p>Serial Number : '+ dat2.serial_number +'</p>' +
-							'<p>Description : '+ dat2.description +'</p>' +
-						'</div>'
-		);
+	});
 });
 
 
+// Fetch and populate parent dropdown
+fetchParentOptions();
+function fetchParentOptions() {
+	$.ajax({
+		url: "{{ route('listcategory') }}", // Replace with your API
+		method: "GET",
+		success: function (response) {
+			// Clear existing options
+			$("#catequip_0").empty().append('<option value="">Please choose category</option>');
+
+			// Populate options
+			response.forEach(function (category) {
+					$("#catequip_0").append(
+							`<option value="${category.id}">${category.cat}</option>`
+					);
+			});
+
+			// Refresh Select2
+			$("#catequip_0").select2({
+				placeholder: "Please choose category",
+				width: '100%',
+				allowClear: true,
+				closeOnSelect: true,
+			});
+		},
+		error: function () {
+			alert("Failed to load categories.");
+		},
+	});
+}
+
+$("#catequip_0").change(function () {
+	const parentId = $(this).val(); // Get selected value
+	if (parentId) {
+		$.ajax({
+			url: "{{ route('equipmentstatus') }}", // Replace with your API
+			method: "GET",
+			data: { categoryId: parentId }, // Pass parent value to API
+			success: function (response) {
+				console.log(response.results);
+
+				// Clear existing options
+				$("#equip_0").empty().append('<option value="">Please choose category</option>');
+
+				// Check if response.results exists and has children
+				if (response.results && response.results[0].children) {
+					response.results[0].children.forEach(function (child) {
+						// Access id, text, and class here
+						const { id, text, class: classValue } = child;
+
+						// Append options
+						$("#equip_0").append(
+							`<option value="${id}" data-class="${classValue}">${text}</option>`
+						);
+					});
+				}
+				// Refresh Select2
+				$("#equip_0").select2({
+					placeholder: "Please choose equipment",
+					width: '100%',
+					allowClear: true,
+					closeOnSelect: true,
+				});
+			},
+			error: function () {
+				alert("Failed to load subcategories.");
+			},
+		});
+	} else {
+		// Reset child dropdown if no parent selected
+		$("#equip_0").empty().append('<option value="">Please choose equipment</option>').select2();
+	}
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -293,7 +354,15 @@ $(appr_btn).click(function(){
 		counter++;
 		apprv_wrapper.append(
 			'<div class="col-sm-12 row mt-3">' +
-				'<!-- equipment -->' +
+
+				'<div class="col-sm-11 m-0 row">' +
+					'<label for="catequip_' + counter + '" class="form-label form-label-sm col-sm-4">Equipment Category : </label>' +
+					'<div class="col-sm-8">' +
+						'<select id="catequip_' + counter + '" name="lequ[' + counter + '][catequipment_id]" class="{{ ($errors->has('lequ.*.catequipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Category"/>' +
+							'<option value="">Please choose category</option>' +
+						'</select>' +
+					'</div>' +
+				'</div>' +
 				'<div class="col-sm-11 m-0 row">' +
 					'<label class="form-label form-label-sm col-sm-4" for="equip_' + counter + '">Equipment :</label>' +
 					'<div class="col-sm-8">' +
@@ -320,28 +389,30 @@ $(appr_btn).click(function(){
 			'</div>'
 		);
 
-		$('#equip_' + counter + '').select2({
-			placeholder: 'Please Choose Equipment',
+		$(`#catequip_${counter}`).select2({
+			placeholder: "Please choose category",
 			width: '100%',
-			ajax: {
-				url: '{{ route('equipmentstatus') }}',
-				// data: { '_token': '{!! csrf_token() !!}' },
-				// theme: 'bootstrap5',
-				type: 'GET',
-				dataType: 'json',
-				data: function (params) {
-					var query = {
-						_token: '{!! csrf_token() !!}',
-						search: params.term,
-						type: 'public'
-					}
-					return query;
-				}
-			},
 			allowClear: true,
 			closeOnSelect: true,
 		}).on('change', function(e) {
-			$('#desc_wrap_' + counter + '').remove();
+			$(`#desc_wrap_${counter}`).remove();
+			$(`#desc_${counter}`).append(
+				'<div id="desc_wrap_' + counter + '">' +
+					'<p>Brand : </p>' +
+					'<p>Model : </p>' +
+					'<p>Serial Number : </p>' +
+					'<p>Description : </p>' +
+				'</div>'
+			);
+		});
+
+		$(`#equip_${counter}`).select2({
+			placeholder: "Please choose equipment",
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+		}).on('change', function(e) {
+			$(`#desc_wrap_${counter}`).remove();
 			var id = $('#equip_' + counter + ' option:selected').val();
 
 			var dat1 = $.ajax({
@@ -352,26 +423,105 @@ $(appr_btn).click(function(){
 				global: false,
 				async:false,
 				success: function (response) {
-					return response;
+					$(`#desc_${counter}`).append(
+						'<div id="desc_wrap_' + counter + '">' +
+							'<p>Brand : '+ response.brand +'</p>' +
+							'<p>Model : '+ response.model +'</p>' +
+							'<p>Serial Number : '+ response.serial_number +'</p>' +
+							'<p>Description : '+ response.description +'</p>' +
+						'</div>'
+					);
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					console.log(textStatus, errorThrown);
 				}
-			}).responseText;
-
-			// this is how u cange from json to array type data
-			var dat2 = $.parseJSON( dat1 );
-
-				$('#desc_' + counter + '').append(
-								'<div id="desc_wrap_' + counter + '">' +
-									'<p>Brand : '+ dat2.brand +'</p>' +
-									'<p>Model : '+ dat2.model +'</p>' +
-									'<p>Serial Number : '+ dat2.serial_number +'</p>' +
-									'<p>Description : '+ dat2.description +'</p>' +
-								'</div>'
-				);
+			});
 		});
 
+
+		// Fetch and populate parent dropdown
+		fetchParentOptions(counter);
+		function fetchParentOptions(counter) {
+			$.ajax({
+				url: "{{ route('listcategory') }}", // Replace with your API
+				method: "GET",
+				success: function (response) {
+					// Clear existing options
+					$(`#catequip_${counter}`).empty().append('<option value="">Please choose category</option>');
+					// Populate options
+					response.forEach(function (category) {
+							$(`#catequip_${counter}`).append(
+								`<option value="${category.id}">${category.cat}</option>`
+							);
+					});
+
+					// Refresh Select2
+					$(`#catequip_${counter}`).select2({
+						placeholder: "Please choose category",
+						width: '100%',
+						allowClear: true,
+						closeOnSelect: true,
+					});
+				},
+				error: function () {
+					alert("Failed to load categories.");
+				},
+			});
+		}
+
+		$(`#catequip_${counter}`).change(function () {
+			const parentId = $(this).val(); // Get selected value
+			if (parentId) {
+				$.ajax({
+					url: "{{ route('equipmentstatus') }}", // Replace with your API
+					method: "GET",
+					data: { categoryId: parentId }, // Pass parent value to API
+					success: function (response) {
+						console.log(response.results);
+
+						// Clear existing options
+						$(`#equip_${counter}`).empty().append('<option value="">Please choose category</option>').select2({
+							placeholder: "Please choose equipment",
+							width: '100%',
+							allowClear: true,
+							closeOnSelect: true,
+						});
+
+						// Check if response.results exists and has children
+						if (response.results?.[0]?.children) {
+						// if (response.results && response.results[0].children) {
+							response.results[0].children.forEach(function (child) {
+								// Access id, text, and class here
+								const { id, text, class: classValue } = child;
+
+								// Append options
+								$(`#equip_${counter}`).append(
+									`<option value="${id}" data-class="${classValue}">${text}</option>`
+								);
+							});
+						}
+						// Refresh Select2
+						$(`#equip_${counter}`).select2({
+							placeholder: "Please choose equipment",
+							width: '100%',
+							allowClear: true,
+							closeOnSelect: true,
+						});
+					},
+					error: function () {
+						alert("Failed to load subcategories.");
+					},
+				});
+			} else {
+				// Reset child dropdown if no parent selected
+				$(`#equip_${counter}`).empty().append('<option value="">Please choose equipment</option>').select2({
+						placeholder: "Please choose equipment",
+						width: '100%',
+						allowClear: true,
+						closeOnSelect: true,
+				});
+			}
+		});
 	}
 })
 
