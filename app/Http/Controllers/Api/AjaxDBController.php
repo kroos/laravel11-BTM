@@ -95,12 +95,16 @@ class AjaxDBController extends Controller
 
 	public function equipmentstatus(Request $request): JsonResponse
 	{
+		// dd($request->all());
 		// Fetch subcategories with optional search
-		$values = Item::where('status', 1)->where('category_id', $request->categoryId)
+		$values = Item::where('status', 1)
+										->when($request->categoryId, function ($query) use ($request){
+											$query->where('category_id', $request->categoryId);
+										})
 										->when($request->search, function ($query) use ($request) {
 												$query->where('name', 'LIKE', '%' . $request->search . '%');
 										})
-										// ->get(['id', 'name']);
+										// ->get(['id', 'item', 'category_id']);
 										->get();
 		// dd($values->count());
 		if ($values->count()) {
@@ -200,7 +204,7 @@ class AjaxDBController extends Controller
 
 	public function loancalendar()
 	{
-		$outstation = LoanApplication::where([['active', 1], ['status_loan_id', 1]])->get();
+		$outstation = LoanApplication::where('active', 1)->orWhereIn('status_loan_id', [1,3])->get();
 		if ($outstation->count()) {
 			foreach ($outstation as $v) {
 				$loanDetails = [
@@ -209,9 +213,9 @@ class AjaxDBController extends Controller
 							'end' => Carbon::parse($v->date_loan_to)->addDay(),
 							// 'url' => route('hrleave.show', $v->id),
 							'allDay' => true,
-							// 'extendedProps' => [
-							// 						'department' => 'BioChemistry'
-							// 					],
+							'extendedProps' => [
+													'status' => 'Status: '.$v->belongstostatusloan->status_loan
+												],
 							// 'description' => 'Loan by '.$v->belongstostaff->nama,
 							'color' => 'blue',
 							'textColor' => 'white',

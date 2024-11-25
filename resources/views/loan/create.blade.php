@@ -97,10 +97,10 @@
 						<!-- equipment description -->
 						<div class="col-sm-12 m-0" id="desc_0">
 							<div id="desc_wrap_0">
-								<p>Brand :</p>
-								<p>Model :</p>
-								<p>Serial Number :</p>
-								<p>Description :</p>
+								<p>Brand :<br/>
+								Model :<br/>
+								Serial Number :<br/>
+								Description :</p>
 							</div>
 						</div>
 					</div>
@@ -199,10 +199,10 @@ $("#catequip_0").select2({
 	$('#desc_wrap_0').remove();
 	$('#desc_0').append(
 					'<div id="desc_wrap_0">' +
-						'<p>Brand : </p>' +
-						'<p>Model : </p>' +
-						'<p>Serial Number : </p>' +
-						'<p>Description : </p>' +
+						'<p>Brand : <br/>' +
+						'Model : <br/>' +
+						'Serial Number : <br/>' +
+						'Description : </p>' +
 					'</div>'
 	);
 });
@@ -227,9 +227,9 @@ $("#equip_0").select2({
 			$('#desc_0').append(
 							'<div id="desc_wrap_0">' +
 								'<p>Brand : '+ response.brand +'</p>' +
-								'<p>Model : '+ response.model +'</p>' +
-								'<p>Serial Number : '+ response.serial_number +'</p>' +
-								'<p>Description : '+ response.description +'</p>' +
+								'Model : '+ response.model +'<br/>' +
+								'Serial Number : '+ response.serial_number +'<br/>' +
+								'Description : '+ response.description +'<br/>' +
 							'</div>'
 			);
 		},
@@ -345,6 +345,8 @@ var apprv_max_fields = 10;						//maximum input boxes allowed
 var appr_btn = $(".add_equipments");
 var apprv_wrapper = $(".wrap_equipments");
 
+
+
 var counter = 0;
 $(appr_btn).click(function(){
 	// e.preventDefault();
@@ -380,10 +382,10 @@ $(appr_btn).click(function(){
 				'<!-- equipment description -->' +
 				'<div class="col-sm-12 m-0" id="desc_' + counter + '">' +
 					'<div id="desc_wrap_' + counter + '">' +
-						'<p>Brand :</p>' +
-						'<p>Model :</p>' +
-						'<p>Serial Number :</p>' +
-						'<p>Description :</p>' +
+						'<p>Brand :<br/>' +
+						'Model :<br/>' +
+						'Serial Number :<br/>' +
+						'Description :</p>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -399,9 +401,9 @@ $(appr_btn).click(function(){
 			$(`#desc_${counter}`).append(
 				'<div id="desc_wrap_' + counter + '">' +
 					'<p>Brand : </p>' +
-					'<p>Model : </p>' +
-					'<p>Serial Number : </p>' +
-					'<p>Description : </p>' +
+					'Model : <br/>' +
+					'Serial Number : <br/>' +
+					'Description : <br/>' +
 				'</div>'
 			);
 		});
@@ -425,10 +427,10 @@ $(appr_btn).click(function(){
 				success: function (response) {
 					$(`#desc_${counter}`).append(
 						'<div id="desc_wrap_' + counter + '">' +
-							'<p>Brand : '+ response.brand +'</p>' +
-							'<p>Model : '+ response.model +'</p>' +
-							'<p>Serial Number : '+ response.serial_number +'</p>' +
-							'<p>Description : '+ response.description +'</p>' +
+							'<p>Brand : '+ response.brand +'<br/>' +
+							'Model : '+ response.model +'<br/>' +
+							'Serial Number : '+ response.serial_number +'<br/>' +
+							'Description : '+ response.description +'</p>' +
 						'</div>'
 					);
 				},
