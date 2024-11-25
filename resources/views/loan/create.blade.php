@@ -226,10 +226,10 @@ $("#equip_0").select2({
 		success: function (response) {
 			$('#desc_0').append(
 							'<div id="desc_wrap_0">' +
-								'<p>Brand : '+ response.brand +'</p>' +
+								'<p>Brand : '+ response.brand +'<br/>' +
 								'Model : '+ response.model +'<br/>' +
 								'Serial Number : '+ response.serial_number +'<br/>' +
-								'Description : '+ response.description +'<br/>' +
+								'Description : '+ response.description +'</p>' +
 							'</div>'
 			);
 		},
@@ -400,10 +400,10 @@ $(appr_btn).click(function(){
 			$(`#desc_wrap_${counter}`).remove();
 			$(`#desc_${counter}`).append(
 				'<div id="desc_wrap_' + counter + '">' +
-					'<p>Brand : </p>' +
+					'<p>Brand : <br/>' +
 					'Model : <br/>' +
 					'Serial Number : <br/>' +
-					'Description : <br/>' +
+					'Description : </p>' +
 				'</div>'
 			);
 		});
