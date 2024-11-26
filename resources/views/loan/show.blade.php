@@ -148,7 +148,7 @@ tr:nth-child(even) {
 	<table>
 			<thead>
 					<tr>
-							<th colspan="2"><span class="center">Bahagian Teknologi Maklumat</span></th>
+						<th colspan="2"><span class="center">Bahagian Teknologi Maklumat</span></th>
 					</tr>
 			</thead>
 			<tbody>
@@ -167,7 +167,7 @@ tr:nth-child(even) {
 								<ul>
 										<li>Permohonan hendaklah diterima oleh BTM dalam tempoh <span class="bold underline">TIGA (3) hari</span> bekerja sebelum program berlangsung. <span class="bold underline">Permohonan lewat tidak akan dilayan.</span></li>
 										<li>Permohonan yang tidak lengkap tidak akan diproses</li>
-										<li class="bold">Sila ambil perhatian dan pulangkan semula ke pejabat BTM sperti yang telah ditetapkan</li>
+										<li class="bold">Sila ambil perhatian dan pulangkan semula ke pejabat BTM seperti yang telah ditetapkan</li>
 								</ul>
 						</td>
 				</tr>
