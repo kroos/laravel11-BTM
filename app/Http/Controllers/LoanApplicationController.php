@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\LoanApplication;
 use App\Models\LoanEquipment;
 use App\Models\Jabatan;
+use App\Models\Login;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +25,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 // send email
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicant;
+use App\Mail\ToApprover;
 use App\Mail\ToApplicantUpdate;
 
 // load helper
@@ -122,9 +124,10 @@ class LoanApplicationController extends Controller
 			// need to find approver -> find jabatan and then find approver
 			$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
 			$apprv = Jabatan::find($dept)->belongstomanyappr;
+			// dd($apprv->belongstomanyappr()->first());
 			if($apprv->count()) {
 				// send to approver
-				Mail::to($apprv->first()->email, $apprv->first()->nama)
+				Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
 					// ->cc($moreUsers)
 					// ->bcc($evenMoreUsers)
 					->send(new ToApprover($r, $apprv));
@@ -133,7 +136,7 @@ class LoanApplicationController extends Controller
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
-		return redirect()->route('loanapps.index')->with('success', 'Successfully Apply Loan Equipment & Informing The Approver');
+		return redirect()->route('loanapp.index')->with('success', 'Successfully Apply Loan Equipment & Informing The Approver');
 	}
 
 	/**
@@ -207,7 +210,7 @@ class LoanApplicationController extends Controller
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
-		return redirect()->route('loanapps.index')->with('success', 'Successfully Update Loan Equipment');
+		return redirect()->route('loanapp.index')->with('success', 'Successfully Update Loan Equipment');
 	}
 
 	/**

@@ -36,7 +36,7 @@ class ToApprover extends Mailable
 		// dd($data1->nostaf, $this->data1);
 		$this->data1 = $data1;
 		$this->data2 = $data2;
-		// dd($this->data);
+		// dd($this->data2->first()->nama);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class ToApprover extends Mailable
 		return new Content(
 			markdown: 'mail.LoanApplicationFormToApprove',
 			with: [
-				'apprv' =>$this->data2->nama,
+				'apprv' =>$this->data2->first()->nama,
 				'name' => Staff::find($this->data1->nostaf)->nama,
 				'link' => route('loanapp.show', $this->data1->id),
 			]
