@@ -43,7 +43,7 @@
 				</x-primary-button>
 			</div>
 
-			<x-primary-button class="m-3">
+			<x-primary-button type="submit" class="m-3">
 				{{ __('Save') }}
 			</x-primary-button>
 		</form>

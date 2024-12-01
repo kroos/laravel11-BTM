@@ -47,6 +47,7 @@ class AddItemCreate extends Component
 			'model' => $this->model,
 			'serial_number' => $this->serial_number,
 			'description' => $this->description,
+			'status' => 1,
 		]);
 		$this->reset();
 		$this->dispatch('AddItemCreate');
