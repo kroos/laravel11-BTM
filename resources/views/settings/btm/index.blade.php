@@ -4,11 +4,6 @@
 			{{ __('Loan Equipment List') }}
 		</h2>
 	</x-slot>
-	<div class="col-sm-12">
-		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('loanapp.create') }}">
-			Loan Application
-		</x-link>
-	</div>
 	<div class="col-sm-12 table-responsive">
 		<table class="table table-hover table-sm" id="loanapp" style="font: 12px sans-serif;">
 			<thead>
@@ -64,7 +59,7 @@ $loaneqs = $loan->hasmanyequipments()->get();
 								<x-link href="{{ route('btmloanapplications.show', $loan->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 									<i class="fa-regular fa-file-pdf"></i>
 								</x-link>
-								@if((!is_null($loan->approver_staff) && (!is_null($loan->approver_date))) && (is_null($loan->btm_approver) && is_null($loan->btm_date)))
+								@if( (is_null($loan->btm_approver) && is_null($loan->btm_date)))
 									<x-link href="{{ route('btmloanapplications.edit', $loan->id) }}" class="btn btn-primary btn-sm" title="Edit">
 										<i class="fa-regular fa-pen-to-square"></i>
 									</x-link>

@@ -434,7 +434,7 @@ function initializeChainedSelects(counter) {
 		const selectedCategoryId = $(this).val();
 
 		// Clear and reload the equipment dropdown
-		$(equipmentSelector).empty().trigger('change'); // Clear existing options
+		$(equipmentSelector).empty().trigger('change').append('<option value="">Please choose category</option>'); // Clear existing options
 
 		if (selectedCategoryId) {
 			$.ajax({

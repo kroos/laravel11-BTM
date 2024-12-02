@@ -235,49 +235,13 @@ const DESCRIPTION_API = "{{ route('equipmentdescription') }}";
 	@foreach($loanapp->hasmanyequipments()->get() as $t)
 
 		initializeChainedSelects({{ $i }});
+		// default selected for dropdown
 		var newOption{{ $i }} = new Option('{{ $t->belongstoequipment->belongstocategory->category }}', {{ $t->belongstoequipment->category_id }}, true, true);
 		$('#catequip_{{ $i }}').append(newOption{{ $i }}).trigger('change');
-		var newOption{{ $i }}{{ $i }} = new Option('{{ $t->belongstoequipment->item }}', {{ $t->equipment_id }}, true, true);
-		$('#equip_{{ $i }}').append(newOption{{ $i }}{{ $i }}).trigger('change');
-
-
-		$('#take_{{ $i }}').datepicker({
-			dateFormat: 'yy-mm-dd',
-			//disable friday and saturday
-			beforeShowDay: function(d) {
-				return [!(d.getDay()==5||d.getDay()==6)]
-			},
-		});
-
-		$('#return_{{ $i }}').datepicker({
-			dateFormat: 'yy-mm-dd',
-			//disable friday and saturday
-			beforeShowDay: function(d) {
-				return [!(d.getDay()==5||d.getDay()==6)]
-			},
-		});
-
-		$('#status_{{ $i }}').select2({
-			placeholder: 'Please Choose',
-			width: '100%',
-			ajax: {
-				url: '{{ route('status') }}',
-				type: 'GET',
-				dataType: 'json',
-				data: function (params) {
-					var query = {
-						_token: '{!! csrf_token() !!}',
-						search: params.term,
-						type: 'public'
-					}
-					return query;
-				}
-			},
-			allowClear: true,
-			closeOnSelect: true,
-		});
-		var newOption2 = new Option('{{ $t->belongstoequipmentstatus->status_item }}', {{ $t->status_item_id }}, true, true);
-		$('#status_{{ $i }}').append(newOption2).trigger('change');
+		var newOption{{ $i }} = new Option('{{ $t->belongstoequipment->item }}', {{ $t->equipment_id }}, true, true);
+		$('#equip_{{ $i }}').append(newOption{{ $i }}).trigger('change');
+		var newOption{{ $i }} = new Option('{{ $t->belongstoequipmentstatus->status_item }}', {{ $t->status_item_id }}, true, true);
+		$('#status_{{ $i }}').append(newOption{{ $i }}).trigger('change');
 
 		<?php
 		$i++;
@@ -401,7 +365,7 @@ function initializeChainedSelects(counter) {
 		const selectedCategoryId = $(this).val();
 
 		// Clear and reload the equipment dropdown
-		$(equipmentSelector).empty().trigger('change'); // Clear existing options
+		$(equipmentSelector).empty().trigger('change').append('<option value="">Please choose category</option>'); // Clear existing options
 
 		if (selectedCategoryId) {
 			$.ajax({
