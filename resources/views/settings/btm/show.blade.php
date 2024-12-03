@@ -258,7 +258,7 @@ tr:nth-child(even) {
 				</tr>
 				<tr>
 					<td>Catatan : {{ $btmloanapplication->approver_remarks }}</td>
-					<td>Status : <span class="bold">{{ $btmloanapplication->belongstostatusloan->status_loan }}</span></td>
+					<td>Status : <span class="bold">{{ $btmloanapplication->belongstoapproverstatusloan->status_approval }}</span></td>
 				</tr>
 				<tr>
 					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>

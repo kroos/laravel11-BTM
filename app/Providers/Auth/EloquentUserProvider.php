@@ -31,6 +31,7 @@ class EloquentUserProvider extends UserProvider
 
     public function validateCredentials(UserContract $user, array $credentials)
     {
+        // dd($user->belongstostaff->status);
         $plain = $credentials['password'];
         // dd($plain, $credentials['password']);
         // this is for plain text user password
@@ -40,6 +41,6 @@ class EloquentUserProvider extends UserProvider
         // } else {
         //     return false;
         // }
-        return ($this->hasher->check($plain, $user->getAuthPassword())  && $user->is_active == 1);
+        return ($this->hasher->check($plain, $user->getAuthPassword())  && ($user->belongstostaff->status == 'A' && $user->is_active == 1));
     }
 }

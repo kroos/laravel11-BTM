@@ -254,7 +254,7 @@ tr:nth-child(even) {
 				</tr>
 				<tr>
 					<td>Catatan : {{ $loanapp->approver_remarks }}</td>
-					<td>Status : <span class="bold">{{ $loanapp->belongstostatusloan->status_loan }}</span></td>
+					<td>Status : <span class="bold">{{ $loanapp->belongstoapproverstatusloan->status_approval }}</span></td>
 				</tr>
 				<tr>
 					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>

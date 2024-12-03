@@ -61,5 +61,10 @@ class LoanApplication extends Model
 		return $this->belongsTo(\App\Models\StatusLoan::class, 'status_loan_id')->withDefault();
 	}
 
+	public function belongstoapproverstatusloan(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\StatusApproval::class, 'approver_status_id')->withDefault();
+	}
+
 
 }

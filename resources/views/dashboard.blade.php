@@ -21,7 +21,7 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
 	// 	momentPlugin,
 	// 	bootstrap5Plugin
 	// ],
-	aspectRatio: 1.0,
+	aspectRatio: 1.3,
 	height: 2000,
 	weekNumbers: true,
 	themeSystem: 'bootstrap',

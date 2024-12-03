@@ -160,7 +160,7 @@ class AjaxDBController extends Controller
 				'remarks_approver' => 'required_if:status,2',
 				'approver_staff' => 'required',
 			], [
-				'acknowledge' => 'Please :attribute',
+				'acknowledge' => 'Please checked on :attribute',
 				'status' => 'Please choose your :attribute',
 				'remarks_approver' => 'Please fill up :attribute',
 				'approver_staff' => 'Missing :attribute'
@@ -174,6 +174,7 @@ class AjaxDBController extends Controller
 		if ($request->status == 2) {
 			$loanapp->update([
 				'status_loan_id' => 2,
+				'approver_status_id' => $request->status,
 				'approver_staff' => $request->approver_staff,
 				'approver_date' => now(),
 				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
@@ -191,6 +192,7 @@ class AjaxDBController extends Controller
 
 		} elseif ($request->status == 1) {
 			$loanapp->update([
+				'approver_status_id' => $request->status,
 				'approver_staff' => $request->approver_staff,
 				'approver_date' => now(),
 				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),

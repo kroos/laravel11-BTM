@@ -21,7 +21,7 @@
 	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
 
 </head>
-<body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center">
+<body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle">
 	<div class="container-fluid rounded">
 
 		<!-- navigator -->

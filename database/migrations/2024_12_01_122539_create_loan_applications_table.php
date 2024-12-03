@@ -28,6 +28,7 @@ return new class extends Migration
 			$table->string('approver_staff')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->dateTime('approver_date')->nullable();
 			$table->text('approver_remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
+			$table->tinyInteger('approver_status_id')->nullable();
 			$table->string('btm_approver')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->dateTime('btm_date')->nullable();
 			$table->text('btm_remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
