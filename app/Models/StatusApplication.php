@@ -15,10 +15,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class StatusLoan extends Model
+class StatusApplication extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'status_loans';
+	protected $table = 'status_applications';
 	// protected $primaryKey = 'kodjabatan';
 	// protected $keyType = 'string';
 
@@ -37,6 +37,11 @@ class StatusLoan extends Model
 	public function hasmanyloanstatus(): HasMany
 	{
 		return $this->hasMany(\App\Models\LoanApplication::class, 'status_loan_id');
+	}
+
+	public function hasmanyemailstatus(): HasMany
+	{
+		return $this->hasMany(\App\Models\EmailApplication::class, 'status_email_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

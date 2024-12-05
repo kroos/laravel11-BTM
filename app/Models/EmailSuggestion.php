@@ -15,19 +15,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class LoanApplication extends Model
+class EmailRegistrationApplication extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'loan_applications';
+	protected $table = 'email_suggestions';
 
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyequipments(): HasMany
-	{
-		return $this->hasMany(\App\Models\LoanEquipment::class, 'application_id');
-	}
+
 
 	// public function hasmanyapprover(): HasMany
 	// {
@@ -41,30 +38,9 @@ class LoanApplication extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
-	public function belongstoappr(): BelongsTo
+	public function belongstoemailapp(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'approver_staff')->withDefault();
+		return $this->belongsTo(\App\Models\EmailApplication::class, 'email_application_id')->withDefault();
 	}
-
-	public function belongstobtmappr(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Staff::class, 'btm_approver')->withDefault();
-	}
-
-	public function belongstostaff(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
-	}
-
-	public function belongstostatusloan(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_loan_id')->withDefault();
-	}
-
-	public function belongstoapproverstatusloan(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\StatusApproval::class, 'approver_status_id')->withDefault();
-	}
-
 
 }

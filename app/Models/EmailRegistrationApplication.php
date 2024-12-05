@@ -15,18 +15,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class LoanApplication extends Model
+class EmailRegistrationApplication extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'loan_applications';
+	protected $table = 'email_registration_applications';
 
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyequipments(): HasMany
+	public function hasmanyemail(): HasMany
 	{
-		return $this->hasMany(\App\Models\LoanEquipment::class, 'application_id');
+		return $this->hasMany(\App\Models\EmailApplication::class, 'application_id');
 	}
 
 	// public function hasmanyapprover(): HasMany
@@ -56,9 +56,9 @@ class LoanApplication extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->withDefault();
 	}
 
-	public function belongstostatusloan(): BelongsTo
+	public function belongstostatusemail(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_loan_id')->withDefault();
+		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_email_id')->withDefault();
 	}
 
 	public function belongstoapproverstatusloan(): BelongsTo
