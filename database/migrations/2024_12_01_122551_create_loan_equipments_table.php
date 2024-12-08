@@ -18,7 +18,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('loan_equipments', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('loan_equipments', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('application_id');
 			$table->unsignedBigInteger('equipment_id');

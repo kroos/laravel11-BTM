@@ -18,7 +18,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('dept_approval', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('dept_approval', function (Blueprint $table) {
 			$table->id();
 			$table->string('nostaf')->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->string('kod_jabatan')->charset('utf8mb4')->collation('utf8mb4_general_ci');

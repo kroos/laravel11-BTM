@@ -26,8 +26,8 @@ class StatusLoanSeeder extends Seeder
 		// ]]);
 
 		// or
-		\App\Models\StatusLoan::create(['status_loan' => 'Permohonan Diluluskan']);
-		\App\Models\StatusLoan::create(['status_loan' => 'Permohonan Tidak Diluluskan']);
-		\App\Models\StatusLoan::create(['status_loan' => 'Permohonan Sedang Diproses']);
+		\App\Models\StatusApplication::create(['status_loan' => 'Permohonan Diluluskan']);
+		\App\Models\StatusApplication::create(['status_loan' => 'Permohonan Tidak Diluluskan']);
+		\App\Models\StatusApplication::create(['status_loan' => 'Permohonan Sedang Diproses']);
 	}
 }

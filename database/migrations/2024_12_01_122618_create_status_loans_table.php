@@ -18,12 +18,13 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('status_loans', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('status_loans', function (Blueprint $table) {
 			$table->id();
 			$table->string('status_loan')->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->text('remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->timestamps();
 		});
+		Schema::rename('status_loans', 'status_applications');
 	}
 
 	/**
@@ -32,5 +33,6 @@ return new class extends Migration
 	public function down(): void
 	{
 		Schema::dropIfExists('status_loans');
+		Schema::dropIfExists('status_applications');
 	}
 };

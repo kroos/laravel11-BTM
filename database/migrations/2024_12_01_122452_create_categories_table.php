@@ -18,7 +18,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('categories', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('categories', function (Blueprint $table) {
 			$table->id();
 			$table->string('category')->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->timestamps();

@@ -11,9 +11,10 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::connection('mysql3')->create('status_approvals', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('email_suggestions', function (Blueprint $table) {
 			$table->id();
-			$table->string('status_approval')->charset('utf8mb4')->collation('utf8mb4_general_ci');
+			$table->tinyInteger('email_application_id')->nullable();
+			$table->string('email_suggestion')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->text('remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->timestamps();
 		});
@@ -24,6 +25,6 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('status_approvals');
+		Schema::dropIfExists('email_suggestions');
 	}
 };

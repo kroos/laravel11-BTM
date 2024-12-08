@@ -42,8 +42,10 @@ use Throwable;
 // load model
 use App\Models\Jabatan;
 use App\Models\Staff;
+use App\Models\Login;
 use App\Models\LoanApplication;
 use App\Models\StatusEquipment;
+use App\Models\StaffJabatan;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
 
@@ -55,7 +57,10 @@ class AjaxDBController extends Controller
 
 	public function liststaff(Request $request): JsonResponse
 	{
-		$values = Staff::where('status', 'A')->where('nama','LIKE','%'.$request->search.'%')->orderBy('nama')->get();
+		$values = Staff::where('status', 'A')
+											->where('nama','LIKE','%'.$request->search.'%')
+											->orderBy('nama')
+											->get();
 		foreach ($values as $value) {
 			$g['children'][] = [
 								'id' => $value->nostaf,
@@ -68,7 +73,10 @@ class AjaxDBController extends Controller
 
 	public function listjabatan(Request $request): JsonResponse
 	{
-		$values = Jabatan::where('aktif', 1)->where('namajabatan','LIKE','%'.$request->search.'%')->orderBy('namajabatan')->get();
+		$values = Jabatan::where('aktif', 1)
+												->where('namajabatan','LIKE','%'.$request->search.'%')
+												->orderBy('namajabatan')
+												->get();
 		// dd($values);
 		foreach ($values as $value) {
 				$g['children'][] = [
@@ -238,7 +246,18 @@ class AjaxDBController extends Controller
 		return response()->json( $out );
 	}
 
-
+	public function listemailjabatan(Request $request)
+	{
+		foreach(StaffJabatan::where('kod_jab', $request->dept_id)->get() as $y){
+			$g['children'][] = [
+								// 'id' => $y->nostaf,
+								'id' => Login::where('is_active', 1)->where('nostaf', $y->nostaf)->first()->email,
+								// 'text' => Login::where('is_active', 1)->where('nostaf', $y->nostaf)->first()->email,
+							];
+		}
+		$listemailjabatan['results'][] = $g;
+		return response()->json($listemailjabatan);
+	}
 
 
 

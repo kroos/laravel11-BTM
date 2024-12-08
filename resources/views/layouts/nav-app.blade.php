@@ -1,7 +1,13 @@
 <li class="nav-item">
+	<a class="nav-link {{ (request()->route()->uri == 'emailaccapp')?'active':NULL }}" href="{{ route('emailaccapp.index') }}">
+		<i class="fa-regular fa-envelope fa-beat"></i>&nbsp;
+		Email Account Application
+	</a>
+</li>
+<li>
 	<a class="nav-link {{ (request()->route()->uri == 'loanapp')?'active':NULL }}" href="{{ route('loanapp.index') }}">
 		<i class="fa-solid fa-gavel fa-beat"></i>&nbsp;
-		Equipment Loan Application and Status
+		Equipment Loan Application
 	</a>
 </li>
 <li class="nav-item dropdown">

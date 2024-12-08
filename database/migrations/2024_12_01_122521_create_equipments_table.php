@@ -18,7 +18,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('equipments', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('equipments', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('category_id');
 			$table->string('item')->charset('utf8mb4')->collation('utf8mb4_general_ci');

@@ -18,7 +18,7 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('btm_approval', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('btm_approval', function (Blueprint $table) {
 			$table->id();
 			$table->string('nostaf')->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->tinyInteger('active');
