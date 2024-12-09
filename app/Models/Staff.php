@@ -48,6 +48,11 @@ class Staff extends Model
 		return $this->hasMany(\App\Models\Settings\BTMApprover::class, 'nostaf');
 	}
 
+	public function hasmanyemailregistration(): HasMany
+	{
+		return $this->hasMany(\App\Models\EmailRegistrationApplication::class, 'nostaf');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
 	// public function belongstojabatan(): BelongsTo

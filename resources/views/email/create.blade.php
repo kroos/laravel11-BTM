@@ -99,12 +99,12 @@
 // group email
 $(`#gemail`).change(function(){
 	if(this.checked) {
-		console.log($(this).val());
+		// console.log($(this).val());
 		$(`#wrap_group_email`).append(
 				`<small>Please choose personnels associate with the suggested email.</small>` +
 
 				`<div class="col-sm-12 text-right mt-3">` +
-					`<button class="btn btn-primary btn-sm" type="button" class="add_personnels">` +
+					`<button class="btn btn-primary btn-sm add_personnels" type="button">` +
 						`<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels` +
 					`</button>` +
 				`</div>` +
@@ -122,16 +122,22 @@ $(`#gemail`).change(function(){
 						`</div>` +
 
 						`<div class="col-sm-11 m-0 mt-1 row">` +
-							`<label for="staff_0" class="col-sm-4">Staff : </label>` +
+							`<label for="staff_0" class="col-sm-4">Staff Email : </label>` +
 							`<div class="col-sm-8">` +
-									`<select name="emregmem[0][email_member]" id="staff_0" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff">` +
+									`<select name="emregmem[0][email_member]" id="staff_0" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">` +
 										`<option value="">Please choose staff</option>` +
 									`</select>` +
 							`</div>` +
+							`<small>if the person you are looking for is not in the list, that person maybe :`+
+								`<ul>`+
+									`<li>been deactivated</li>`+
+									`<li>his/her email was not set in the system</li>`+
+								`</ul>`+
+							`</small>` +
 						`</div>` +
 
 						`<div class="col-sm-1 m-0">` +
-							`<button class="btn btn-danger" type="button" class="remove_personnels">` +
+							`<button class="btn btn-danger remove_personnels" type="button">` +
 								`<i class="fa-regular fa-trash-can"></i>` +
 							`</button>` +
 						`</div>` +
@@ -139,25 +145,47 @@ $(`#gemail`).change(function(){
 					`</div>` +
 				`</div>`
 		);
+		// create personnels email
+		createPersonnels();
 		// initialized select2
 		initializeChainedSelectsForPersonnels(0);
 	} else {
-		console.log($(this).val());
+		// console.log($(this).val());
 		$(`#wrap_group_email`).children().remove();
 	}
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// add personnels
-// Maximum input boxes allowed
-var personnels_max_fields = 20;
+// create personnels
+function createPersonnels(){
+	// Maximum input boxes allowed
+	var personnels_max_fields = 20;
 
-// Buttons and wrapper
-var personnels_btn = $(".add_personnels");
-var personnels_wrapper = $(".wrap_personnels");
+	// Buttons and wrapper
+	var personnels_btn = $(".add_personnels");
+	var personnels_wrapper = $(".wrap_personnels");
 
-// Counter to track added dropdowns
-var personnels_counter = 0;
+	// Counter to track added dropdowns
+	var personnels_counter = 0;
+
+	// Add equipment fields dynamically
+	$(personnels_btn).click(function () {
+		console.log('button click');
+		if (personnels_counter < personnels_max_fields) {
+			personnels_counter++;
+			personnels_wrapper.append(createPersonnelRow(personnels_counter));
+			initializeChainedSelectsForPersonnels(personnels_counter);
+		}
+	});
+
+	// Remove equipment fields dynamically
+	$(personnels_wrapper).on("click", ".remove_personnels", function (e) {
+		e.preventDefault();
+		$(this).closest('.row').remove();
+		personnels_counter--;
+	});
+
+};
 
 function createPersonnelRow(index) {
 	return `
@@ -177,6 +205,12 @@ function createPersonnelRow(index) {
 						<option value="">Please choose staff</option>
 					</select>
 				</div>
+				<small>if the person you are looking for is not in the list, that person maybe :
+					<ul>
+						<li>been deactivated</li>
+						<li>his/her email was not set in the system</li>
+					</ul>
+				</small>
 			</div>
 			<div class="col-sm-1 m-0">
 				<button class="btn btn-danger remove_personnels" type="button">
@@ -190,7 +224,6 @@ function createPersonnelRow(index) {
 function initializeChainedSelectsForPersonnels(personnels_counter) {
 	const departmentSelector = `#dept_${personnels_counter}`;
 	const personnelsSelector = `#staff_${personnels_counter}`;
-	const descriptionSelector = `#desc_wrap_${personnels_counter}`;
 
 	// Initialize Select2 for department dropdown
 	$(departmentSelector).select2({
@@ -201,17 +234,23 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 		ajax: {
 			url: '{{ route('listjabatan') }}',
 			dataType: 'json',
-			// processResults: function (data) {
-			// 	return {
-			// 		results: data.map(cat => ({
-			// 			id: cat.id,
-			// 			text: cat.cat
-			// 		}))
-			// 	};
-			// }
+			data: function (params) {
+				var query = {
+					_token: '{!! csrf_token() !!}',
+					search: params.term,
+				}
+				return query;
+			},
 		}
 	});
 
+	// Initialize Select2 for equipment dropdown
+	$(personnelsSelector).select2({
+		placeholder: "Please choose staff",
+		width: '100%',
+		allowClear: true,
+		closeOnSelect: true,
+	});
 
 	// Chain the category dropdown to the equipment dropdown
 	$(departmentSelector).on('change', function () {
@@ -222,45 +261,39 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 
 		if (selectedDepartmentId) {
 			$.ajax({
-				url: '{{ route('liststaff') }}',
+				url: '{{ route('listemailjabatan') }}',
 				dataType: 'json',
-				data: {dept_id: 'selectedDepartmentId'},
+				data: {dept_id: selectedDepartmentId},
 				success: function (data) {
-					const equipmentOptions = data.results[0].children
-						.filter(item => item.class == selectedCategoryId)
-						.map(item => ({
-							id: item.id,
-							text: item.text
-						}));
+					let options = ''; // Initialize an empty string to hold the options HTML
+
+					// Loop through the data and generate <option> elements
+					data.forEach(function (item) {
+							// Extract the first key and value from the object
+							const [name, email] = Object.entries(item)[0];
+							options += `<option value="${email}">${name}</option>`;
+					});
+
+					console.log(options);
+
+					// Append the options to the select element
+					$(personnelsSelector).append(options);
 
 					$(personnelsSelector).select2({
 						placeholder: 'Please choose staff',
 						width: '100%',
 						allowClear: true,
 						closeOnSelect: true,
-						data: equipmentOptions
 					});
+				},
+				error: function (xhr, status, error) {
+						console.error('AJAX Error:', status, error);
 				}
 			});
 		}
 	});
 }
 
-// Add equipment fields dynamically
-$(personnels_btn).click(function () {
-	if (personnels_counter < personnels_max_fields) {
-		personnels_counter++;
-		personnels_wrapper.append(createPersonnelRow(personnels_counter));
-		initializeChainedSelectsForPersonnels(personnels_counter);
-	}
-});
-
-// Remove equipment fields dynamically
-$(personnels_wrapper).on("click", ".remove_personnels", function (e) {
-	e.preventDefault();
-	$(this).closest('.row').remove();
-	personnels_counter--;
-});
 
 
 

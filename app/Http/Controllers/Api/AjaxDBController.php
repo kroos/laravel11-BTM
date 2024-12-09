@@ -248,15 +248,15 @@ class AjaxDBController extends Controller
 
 	public function listemailjabatan(Request $request)
 	{
-		foreach(StaffJabatan::where('kod_jab', $request->dept_id)->get() as $y){
-			$g['children'][] = [
-								// 'id' => $y->nostaf,
-								'id' => Login::where('is_active', 1)->where('nostaf', $y->nostaf)->first()->email,
-								// 'text' => Login::where('is_active', 1)->where('nostaf', $y->nostaf)->first()->email,
-							];
+		$je = Jabatan::find($request->dept_id)->belongstomanystaff()->get();
+		$p = [];
+		foreach ($je as $e) {
+			$activeLogin = $e->hasmanylogin()->where('is_active', 1)->first();
+			if ($activeLogin !== null && $activeLogin->email !== null) {
+					$p[] = $e->hasmanylogin()->where('is_active', 1)->pluck('email', 'name');
+			}
 		}
-		$listemailjabatan['results'][] = $g;
-		return response()->json($listemailjabatan);
+		return response()->json($p);
 	}
 
 

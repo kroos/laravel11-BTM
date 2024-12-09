@@ -24,15 +24,15 @@ class EmailRegistrationApplication extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyemail(): HasMany
+	public function hasmanyemailsuggestion(): HasMany
 	{
-		return $this->hasMany(\App\Models\EmailApplication::class, 'application_id');
+		return $this->hasMany(\App\Models\EmailSuggestion::class, 'email_application_id');
 	}
 
-	// public function hasmanyapprover(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\Staff::class, 'nostaf');
-	// }
+	public function hasmanyemailgroupmember(): HasMany
+	{
+		return $this->hasMany(\App\Models\EmailGroupMember::class, 'email_application_id');
+	}
 
 	// public function hasmanydept(): HasMany
 	// {

@@ -15,10 +15,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class EmailSuggestion extends Model
+class EmailGroupMember extends Model
 {
 	protected $connection = 'mysql3';
-	protected $table = 'email_suggestions';
+	protected $table = 'email_group_members';
 
 	use HasFactory;
 
