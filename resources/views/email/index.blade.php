@@ -16,19 +16,36 @@
 					<th>Reg No</th>
 					<th>Name</th>
 					<th>Apply On</th>
-					<th>Loan From</th>
-					<th>Loan To</th>
-					<th>Equipments Pick Up On</th>
-					<th>Equipments</th>
+					<th>Email Application Type</th>
 					<th>HOD Approval</th>
-					<th>Loan Status</th>
+					<th>Email Application Status</th>
 					<th>#</th>
 				</tr>
 			</thead>
 			<tbody>
 				@if($emails->count())
 					@foreach($emails as $email)
-
+						<tr>
+							<td>BTM-ER-{{ \Carbon\Carbon::parse($email->created_at)->format('ym').str_pad( $email->id, 3, "0", STR_PAD_LEFT) }}</td>
+							<td>{{ $email->belongstostaff->nama }}</td>
+							<td>{{ \Carbon\Carbon::parse($email->created_at)->format('j M Y') }}</td>
+							<td>{{ ($email->group_email == 1)?'Group Email':'Individual Email' }}</td>
+							<td></td>
+							<td>{{ $email->belongstostatusemail->status_loan }}</td>
+							<td>
+								<x-link href="{{ route('emailaccapp.show', $email->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
+									<i class="fa-regular fa-file-pdf"></i>
+								</x-link>
+								@if((is_null($email->approver_staff) && is_null($email->approver_date)) && (is_null($email->btm_approver) && is_null($email->btm_date)))
+									<x-link href="{{ route('emailaccapp.edit', $email->id) }}" class="btn btn-primary btn-sm" title="Edit">
+										<i class="fa-regular fa-pen-to-square"></i>
+									</x-link>
+									<x-danger-button type="button" class="delete_email" data-id="{{ $email->id }}" title="Delete">
+										<i class="fa-regular fa-trash-can"></i>
+									</x-danger-button>
+								@endif
+							</td>
+						</tr>
 					@endforeach
 				@endif
 			</tbody>
@@ -107,7 +124,7 @@ $(".form").on('submit', function(e){
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
-$(document).on('click', '.delete_loan', function(e){
+$(document).on('click', '.delete_email', function(e){
 	var ackID = $(this).data('id');
 	SwalDeleteR(ackID);
 	e.preventDefault();
@@ -116,7 +133,7 @@ $(document).on('click', '.delete_loan', function(e){
 function SwalDeleteR(ackID){
 	swal.fire({
 		title: 'Delete Loan Application',
-		text: 'Are you sure to delete Loan Application?',
+		text: 'Are you sure to delete Email Registration Application?',
 		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',
@@ -128,7 +145,7 @@ function SwalDeleteR(ackID){
 		preConfirm: function() {
 			return new Promise(function(resolve) {
 				$.ajax({
-					url: '{{ url('loanapp') }}' + '/' + ackID,
+					url: '{{ url('emailaccapp') }}' + '/' + ackID,
 					type: 'DELETE',
 					dataType: 'json',
 					data: {
@@ -153,7 +170,7 @@ function SwalDeleteR(ackID){
 	})
 	.then((result) => {
 		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Loan Application is still active.', 'info')
+			swal.fire('Cancel Action', 'Email Registration Application is still active.', 'info')
 		}
 	});
 }
@@ -162,7 +179,6 @@ $(document).on('click', '.swal2-confirm', function(e){
 	window.location.reload(true);
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 </x-app-layout>

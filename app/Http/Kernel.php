@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		'loanOwner' => \App\Http\Middleware\Authorization\RedirectIfNotLoanOwner::class,
+		'emailOwner' => \App\Http\Middleware\Authorization\RedirectIfNotEmailOwner::class,
 		'BTMAdmin' => \App\Http\Middleware\Authorization\RedirectIfNotBTMAdmin::class,
 
 	];

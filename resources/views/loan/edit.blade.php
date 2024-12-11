@@ -169,10 +169,7 @@ const EQUIPMENT_API = "{{ route('equipmentstatus') }}";
 const DESCRIPTION_API = "{{ route('equipmentdescription') }}";
 
 /////////////////////////////////////////////////////////////////////////////////////////
-//enable select 2
-function initselect2chained() {
 
-};
 @if($loanapp->hasmanyequipments()->count())
 	<?php
 		$i = 0;

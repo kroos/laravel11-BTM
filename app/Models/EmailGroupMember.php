@@ -43,4 +43,9 @@ class EmailGroupMember extends Model
 		return $this->belongsTo(\App\Models\EmailRegistrationApplication::class, 'email_application_id')->withDefault();
 	}
 
+	public function belongstoemailpersondept(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Jabatan::class, 'department_id')->withDefault();
+	}
+
 }

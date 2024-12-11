@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status_applications', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        Schema::connection('mysql3')->rename('status_loans', 'status_applications');
     }
 
     /**
