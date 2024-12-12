@@ -8,6 +8,8 @@ use App\Models\EmailRegistrationApplication;
 use App\Models\EmailSuggestion;
 use App\Models\EmailGroupMember;
 use App\Models\Login;
+use App\Models\Jabatan;
+use App\Models\Settings\BTMApprover;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +28,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicantEmail;
 use App\Mail\ToApprover;
+use App\Mail\ToApproverEmail;
 use App\Mail\ToApplicantUpdate;
+use App\Mail\ToApplicantEmailUpdate;
+use App\Mail\ToBTMEmailCreate;
+use App\Mail\ToBTMEmailUpdate;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -137,7 +143,18 @@ class EmailRegistrationApplicationController extends Controller
 				// ->bcc($evenMoreUsers)
 				->send(new ToApproverEmail($r, $apprv));
 		}
-		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Apply Registering new Email & Informing The Approver');
+
+		// finally send it to admin
+		if (BTMApprover::where('active', 1)->count()) {
+			foreach(BTMApprover::where('active', 1)->get() as $ad) {
+				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+				Mail::to($adm->email, $adm->name)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToBTMEmailCreate($adm, $r));
+			};
+		};
+		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Submitted new Email Registration & Informing The Approver');
 	}
 
 	/**
@@ -214,13 +231,24 @@ class EmailRegistrationApplicationController extends Controller
 			};
 		};
 
-		Pdf::loadView('email.show', ['email' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('email.show', ['email' => $emailaccapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailaccapp->created_at)->format('ym').str_pad( $emailaccapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
 		// mail to self
-		Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
+		Mail::to($emailaccapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailaccapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->name)
 			// ->cc($moreUsers)
 			// ->bcc($evenMoreUsers)
 			->send(new ToApplicantEmailUpdate($emailaccapp));
+
+		// finally send it to admin
+		if (BTMApprover::where('active', 1)->count()) {
+			foreach(BTMApprover::where('active', 1)->get() as $ad) {
+				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+				Mail::to($adm->email, $adm->name)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToBTMEmailUpdate($adm, $emailaccapp));
+			};
+		};
 
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Approver');
 	}

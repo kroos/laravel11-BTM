@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\LoanApplication;
 use App\Models\LoanEquipment;
 use App\Models\Jabatan;
+use App\Models\Settings\BTMApprover;
 use App\Models\Login;
 
 // load db facade
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicant;
 use App\Mail\ToApprover;
 use App\Mail\ToApplicantUpdate;
+use App\Mail\ToBTMLoanCreate;
+use App\Mail\ToBTMLoanUpdate;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -133,6 +136,16 @@ class LoanApplicationController extends Controller
 					->send(new ToApprover($r, $apprv));
 			}
 
+		// finally send it to admin
+		if (BTMApprover::where('active', 1)->count()) {
+			foreach(BTMApprover::where('active', 1)->get() as $ad) {
+				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+				Mail::to($adm->email, $adm->name)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToBTMLoanCreate($adm, $r));
+			};
+		};
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
@@ -207,6 +220,18 @@ class LoanApplicationController extends Controller
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)
 				->send(new ToApplicantUpdate($loanapp));
+
+			// finally send it to admin
+			if (BTMApprover::where('active', 1)->count()) {
+				foreach(BTMApprover::where('active', 1)->get() as $ad) {
+					$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+					Mail::to($adm->email, $adm->name)
+						// ->cc($moreUsers)
+						// ->bcc($evenMoreUsers)
+						->send(new ToBTMLoanUpdate($adm, $loanapp));
+				};
+			};
+
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}

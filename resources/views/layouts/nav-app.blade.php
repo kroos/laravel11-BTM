@@ -20,5 +20,6 @@
 		<a class="dropdown-item" href="{{ route('btmapprover.create') }}">Add BTM Approver</a>
 		<div class="dropdown-divider"></div>
 		<a class="dropdown-item" href="{{ route('btmloanapplications.index') }}">BTM Loan Approval</a>
+		<a class="dropdown-item" href="{{ route('btmemailapplications.index') }}">BTM Email Registration Approval</a>
 	</div>
 </li>

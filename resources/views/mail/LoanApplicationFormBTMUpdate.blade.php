@@ -1,16 +1,20 @@
 <x-mail::message>
 # Introduction
 
-Dear {{$name}},
+Dear {{ $admin }},
 
 
-We would like to inform you that your application for equipment loan from the BTM was successfully update.
+I hope this email finds you well.
 
-For your reference, please find the attached copy of your application form.
+Please be informed that a user has updated the information and submitted a form for a loan equipment. The completed form is attached to this email for your reference and necessary action.
 
-Should you need further assistance, please feel free to reach out.
+User Details:
 
-Thank you for your attention and cooperation.
+    Name: {{ $name }}
+
+Kindly review the attached form and proceed with the next steps as per your standard procedure. Please let me know if you require any additional information.
+
+Thank you for your attention to this matter.
 
 <x-mail::button :url="$link">
 View Form
