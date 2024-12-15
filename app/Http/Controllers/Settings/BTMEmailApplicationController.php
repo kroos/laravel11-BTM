@@ -3,6 +3,10 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// validation
+use Illuminate\Validation\Rule;
+use App\Rules\OnlyOneTempPassword;
+
 // models
 use App\Models\EmailRegistrationApplication;
 use App\Models\EmailSuggestion;
@@ -101,11 +105,15 @@ class BTMEmailApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
+				// 'emreg' => ['required', new OnlyOneTempPassword],
 				'emreg.*.email_suggestion' => 'required|alpha:ascii',
 				'emreg.*.temp_password' => 'required_if_accepted:emreg.*.approved_email|nullable|alpha_num:ascii',
-				'emreg.*.approved_email' => 'required_if_accepted:emreg.*.temp_password|nullable|',
+				'emreg.*.approved_email' => 'accepted_if:emreg.*.temp_password,string|nullable|',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
+				// 'emreg' => [new OnlyOneTempPassword],
+				'status_email_id' => 'required',
+				'btm_remarks' => 'required_if:status_email_id, 2'
 			], [
 				'nostaf' => 'Please insert :attribute',
 				'group_email' => 'Please click :attribute',
@@ -114,6 +122,8 @@ class BTMEmailApplicationController extends Controller
 				'emreg.*.approved_email' => 'Please checked :attribute at #:position',
 				'emregmem.*.email_member_department' => 'Please choose :attribute at #:position',	//:index
 				'emregmem.*.email_member' => 'Please choose :attribute at #:position',	//:index
+				'status_email_id' => 'Please choose :attribute',
+				'btm_remarks' => 'Please insert :attribute'
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
@@ -122,8 +132,10 @@ class BTMEmailApplicationController extends Controller
 				'emreg.*.approved_email' => 'Approved Email',
 				'emregmem.*.email_member_department' => 'Department',
 				'emregmem.*.email_member' => 'Staff',
+				'status_email_id' => 'Email Registration Status',
+				'btm_remarks' => 'BTM Remarks'
 		]);
-		dd($request->all());
+		// dd($request->all());
 
 		$data = $request->only(['nostaf', 'group_email']);
 		$data += ['active' => 1];
@@ -137,7 +149,9 @@ class BTMEmailApplicationController extends Controller
 						'email_application_id' => $btmemailapplication->id
 					],
 					[
-						'email_suggestion' => $v['email_suggestion']
+						'email_suggestion' => $v['email_suggestion'],
+						'temp_password' => $v['temp_password'],
+						'approved_email' => $v['approved_email'],
 				]);
 			};
 		};
@@ -174,7 +188,7 @@ class BTMEmailApplicationController extends Controller
 			};
 		};
 
-		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Approver');
+		return redirect()->route('btmemailapplications.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Applicant');
 	}
 
 	/**

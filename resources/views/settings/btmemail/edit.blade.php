@@ -50,7 +50,7 @@
 									<x-input-label for="tpass_{{ $i }}" class="col-sm-3" :value="__('Temp Pass : ')" />
 									<div class="col-sm-9">
 										<div class="input-group">
-											<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ $emailsugg->temp_password }}">
+											<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ old('emreg.*.temp_password')?old('emreg.*.temp_password'):$emailsugg->temp_password }}">
 										</div>
 									</div>
 								</div>
@@ -149,8 +149,36 @@
 					@endphp
 					</p>
 					<p>Date : </p>
-					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the new email registration is intended for official purposes.</p>
 				</div>
+			</div>
+
+			<!-- 4th column -->
+			<div class="col-sm-12 m-0 p-1">
+				<h3>BTM Used</h3>
+				<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
+				<div class="btn-group" role="group" aria-label="New Email Registration Approval">
+					<?php
+						$p = 0;
+					?>
+					@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
+						<input type="radio" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
+						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+						<?php
+							$p++;
+						?>
+					@endforeach
+					<x-input-error :messages="$errors->get('status_email_id')" />
+				</div>
+
+				<div class="col-sm-12 mt-2 row">
+					<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
+					<div class="col-sm-8">
+						<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmemailapplication->btm_remarks }}</textarea>
+						<x-input-error :messages="$errors->get('btm_remarks')" />
+					</div>
+				</div>
+
 			</div>
 
 			<div class="col-sm-12 text-center">
@@ -403,7 +431,7 @@ var appr_btn = $(".add_emails");
 var apprv_wrapper = $(".wrap_emails");
 
 // Counter to track added dropdowns
-var counter = 0;
+var counter = {{ ($btmemailapplication->hasmanyemailsuggestion()->count())?($btmemailapplication->hasmanyemailsuggestion()->count() - 1):0 }};
 
 // Function to initialize Select2 and chain dropdowns with description update
 function initializeChainedSelects(counter) {

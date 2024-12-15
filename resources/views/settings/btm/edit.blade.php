@@ -190,7 +190,7 @@
 					<?php
 						$p = 0;
 					?>
-					@foreach(\App\Models\StatusLoan::whereIn('id', [1,2])->get() as $v)
+					@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
 						<input type="radio" class="btn-check {{ ($errors->has('status_loan_id')?'is-invalid':NULL) }}" name="status_loan_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($loanapp->status_loan_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
 						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
 						<?php
