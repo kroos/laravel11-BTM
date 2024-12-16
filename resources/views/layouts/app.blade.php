@@ -12,7 +12,7 @@
 
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
-	<link href="{{ asset('images/logo.png') }}" type="image/x-icon" rel="icon" />
+	<link href="{{ asset('images/logo.jpg') }}" type="image/x-icon" rel="icon" />
 	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
@@ -28,7 +28,7 @@
 		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{{ url('/dashboard') }}">
-					<img src="{{ asset('assets/image/UniSHAMS.webp') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
+					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -36,7 +36,7 @@
 				<div class="collapse navbar-collapse" id="navbarColor01">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link {{ (request()->route()->uri == 'dashboard')?'active':NULL }}" href="{{ url('/dashboard') }}">Home
+							<a class="nav-link" href="{{ url('/dashboard') }}">Home
 								<span class="visually-hidden">(current)</span>
 							</a>
 						</li>
@@ -101,20 +101,11 @@
 		@endif
 	</div>
 
-	@if(count($errors) > 0 )
-		<div class="col-sm-12 d-flex align-items-center justify-content-center">
-			<ul class="list-group">
-				@foreach($errors->all() as $err)
-					<li class="list-group-item list-group-item-danger">
-						{!! $err !!}
-					</li>
-				@endforeach
-			</ul>
-		</div>
-		@endif
+	@if(isset($errors))
+		@include('layouts.error-messages')
+	@endif
 
 	<div class="container d-flex align-items-center justify-content-center row rounded">
-
 		<!-- Page Heading -->
 		@isset($header)
 				<div class="shadow">
@@ -151,8 +142,6 @@
 			@show
 		});
 	})(jQuery);
-	@section('nonjs')
-	@show
 </script>
 @livewireScripts
 </html>

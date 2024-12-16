@@ -11,7 +11,7 @@
 
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
-	<link href="{{ asset('images/logo.png') }}" type="image/x-icon" rel="icon" />
+	<link href="{{ asset('images/logo.jpg') }}" type="image/x-icon" rel="icon" />
 	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
@@ -28,7 +28,7 @@
 		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{{ url('/') }}">
-					<img src="{{ asset('assets/image/UniSHAMS.webp') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
+					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -36,7 +36,7 @@
 				<div class="collapse navbar-collapse" id="navbarColor01">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link {{ (request()->route()->uri == '/')?'active':NULL }}" href="{{ url('/') }}">Home
+							<a class="nav-link" href="{{ url('/') }}">Home
 							</a>
 						</li>
 						@auth
@@ -92,8 +92,9 @@
 		@endif
 	</div>
 
-	<div class="container d-flex align-items-center justify-content-center row rounded">
 
+
+	<div class="container d-flex align-items-center justify-content-center row rounded">
 		<!-- Page Heading -->
 		@isset($header)
 				<div class="shadow">
