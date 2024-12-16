@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 				BTMApproverSeeder::class,
 				StatusEquipmentsSeeder::class,
 				StatusLoanSeeder::class,
+				StatusApprovalSeeder::class,
 		]);
 
 	}

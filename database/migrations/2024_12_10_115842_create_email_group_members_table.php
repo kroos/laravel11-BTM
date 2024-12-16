@@ -7,11 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
 	/**
+	 * The database connection that should be used by the migration.
+	 *
+	 * @var string
+	 */
+	protected $connection = 'mysql3';
+
+	/**
 	 * Run the migrations.
 	 */
 	public function up(): void
 	{
-		Schema::create('email_group_members', function (Blueprint $table) {
+		Schema::connection('mysql3')->create('email_group_members', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('email_application_id');
 			$table->string('department_id')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');

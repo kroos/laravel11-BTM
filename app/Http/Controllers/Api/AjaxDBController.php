@@ -46,6 +46,7 @@ use App\Models\Login;
 use App\Models\LoanApplication;
 use App\Models\StatusEquipment;
 use App\Models\StaffJabatan;
+use App\Models\EmailRegistrationApplication;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
 
@@ -208,6 +209,59 @@ class AjaxDBController extends Controller
 		}
 		return response()->json([
 			'message' => 'Success granted approval for the loan',
+			'status' => 'success'
+		]);
+	}
+
+	public function emailappsapprv(Request $request, EmailRegistrationApplication $emailapp): JsonResponse
+	{
+		// dd($request->all(), \Auth::user());
+		// return response()->json([]);
+		$request->validate([
+				'acknowledge' => 'required|accepted',
+				'status' => 'required',
+				'remarks_approver' => 'required_if:status,2',
+				'approver_staff' => 'required',
+			], [
+				'acknowledge' => 'Please checked on :attribute',
+				'status' => 'Please choose your :attribute',
+				'remarks_approver' => 'Please fill up :attribute',
+				'approver_staff' => 'Missing :attribute'
+			], [
+				'acknowledge' => 'Acknowledgement',
+				'status' => 'Approval',
+				'remarks_approver' => 'Remarks',
+				'approver_staff' => 'Staff ID',
+		]);
+
+		if ($request->status == 2) {
+			$emailapp->update([
+				'status_email_id' => 2,
+				'approver_status_id' => $request->status,
+				'approver_staff' => $request->approver_staff,
+				'approver_date' => now(),
+				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+			]);
+
+			Pdf::loadView('email.show', ['email' => $emailapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailapp->created_at)->format('ym').str_pad( $emailapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+			// dd($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama);
+			// mail to loan owner of unapproved loan
+			Mail::to($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApplicantUnApproved($emailapp));
+
+		} elseif ($request->status == 1) {
+			$emailapp->update([
+				'approver_status_id' => $request->status,
+				'approver_staff' => $request->approver_staff,
+				'approver_date' => now(),
+				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+			]);
+		}
+		return response()->json([
+			'message' => 'Success granted approval for the email registration',
 			'status' => 'success'
 		]);
 	}

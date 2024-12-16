@@ -12,6 +12,8 @@ use App\Models\EmailRegistrationApplication;
 use App\Models\EmailSuggestion;
 use App\Models\EmailGroupMember;
 use App\Models\Jabatan;
+use App\Models\Login;
+use App\Models\Settings\BTMApprover;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -28,8 +30,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // send email
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ToApplicant;
-use App\Mail\ToApplicantBTMApproval;
+use App\Mail\ToBTMEmailApproval;
+use App\Mail\ToApplicantEmailApproval;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -105,13 +107,12 @@ class BTMEmailApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
-				// 'emreg' => ['required', new OnlyOneTempPassword],
 				'emreg.*.email_suggestion' => 'required|alpha:ascii',
 				'emreg.*.temp_password' => 'required_if_accepted:emreg.*.approved_email|nullable|alpha_num:ascii',
 				'emreg.*.approved_email' => 'accepted_if:emreg.*.temp_password,string|nullable|',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
-				// 'emreg' => [new OnlyOneTempPassword],
+				'emreg' => [new OnlyOneTempPassword],
 				'status_email_id' => 'required',
 				'btm_remarks' => 'required_if:status_email_id, 2'
 			], [
@@ -137,9 +138,9 @@ class BTMEmailApplicationController extends Controller
 		]);
 		// dd($request->all());
 
-		$data = $request->only(['nostaf', 'group_email']);
-		$data += ['active' => 1];
-		$data += ['status_email_id' => 3];
+		$data = $request->only(['nostaf', 'group_email', 'status_email_id', 'btm_remarks']);
+		$data += ['btm_date' => now()];
+		$data += ['btm_approver' => \Auth::user()->nostaf];
 		$r = $btmemailapplication->update($data);
 
 		if ($request->has('emreg')) {
@@ -169,13 +170,13 @@ class BTMEmailApplicationController extends Controller
 			};
 		};
 
-		Pdf::loadView('email.show', ['email' => $btmemailapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($btmemailapplication->created_at)->format('ym').str_pad( $btmemailapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('settings.btmemail.show', ['email' => $btmemailapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($btmemailapplication->created_at)->format('ym').str_pad( $btmemailapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// mail to self
+		// mail to applicant
 		Mail::to($btmemailapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $btmemailapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->name)
 			// ->cc($moreUsers)
 			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantEmailUpdate($btmemailapplication));
+			->send(new ToApplicantEmailApproval($btmemailapplication));
 
 		// finally send it to admin
 		if (BTMApprover::where('active', 1)->count()) {
@@ -184,7 +185,7 @@ class BTMEmailApplicationController extends Controller
 				Mail::to($adm->email, $adm->name)
 					// ->cc($moreUsers)
 					// ->bcc($evenMoreUsers)
-					->send(new ToBTMEmailUpdate($adm, $btmemailapplication));
+					->send(new ToBTMEmailApproval($adm, $btmemailapplication));
 			};
 		};
 

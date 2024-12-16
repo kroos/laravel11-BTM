@@ -50,13 +50,16 @@
 									<x-input-label for="tpass_{{ $i }}" class="col-sm-3" :value="__('Temp Pass : ')" />
 									<div class="col-sm-9">
 										<div class="input-group">
-											<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ old('emreg.*.temp_password')?old('emreg.*.temp_password'):$emailsugg->temp_password }}">
+											<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ !old('emreg.*.temp_password')?$emailsugg->temp_password:old('emreg.*.temp_password') }}">
 										</div>
+										<x-input-error :messages="$errors->get('emreg[{{ $i }}][temp_password]')" />
 									</div>
 								</div>
 								<div class="col-sm-4 m-0 row">
 									<div class="form-check form-switch">
-										<input name="emreg[{{ $i }}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_{{ $i }}" {{ ($btmemailapplication->approved_email)?'checked':NULL }}>
+										<input type="hidden" name="emreg[{{ $i }}][approved_email]" value="">
+										<input name="emreg[{{ $i }}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_{{ $i }}" {{ ($emailsugg->approved_email)?'checked':NULL }}>
+										<x-input-error :messages="$errors->get('emreg[{{ $i }}][approved_email]')" />
 										<label class="form-check-label" for="aemail_{{ $i }}">Approved Email</label>
 									</div>
 								</div>
@@ -162,7 +165,7 @@
 						$p = 0;
 					?>
 					@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
-						<input type="radio" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
+						<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
 						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
 						<?php
 							$p++;
@@ -525,6 +528,7 @@ $(appr_btn).click(function () {
 				</div>
 				<div class="col-sm-4 m-0 row">
 					<div class="form-check form-switch">
+						<input type="hidden" name="emreg[${counter}][approved_email]" value="">
 						<input name="emreg[${counter}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_${counter}" {{ ($btmemailapplication->approved_email)?'checked':NULL }}>
 						<label class="form-check-label" for="aemail_${counter}">Approved Email</label>
 					</div>
