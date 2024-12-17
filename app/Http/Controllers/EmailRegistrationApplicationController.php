@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 
+// validation
+use Illuminate\Validation\Rule;
+use App\Rules\UniqueEmail;
+
 // load pdf
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -85,7 +89,8 @@ class EmailRegistrationApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha:ascii',
+				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
+				'emreg' => [new UniqueEmail],
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
 			], [
@@ -184,7 +189,7 @@ class EmailRegistrationApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha:ascii',
+				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
 			], [
@@ -249,7 +254,6 @@ class EmailRegistrationApplicationController extends Controller
 					->send(new ToBTMEmailUpdate($adm, $emailaccapp));
 			};
 		};
-
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Approver');
 	}
 
