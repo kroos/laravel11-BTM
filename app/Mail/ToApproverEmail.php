@@ -15,6 +15,7 @@ use Illuminate\Mail\Mailables\Address;
 
 // load model
 use App\Models\Staff;
+use App\Models\Login;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -46,7 +47,7 @@ class ToApproverEmail extends Mailable
 	{
 		return new Envelope(
 			from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-			subject: 'Approval Request for New Reistration Email Application',
+			subject: 'Approval Request for New Registration Email Application',
 		);
 	}
 
@@ -59,7 +60,7 @@ class ToApproverEmail extends Mailable
 			markdown: 'mail.EmailApplicationFormToApprove',
 			with: [
 				'apprv' =>$this->data2->first()->nama,
-				'name' => Staff::find($this->data1->nostaf)->nama,
+				'name' => Login::where('nostaf', $this->data1->nostaf)->where('is_active', 1)->first()->nama,
 				'link' => route('emailaccapp.show', $this->data1->id),
 			]
 		);

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ApplicantAlert extends Notification
+class ApplicantEmailAlert extends Notification
 {
 	use Queueable;
 
@@ -60,7 +60,6 @@ class ApplicantAlert extends Notification
 	 */
 	public function toDatabase(object $notifiable): array
 	{
-		// dd($notifiable);
 		return [
 			'data' => 'Your have notifications to look into',
 		];

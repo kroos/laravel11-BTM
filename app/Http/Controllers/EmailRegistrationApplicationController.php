@@ -13,7 +13,9 @@ use App\Models\Settings\BTMApprover;
 
 // load notification
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\ApplicantAlert;
+use App\Notifications\ApplicantEmailAlert;
+use App\Notifications\ApplicantEmaiHODlAlert;
+use App\Notifications\ApplicantEmailBTMAlert;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -133,10 +135,14 @@ class EmailRegistrationApplicationController extends Controller
 			};
 		};
 
+		// used with multiple db connection
+		// $user = Login::find(\Auth::user()->nostaf);
+		// $user->setConnection('mysql3');
+		// $user->notify(new ApplicantEmailAlert());
+
 		// alert self
-		Notification::send(\Auth::user(), new ApplicantAlert());
-		// dd(Login::find(\Auth::user()->nostaf)->notify(new ApplicantAlert()));
-		dd(Notification::send(\Auth::user(), new ApplicantAlert()));
+		// Notification::send(\Auth::user(), new ApplicantAlert());
+		// Login::find(\Auth::user()->nostaf)->notify(new ApplicantAlert());
 
 		Pdf::loadView('email.show', ['email' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
@@ -148,14 +154,22 @@ class EmailRegistrationApplicationController extends Controller
 
 		// need to find approver -> find jabatan and then find approver
 		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
-		$apprv = Jabatan::find($dept)->belongstomanyappr;
-		// dd($apprv->belongstomanyappr()->first());
+		$apprv = Jabatan::find($dept)->belongstomanyappr()->get();
+		// dd($apprv);
 		if($apprv->count()) {
-			// send to approver
-			Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApproverEmail($r, $apprv));
+			foreach ($apprv as $v) {
+				// dd($v);
+				// send to approver
+				Mail::to(Login::find($v->nostaf)->email, $v->nama)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToApproverEmail($r, $v));
+
+				// used with multiple db connection
+				$user1 = Login::find($v->nostaf);
+				$user1->setConnection('mysql3');
+				$user1->notify(new ApplicantEmailAlert());
+			}
 		}
 
 		// finally send it to admin
@@ -166,6 +180,11 @@ class EmailRegistrationApplicationController extends Controller
 					// ->cc($moreUsers)
 					// ->bcc($evenMoreUsers)
 					->send(new ToBTMEmailCreate($adm, $r));
+
+				// used with multiple db connection
+				// $user1 = Login::find($v->nostaf);
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantEmailAlert());
 			};
 		};
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Submitted new Email Registration & Informing The Approver');

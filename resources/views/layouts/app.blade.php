@@ -47,6 +47,15 @@
 						@endauth
 					</ul>
 					@auth
+@php
+$user = \App\Models\Login::find(\Auth::user()->nostaf);
+$user->setConnection('mysql3');
+foreach ($user->unreadNotifications as $notification) {
+	echo $notification->type;
+}
+
+
+@endphp
 						<div class="dropdown">
 							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->name }}</a>
 							<ul class="dropdown-menu">
