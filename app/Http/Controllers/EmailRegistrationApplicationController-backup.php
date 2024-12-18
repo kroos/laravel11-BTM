@@ -11,10 +11,6 @@ use App\Models\Login;
 use App\Models\Jabatan;
 use App\Models\Settings\BTMApprover;
 
-// load notification
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\ApplicantAlert;
-
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -25,12 +21,12 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 
-// validation
-use Illuminate\Validation\Rule;
-use App\Rules\UniqueEmail;
-
 // load pdf
 use Barryvdh\DomPDF\Facade\Pdf;
+
+// load notification
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ApplicantAlert;
 
 // send email
 use Illuminate\Support\Facades\Mail;
@@ -93,8 +89,7 @@ class EmailRegistrationApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
-				'emreg' => [new UniqueEmail],
+				'emreg.*.email_suggestion' => 'required|alpha:ascii',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
 			], [
@@ -133,12 +128,12 @@ class EmailRegistrationApplicationController extends Controller
 			};
 		};
 
+		Pdf::loadView('email.show', ['email' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
 		// alert self
 		Notification::send(\Auth::user(), new ApplicantAlert());
 		// dd(Login::find(\Auth::user()->nostaf)->notify(new ApplicantAlert()));
 		dd(Notification::send(\Auth::user(), new ApplicantAlert()));
-
-		Pdf::loadView('email.show', ['email' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
 		// send to self
 		Mail::to($r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
@@ -198,7 +193,7 @@ class EmailRegistrationApplicationController extends Controller
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
+				'emreg.*.email_suggestion' => 'required|alpha:ascii',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
 			], [
@@ -263,6 +258,7 @@ class EmailRegistrationApplicationController extends Controller
 					->send(new ToBTMEmailUpdate($adm, $emailaccapp));
 			};
 		};
+
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Approver');
 	}
 

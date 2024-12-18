@@ -21,15 +21,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
 
-
 class Login extends Authenticatable
 {
+	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
 	protected $connection = 'mysql1';
 	protected $table = 'users';
 	protected $primaryKey = 'nostaf';
 	protected $keyType = 'string';
-
-	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -121,7 +120,8 @@ class Login extends Authenticatable
 	public function routeNotificationForMail($notification)
 	{
 		// Return email address only...
-		return [$this->belongtouser->email => $this->belongtouser->name];
+		return [$this->email => $this->name];
+		// return [$this->belongtouser->email => $this->belongtouser->name];
 		// return [$this->belongstostaff->email => $this->belongstostaff->name];
 	}
 
