@@ -140,10 +140,6 @@ class EmailRegistrationApplicationController extends Controller
 		// $user->setConnection('mysql3');
 		// $user->notify(new ApplicantEmailAlert());
 
-		// alert self
-		// Notification::send(\Auth::user(), new ApplicantAlert());
-		// Login::find(\Auth::user()->nostaf)->notify(new ApplicantAlert());
-
 		Pdf::loadView('email.show', ['email' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
 		// send to self
@@ -168,7 +164,7 @@ class EmailRegistrationApplicationController extends Controller
 				// used with multiple db connection
 				$user1 = Login::find($v->nostaf);
 				$user1->setConnection('mysql3');
-				$user1->notify(new ApplicantEmailAlert());
+				$user1->notify(new ApplicantEmailAlert($r->id));
 			}
 		}
 
@@ -184,7 +180,7 @@ class EmailRegistrationApplicationController extends Controller
 				// used with multiple db connection
 				// $user1 = Login::find($v->nostaf);
 				$adm->setConnection('mysql3');
-				$adm->notify(new ApplicantEmailAlert());
+				$adm->notify(new ApplicantEmailAlert($r->id));
 			};
 		};
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Submitted new Email Registration & Informing The Approver');

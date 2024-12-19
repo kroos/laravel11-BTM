@@ -50,16 +50,28 @@
 @php
 $user = \App\Models\Login::find(\Auth::user()->nostaf);
 $user->setConnection('mysql3');
+// echo $user->unreadNotifications->count();
+// dd($user->unreadNotifications->first()->data);
 foreach ($user->unreadNotifications as $notification) {
-	echo $notification->type;
+	echo $notification->data['data'];
 }
-
-
 @endphp
 						<div class="dropdown">
-							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->name }}</a>
+							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								@if($user->unreadNotifications->count())<span class="badge text-bg-warning">{{$user->unreadNotifications->count()}}</span>@endif
+								{{ Auth::user()->name }}
+							</a>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="#"><i class="fa-regular fa-comment"></i> Notifications</a></li>
+								@if($user->unreadNotifications->count())
+									@foreach($user->unreadNotifications as $v)
+										<li>
+											<a class="dropdown-item" href="{{ $v->data['link'] }}">
+												<i class="fa-regular fa-comment"></i>
+												{{ $v->data['data'] }}
+											</a>
+										</li>
+									@endforeach
+								@endif
 								<form method="POST" action="{{ route('logout') }}">
 									@csrf
 									<li>

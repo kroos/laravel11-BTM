@@ -11,12 +11,14 @@ class ApplicantEmailAlert extends Notification
 {
 	use Queueable;
 
+	public $data;
+
 	/**
 	 * Create a new notification instance.
 	 */
-	public function __construct()
+	public function __construct($data)
 	{
-		//
+		$this->data = $data;
 	}
 
 	/**
@@ -61,7 +63,8 @@ class ApplicantEmailAlert extends Notification
 	public function toDatabase(object $notifiable): array
 	{
 		return [
-			'data' => 'Your have notifications to look into',
+			'data' => 'New email registration application',
+			'link' => route('emailaccapp.show', $this->data),
 		];
 	}
 
