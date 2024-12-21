@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ApplicantEmailAlert extends Notification
+class ApplicantEmailAlertBTM extends Notification
 {
 	use Queueable;
 
@@ -64,7 +64,7 @@ class ApplicantEmailAlert extends Notification
 	{
 		return [
 			'data' => 'New email registration',
-			'link' => route('emailaccapp.show', $this->data),
+			'link' => route('btmemailapplications.edit', $this->data),
 		];
 	}
 

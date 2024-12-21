@@ -1,5 +1,8 @@
 <x-app-layout>
-
+<?php
+\Auth::user()->setConnection('mysql3');
+\Auth::user()->unreadNotifications->markAsRead();
+?>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			{{ __('Email Registration Account Form') }}

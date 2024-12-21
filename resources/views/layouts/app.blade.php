@@ -24,6 +24,7 @@
 </head>
 <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle">
 	<div class="container-fluid ">
+
 		<!-- navigator -->
 		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
@@ -52,9 +53,9 @@ $user = \App\Models\Login::find(\Auth::user()->nostaf);
 $user->setConnection('mysql3');
 // echo $user->unreadNotifications->count();
 // dd($user->unreadNotifications->first()->data);
-foreach ($user->unreadNotifications as $notification) {
-	echo $notification->data['data'];
-}
+// foreach ($user->unreadNotifications as $notification) {
+// 	echo $notification->data['data'];
+// }
 @endphp
 						<div class="dropdown">
 							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">

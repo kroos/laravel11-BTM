@@ -14,8 +14,8 @@ use App\Models\Settings\BTMApprover;
 // load notification
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\ApplicantEmailAlert;
-use App\Notifications\ApplicantEmaiHODlAlert;
-use App\Notifications\ApplicantEmailBTMAlert;
+use App\Notifications\ApplicantEmailAlertBTM;
+// use App\Notifications\;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -180,7 +180,7 @@ class EmailRegistrationApplicationController extends Controller
 				// used with multiple db connection
 				// $user1 = Login::find($v->nostaf);
 				$adm->setConnection('mysql3');
-				$adm->notify(new ApplicantEmailAlert($r->id));
+				$adm->notify(new ApplicantEmailAlertBTM($r->id));
 			};
 		};
 		return redirect()->route('emailaccapp.index')->with('success', 'Successfully Submitted new Email Registration & Informing The Approver');

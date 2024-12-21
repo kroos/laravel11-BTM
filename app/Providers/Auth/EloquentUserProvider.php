@@ -41,6 +41,9 @@ class EloquentUserProvider extends UserProvider
         // } else {
         //     return false;
         // }
-        return ($this->hasher->check($plain, $user->getAuthPassword())  && ($user->belongstostaff->status == 'A' && $user->is_active == 1));
+        // return ($this->hasher->check($plain, $user->getAuthPassword())  && ($user->belongstostaff->status == 'A' && $user->is_active == 1));
+        if (($user->belongstostaff->status == 'A') && ($user->is_active == 1) && ($this->hasher->check($plain, $user->getAuthPassword()))) {
+            return true;
+        }
     }
 }

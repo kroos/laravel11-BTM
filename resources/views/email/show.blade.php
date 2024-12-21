@@ -1,3 +1,7 @@
+<?php
+\Auth::user()->setConnection('mysql3');
+\Auth::user()->unreadNotifications->markAsRead();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
