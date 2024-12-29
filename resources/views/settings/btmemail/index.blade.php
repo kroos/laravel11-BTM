@@ -32,7 +32,7 @@
 								<x-link href="{{ route('btmemailapplications.show', $email->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 									<i class="fa-regular fa-file-pdf"></i>
 								</x-link>
-								@if((is_null($email->approver_staff) && is_null($email->approver_date)) && (is_null($email->btm_approver) && is_null($email->btm_date)))
+								@if((is_null($email->btm_approver) && is_null($email->btm_date)))
 									<x-link href="{{ route('btmemailapplications.edit', $email->id) }}" class="btn btn-primary btn-sm" title="Edit">
 										<i class="fa-regular fa-pen-to-square"></i>
 									</x-link>
