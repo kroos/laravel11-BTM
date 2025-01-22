@@ -1,3 +1,6 @@
+// window.Alpine = require('alpinejs');
+// Alpine.default.start();
+
 window._ = require('lodash');
 window.Popper = require('../../node_modules/popper.js/src/index').default;
 
@@ -8,34 +11,34 @@ window.Popper = require('../../node_modules/popper.js/src/index').default;
  */
 
 try {
-    window.$ = window.jQuery = require('../../node_modules/jquery/dist/jquery');
-    require('../../node_modules/bootstrap/dist/js/bootstrap');
+	window.$ = window.jQuery = require('../../node_modules/jquery/dist/jquery');
+	require('../../node_modules/bootstrap/dist/js/bootstrap');
 	require('@claviska/jquery-minicolors');
-    require('@fortawesome/fontawesome-free');
+	require('@fortawesome/fontawesome-free');
 	require('datatables.net');
-    require('datatables.net-autofill');
-    require('datatables.net-colreorder');
-    require('datatables.net-fixedheader');
-    require('datatables.net-responsive');
-    require('datatables.net-bs5');
-    require('datatables.net-autofill-bs5');
-    require('datatables.net-colreorder-bs5');
-    require('datatables.net-fixedheader-bs5');
-    require('datatables.net-responsive-bs5');
+	require('datatables.net-autofill');
+	require('datatables.net-colreorder');
+	require('datatables.net-fixedheader');
+	require('datatables.net-responsive');
+	require('datatables.net-bs5');
+	require('datatables.net-autofill-bs5');
+	require('datatables.net-colreorder-bs5');
+	require('datatables.net-fixedheader-bs5');
+	require('datatables.net-responsive-bs5');
 
-    // these are different breed of javascript which previously compatible with jquery... hareyyyyy
-    // require('fullcalendar');
-    // require('chart.js');
+	// these are different breed of javascript which previously compatible with jquery... hareyyyyy
+	// require('fullcalendar');
+	// require('chart.js');
 
-    require('../../node_modules/jquery-ui/dist/jquery-ui');
-    require('./dataTable-any-number');
-    require('./datetime-moment');
+	require('../../node_modules/jquery-ui/dist/jquery-ui');
+	require('./dataTable-any-number');
+	require('./datetime-moment');
 
-    require('select2');
+	require('select2');
 	window.moment = require('moment');
-    moment().format();
+	moment().format();
 
-    const Swal = require('sweetalert2');
+	const Swal = require('sweetalert2');
 	window.swal = require ('sweetalert2');
 
 	require ('./bootstrapValidator4/js/bootstrapValidator');
@@ -60,9 +63,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+		window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+		console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**

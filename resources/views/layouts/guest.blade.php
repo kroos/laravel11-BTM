@@ -15,17 +15,19 @@
 	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	@livewireStyles
 	<title>{!! config('app.name') !!}</title>
 	<!-- Styles -->
 	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
+	<link href="{{ URL::asset('css/bootstrap.css') }}" rel="stylesheet">
+	@livewireStyles
 
 </head>
-<body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle">
-	<div class="container-fluid rounded">
+<!-- <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle"> -->
+<body class="min-vh-100 row align-items-center justify-content-center mx-auto bg-secondary bg-opacity-75">
+	<div class="container-fluid row align-self-start justify-content-center">
 
 		<!-- navigator -->
-		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
+		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{{ url('/') }}">
 					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
@@ -58,56 +60,23 @@
 		</nav>
 		<!-- navigator end -->
 
-	</div>
-
-	<div class="container d-flex align-items-center justify-content-center rounded">
-		<noscript>
-			<style type="text/css">
-				.pagecontainer {display:none;}
-			</style>
-			<div class="noscriptmsg text-danger">
-				This page requires JavaScript. Please enable it or you can contact your IT administrator.
-				<meta http-equiv="refresh" content="3; url={{ url('/') }}" />
-			</div>
-		</noscript>
-
-		<!-- IF SUCCESS -->
-		@if(Session::has('success'))
-		<h6 class="pb-4 mb-4 border-bottom text-center alert alert-success">
-			{{ Session::get('success') }}
-		</h6>
-		@endif
-
-		<!-- IF ERROR -->
-		@if(Session::has('danger'))
-		<h6 class="pb-4 mb-4 border-bottom text-center alert alert-danger">
-			{{ Session::get('danger') }}
-		</h6>
-		@endif
-
-		@if(Session::has('status'))
-		<h6 class="pb-4 mb-4 border-bottom text-center alert alert-primary">
-			{{ Session::get('status') }}
-		</h6>
-		@endif
-	</div>
-
-
-
-	<div class="container d-flex align-items-center justify-content-center row rounded">
-		<!-- Page Heading -->
-		@isset($header)
+		<div class="col-sm-12 row justify-content-center m-0">
+			@include('layouts.messages')
+			@isset($header)
 				<div class="shadow">
 					{{ $header }}
 				</div>
-		@endisset
+			@endisset
+		</div>
+	</div>
 
+	<div class="container row align-items-center justify-content-center m-0">
 		@yield('content')
 		{{ $slot }}
 	</div>
 
 	<!-- footer -->
-	<div class="container-fluid d-flex align-items-center justify-content-center text-sm text-black mt-auto rounded">
+	<div class="container align-self-end text-center text-sm text-gray fw-lighter">
 		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
 	</div>
 	<!-- footer end -->

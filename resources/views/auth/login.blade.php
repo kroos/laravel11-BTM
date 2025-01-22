@@ -1,4 +1,9 @@
 <x-guest-layout>
+	<x-slot name="header">
+		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
+			{{ __('Login') }}
+		</h2>
+	</x-slot>
 	<form method="POST" action="{{ route('login') }}" id="form" class="col-sm-4" >
 		@csrf
 

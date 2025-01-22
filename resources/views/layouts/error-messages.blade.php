@@ -1,4 +1,4 @@
-		@if ($errors->any())
+	@if ($errors->any())
 		<div class="col-sm-12 d-flex align-items-center justify-content-center">
 			<ul class="list-group">
 				@foreach ($errors->all() as $error)
