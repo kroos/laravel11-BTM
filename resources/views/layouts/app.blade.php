@@ -100,7 +100,7 @@ $user->setConnection('mysql3');
 			@endisset
 		</div>
 
-		<div class="container row align-self-start justify-content-center m-0">
+		<div class="container row justify-content-center m-0">
 			@yield('content')
 			{{ $slot }}
 		</div>

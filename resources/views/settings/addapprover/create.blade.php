@@ -6,9 +6,16 @@
 		</h2>
 	</x-slot>
 
-	<div class="col-sm-12 row align-items-center">
+	<div class="colontainer d-flex justify-content-center">
 		<form action="{{ route('addapprover.store') }}" method="POST">
 			@csrf
+
+			<div class="col-sm-12 text-right mt-3">
+				<x-primary-button type="button" class="add_approver">
+					<i class="fa-solid fa-user-plus"></i>&nbsp;Add Approver
+				</x-primary-button>
+			</div>
+
 			<div class="wrap_approver">
 				<div class="col-sm-12 row mt-3">
 					<!-- Staff -->
@@ -35,12 +42,6 @@
 					</div>
 				</div>
 
-			</div>
-
-			<div class="col-sm-12 text-right mt-3">
-				<x-primary-button type="button" class="add_approver">
-					<i class="fa-solid fa-user-plus"></i>&nbsp;Add Approver
-				</x-primary-button>
 			</div>
 
 			<x-primary-button type="submit" class="m-3">

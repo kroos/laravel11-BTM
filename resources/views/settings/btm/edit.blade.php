@@ -6,12 +6,12 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST">
+	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST" class="container row justify-content-evenly mx-auto">
 			@csrf
 			@method('PATCH')
 		<div class="container row justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Applicant</h3>
 				<!-- staff id -->
 				<div class="col-sm-12 mt-2 row">
@@ -60,8 +60,14 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Equipments</h3>
+
+				<div class="col-sm-12 text-right mt-3">
+					<x-primary-button type="button" class="add_equipments">
+						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
+					</x-primary-button>
+				</div>
 
 				@if($loanapp->count())
 				<?php
@@ -148,15 +154,13 @@
 				<div class="wrap_equipments">
 				</div>
 
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_equipments">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
-					</x-primary-button>
-				</div>
 			</div>
 
+		</div>
+
+		<div class="col-sm-12 row justify-content-center">
 			<!-- 3rd column -->
-			<div class="col-sm-12 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 				<h3>Department</h3>
 				<div class="col-sm-12 m-0 p-1">
 					<p>Department :
@@ -183,7 +187,7 @@
 			</div>
 
 			<!-- 4th column -->
-			<div class="col-sm-12 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 				<h3>BTM Used</h3>
 				<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
 				<div class="btn-group" role="group" aria-label="Loan Equipment Approval">
@@ -200,7 +204,7 @@
 					<x-input-error :messages="$errors->get('status_loan_id')" />
 				</div>
 
-				<div class="col-sm-12 mt-2 row">
+				<div class="col-sm-6 mt-2 row">
 					<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
 					<div class="col-sm-8">
 						<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $loanapp->btm_remarks }}</textarea>
@@ -216,6 +220,7 @@
 				</x-primary-button>
 			</div>
 		</div>
+	</form>
 
 
 @section('js')

@@ -6,12 +6,12 @@
 		</h2>
 	</x-slot>
 
-	<div class="col-sm-12 row">
-		<div class="col-sm-6 p-1 mx-auto">
+	<div class="col-sm-12 row align-items-center justify-content-between">
+		<div class="col-sm-5 row justify-content-center p-1 m-0">
 			@livewire('Settings.AddCategoryCreate')
 			@livewire('Settings.AddCategory')
 		</div>
-		<div class="col-sm-6 p-1 mx-auto">
+		<div class="col-sm-5 row justify-content-center p-1 m-0">
 			<h3>Add Item</h3>
 			@livewire('Settings.AddItemCreate')
 		</div>

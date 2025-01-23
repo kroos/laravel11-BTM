@@ -9,9 +9,9 @@
 	<form action="{{ route('loanapp.update', $loanapp->id) }}" method="POST">
 			@csrf
 			@method('PATCH')
-		<div class="container row justify-content-between">
+		<div class="container d-flex justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Applicant</h3>
 				<!-- staff id -->
 				<div class="col-sm-12 mt-2 row">
@@ -60,8 +60,14 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Equipments</h3>
+
+				<div class="col-sm-12 text-right mt-3">
+					<x-primary-button type="button" class="add_equipments">
+						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
+					</x-primary-button>
+				</div>
 
 				@if($loanapp->count())
 				<?php
@@ -117,12 +123,9 @@
 				<div class="wrap_equipments">
 				</div>
 
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_equipments">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
-					</x-primary-button>
-				</div>
 			</div>
+
+		</div>
 
 			<!-- 3rd column -->
 			<div class="col-sm-12 m-0 p-1">
@@ -157,8 +160,6 @@
 					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
 				</x-primary-button>
 			</div>
-		</div>
-
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////

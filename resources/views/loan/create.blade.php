@@ -62,6 +62,12 @@
 			<div class="col-sm-5 m-0 p-1">
 				<h3>Equipments</h3>
 
+				<div class="col-sm-12 text-right mt-3">
+					<x-primary-button type="button" class="add_equipments">
+						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
+					</x-primary-button>
+				</div>
+
 				<div class="wrap_equipments">
 					<div class="col-sm-12 row mt-3">
 
@@ -107,11 +113,6 @@
 
 				</div>
 
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_equipments">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
-					</x-primary-button>
-				</div>
 			</div>
 
 		</div>

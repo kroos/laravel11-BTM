@@ -140,7 +140,9 @@ class LoanApplicationController extends Controller
 		if (BTMApprover::where('active', 1)->count()) {
 			foreach(BTMApprover::where('active', 1)->get() as $ad) {
 				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				Mail::to($adm->email, $adm->name)
+				// dd($adm, $r);
+				// Mail::to($adm->email, $adm->name)
+				Mail::to($adm)
 					// ->cc($moreUsers)
 					// ->bcc($evenMoreUsers)
 					->send(new ToBTMLoanCreate($adm, $r));

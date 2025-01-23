@@ -69,7 +69,7 @@
 			@endisset
 		</div>
 
-		<div class="container row align-items-center justify-content-center mx-auto m-0 border">
+		<div class="container row justify-content-center m-0">
 			@yield('content')
 			{{ $slot }}
 		</div>

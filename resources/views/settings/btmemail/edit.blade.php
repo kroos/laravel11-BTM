@@ -13,9 +13,10 @@
 		@method('PATCH')
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ $btmemailapplication->nostaf }}" readonly />
-		<div class="container row justify-content-between">
+
+		<div class="container row justify-content-between mx-auto border border-primary">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Proposed Email ID</h3>
 				<small>Please do not use nickname or number in your email ID</small>
 
@@ -74,7 +75,7 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Group Email</h3>
 				<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
 				<div class="form-check form-switch">
@@ -132,69 +133,71 @@
 				</div>
 			</div>
 
-			<!-- 3rd column -->
-			<div class="col-sm-12 m-0 p-1">
-				<h3>Department</h3>
-				<div class="col-sm-12 m-0 p-1">
-					<p>Department :
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-					</p>
-					<h3>Approval From Director/Dean/Head of Department</h3>
-					<p>Approver :
-					@php
-					$j = \App\Models\Jabatan::find($idj);
-					if($j->belongstomanyappr->count()){
-						echo $j->belongstomanyappr->first()->nama;
-					} else {
-						echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-					}
-					@endphp
-					</p>
-					<p>Date : </p>
-					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the new email registration is intended for official purposes.</p>
-				</div>
-			</div>
+		</div>
 
-			<!-- 4th column -->
-			<div class="col-sm-12 m-0 p-1">
-				<h3>BTM Used</h3>
-				<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
-				<div class="btn-group" role="group" aria-label="New Email Registration Approval">
-					<?php
-						$p = 0;
-					?>
-					@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
-						<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
-						<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
-						<?php
-							$p++;
-						?>
-					@endforeach
-					<x-input-error :messages="$errors->get('status_email_id')" />
-				</div>
-
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
-					<div class="col-sm-8">
-						<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmemailapplication->btm_remarks }}</textarea>
-						<x-input-error :messages="$errors->get('btm_remarks')" />
+			<div class="row justify-content-center border border-primary">
+				<!-- 3rd column -->
+				<div class="col-sm-6 m-0 p-1">
+					<h3>Department</h3>
+					<div class="col-sm-12 m-0 p-1">
+						<p>Department :
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+						</p>
+						<h3>Approval From Director/Dean/Head of Department</h3>
+						<p>Approver :
+						@php
+						$j = \App\Models\Jabatan::find($idj);
+						if($j->belongstomanyappr->count()){
+							echo $j->belongstomanyappr->first()->nama;
+						} else {
+							echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+						}
+						@endphp
+						</p>
+						<p>Date : </p>
+						<p class="text-sm fs-6 fw-bolder">I hereby confirm that the new email registration is intended for official purposes.</p>
 					</div>
 				</div>
 
+				<!-- 4th column -->
+				<div class="col-sm-6 m-0 p-1">
+					<h3>BTM Used</h3>
+					<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
+					<div class="btn-group" role="group" aria-label="New Email Registration Approval">
+						<?php
+							$p = 0;
+						?>
+						@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
+							<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
+							<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+							<?php
+								$p++;
+							?>
+						@endforeach
+						<x-input-error :messages="$errors->get('status_email_id')" />
+					</div>
+
+					<div class="col-sm-12 mt-2 row">
+						<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
+						<div class="col-sm-8">
+							<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmemailapplication->btm_remarks }}</textarea>
+							<x-input-error :messages="$errors->get('btm_remarks')" />
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-sm-12 text-center">
+					<x-primary-button type="submit" class="m-2">
+						<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
+					</x-primary-button>
+				</div>
 			</div>
-
-			<div class="col-sm-12 text-center">
-				<x-primary-button type="submit" class="m-2">
-					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
-				</x-primary-button>
-			</div>
-		</div>
-
-
+	</form>
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 function createPersonnelRow(index) {
