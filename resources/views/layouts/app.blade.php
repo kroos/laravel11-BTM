@@ -20,15 +20,15 @@
 	<!-- Styles -->
 	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('css/bootstrap.css') }}" rel="stylesheet">
+	{{-- <link href="{{ URL::asset('css/jquery-ui-bootstrap5-datepicker.css') }}" rel="stylesheet"> --}}
 	@livewireStyles
 
 </head>
-<!-- <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle"> -->
-<body class="min-vh-100 row align-items-center justify-content-center mx-auto bg-secondary bg-opacity-75">
-	<div class="container-fluid row align-self-start justify-content-center">
+<body class=" bg-secondary bg-opacity-75">
+	<div class="container-fluid row min-vh-100 align-items-center justify-content-center mx-auto">
 
 		<!-- navigator -->
-		<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
+		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{{ url('/dashboard') }}">
 					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
@@ -99,18 +99,19 @@ $user->setConnection('mysql3');
 				</div>
 			@endisset
 		</div>
-	</div>
 
-	<div class="container row align-self-start align-items-center justify-content-center m-0">
-		@yield('content')
-		{{ $slot }}
-	</div>
+		<div class="container row align-self-start justify-content-center m-0">
+			@yield('content')
+			{{ $slot }}
+		</div>
 
-	<!-- footer -->
-	<div class="container align-self-end text-center text-sm text-black mt-auto rounded">
-		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		<!-- footer -->
+		<div class="container py-3 align-self-end text-center text-sm text-secondary">
+			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		</div>
+		<!-- footer end -->
+
 	</div>
-	<!-- footer end -->
 
 </body>
 <script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>

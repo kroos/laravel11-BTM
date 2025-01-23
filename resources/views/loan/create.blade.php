@@ -8,9 +8,9 @@
 
 	<form action="{{ route('loanapp.store') }}" method="POST">
 			@csrf
-		<div class="container row justify-content-between">
+		<div class="container d-flex justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Applicant</h3>
 				<!-- staff id -->
 				<div class="col-sm-12 mt-2 row">
@@ -59,7 +59,7 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Equipments</h3>
 
 				<div class="wrap_equipments">
@@ -114,38 +114,38 @@
 				</div>
 			</div>
 
-			<!-- 3rd column -->
+		</div>
+		<!-- 3rd column -->
+		<div class="col-sm-12 m-0 p-1">
+			<h3>Department</h3>
 			<div class="col-sm-12 m-0 p-1">
-				<h3>Department</h3>
-				<div class="col-sm-12 m-0 p-1">
-					<p>Department :
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-					</p>
-					<h3>Approval From Director/Dean/Head of Department</h3>
-					<p>Approver :
-					@php
-					$j = \App\Models\Jabatan::find($idj);
-					if($j->belongstomanyappr->count()){
-						echo $j->belongstomanyappr->first()->nama;
-					} else {
-						echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-					}
-					@endphp
-					</p>
-					<p>Date : </p>
-					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
-				</div>
+				<p>Department :
+				@php
+				$r = \App\Models\Staff::find(Auth::user()->nostaf);
+				echo $r->belongstomanydepartment()->first()->namajabatan;
+				$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+				@endphp
+				</p>
+				<h3>Approval From Director/Dean/Head of Department</h3>
+				<p>Approver :
+				@php
+				$j = \App\Models\Jabatan::find($idj);
+				if($j->belongstomanyappr->count()){
+					echo $j->belongstomanyappr->first()->nama;
+				} else {
+					echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+				}
+				@endphp
+				</p>
+				<p>Date : </p>
+				<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
 			</div>
+		</div>
 
-			<div class="col-sm-12 text-center">
-				<x-primary-button type="submit" class="m-2">
-					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
-				</x-primary-button>
-			</div>
+		<div class="col-sm-12 text-center">
+			<x-primary-button type="submit" class="m-2">
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
+			</x-primary-button>
 		</div>
 
 

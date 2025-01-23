@@ -1,0 +1,157 @@
+/*
+ * Based on: https://gist.github.com/miwahall/7028640
+ * And the idea of gordon-matt
+ *
+ * Works with Bootstrap 5.0.0-beta2, the Icons used are also new Bootstrap Svg Icon set (1.3.0)
+ * The final design isn't 110% perfect.
+ *
+ * Used libs:
+ *
+ * jquery-3.5.1.min.js
+ * jquery-ui.min.js	(1.12.1)
+ * bootstrap.min.cs	(5.0.0-beta2)
+ * bootstrap.min.js	(5.0.0-beta2)
+ * bootstrap-icons.css	(1.3.0)
+ */
+
+.ui-datepicker {
+  background-color: #fff;
+  border: 1px solid #66AFE9;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(102, 175, 233, .6);
+  display: none;
+  margin-top: 4px;
+  padding: 10px;
+  width: 240px;
+}
+
+.ui-datepicker a,
+.ui-datepicker a:hover {
+  text-decoration: none;
+}
+
+.ui-datepicker a:hover,
+.ui-datepicker td:hover a {
+  color: #2A6496;
+  -webkit-transition: color 0.1s ease-in-out;
+  -moz-transition: color 0.1s ease-in-out;
+  -o-transition: color 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out;
+}
+
+.ui-datepicker .ui-datepicker-header {
+  margin-bottom: 4px;
+  text-align: center;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.ui-datepicker .ui-datepicker-title {
+  font-weight: 700;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+  cursor: pointer;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--bs-font-sans-serif);
+  font-style: normal;
+  font-weight: normal;
+  height: 26px;
+  line-height: 1;
+  width: 30px;
+}
+
+.ui-datepicker .ui-datepicker-prev-hover:hover,
+.ui-datepicker .ui-datepicker-next-hover:hover{
+    border-radius: 4px;
+    background-color: #eee;
+  }
+
+.ui-datepicker .ui-datepicker-prev {
+  float: left;
+  text-align: left;
+  padding-left: 7px;
+}
+
+.ui-datepicker .ui-datepicker-next {
+  float: right;
+  text-align: right;
+  padding-right: 7px;
+}
+
+.ui-datepicker .ui-icon {
+  display: none;
+}
+
+.ui-datepicker .ui-datepicker-calendar {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.ui-datepicker .ui-datepicker-calendar th,
+.ui-datepicker .ui-datepicker-calendar td {
+  text-align: center;
+  padding: 4px 0;
+}
+
+.ui-datepicker .ui-datepicker-calendar td {
+  border-radius: 4px;
+  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  -moz-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  -o-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+.ui-datepicker .ui-datepicker-calendar td:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.ui-datepicker .ui-datepicker-calendar td a {
+  text-decoration: none;
+}
+
+.ui-datepicker .ui-datepicker-current-day {
+  background-color: #4289cc;
+}
+
+.ui-datepicker .ui-datepicker-current-day a {
+  color: #fff;
+}
+
+
+.ui-datepicker .ui-datepicker-calendar .ui-datepicker-unselectable {
+  background-color: #eff0f1;
+  cursor: default;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-datepicker-unselectable:hover {
+  background-color: #eff0f1;
+  cursor: default;
+}
+
+
+.ui-datepicker-prev span {
+  display: none;
+}
+
+.ui-datepicker-prev::before {
+  display: inline-block;
+  content: "";
+  background-image: url("data:image/svg+xml,%3Csvg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-caret-left-fill' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 1rem 1.5rem;
+  width: 1rem;
+  height: 1.7rem;
+}
+
+.ui-datepicker-next::after {
+  display: inline-block !important;
+  content: "";
+  background-image: url("data:image/svg+xml,%3Csvg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-caret-right-fill' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 1rem 1.5rem;
+  width: 1rem;
+  height: 1.7rem;
+}

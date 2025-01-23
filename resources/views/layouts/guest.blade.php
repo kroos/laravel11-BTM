@@ -22,43 +22,43 @@
 	@livewireStyles
 
 </head>
-<!-- <body class="container-fluid d-flex flex-column min-vh-100 align-items-center justify-content-center bg-info-subtle"> -->
-<body class="min-vh-100 row align-items-center justify-content-center mx-auto bg-secondary bg-opacity-75">
-	<div class="container-fluid row align-self-start justify-content-center">
+<body class="bg-secondary bg-opacity-75">
 
-		<!-- navigator -->
-		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url('/') }}">
-					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarColor01">
-					<ul class="navbar-nav me-auto">
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url('/') }}">Home
-							</a>
-						</li>
+	<div class="container-fluid row min-vh-100 align-items-center justify-content-center mx-auto">
+
+			<!-- navigator -->
+			<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="{{ url('/') }}">
+						<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
+					</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarColor01">
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url('/') }}">Home
+								</a>
+							</li>
+							@auth
+								@include('layouts.nav-app')
+							@else
+								@include('layouts.nav-guest')
+							@endauth
+						</ul>
 						@auth
-							@include('layouts.nav-app')
+							<form method="POST" action="{{ route('logout') }}">
+								@csrf
+								<a href="{{ route('logout') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0" type="submit" onclick="event.preventDefault();this.closest('form').submit();">Log Out</a>
+							</form>
 						@else
-							@include('layouts.nav-guest')
+							<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
 						@endauth
-					</ul>
-					@auth
-						<form method="POST" action="{{ route('logout') }}">
-							@csrf
-							<a href="{{ route('logout') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0" type="submit" onclick="event.preventDefault();this.closest('form').submit();">Log Out</a>
-						</form>
-					@else
-						<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
-					@endauth
+					</div>
 				</div>
-			</div>
-		</nav>
-		<!-- navigator end -->
+			</nav>
+			<!-- navigator end -->
 
 		<div class="col-sm-12 row justify-content-center m-0">
 			@include('layouts.messages')
@@ -68,18 +68,19 @@
 				</div>
 			@endisset
 		</div>
-	</div>
 
-	<div class="container row align-items-center justify-content-center m-0">
-		@yield('content')
-		{{ $slot }}
-	</div>
+		<div class="container row align-items-center justify-content-center mx-auto m-0 border">
+			@yield('content')
+			{{ $slot }}
+		</div>
 
-	<!-- footer -->
-	<div class="container align-self-end text-center text-sm text-gray fw-lighter">
-		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		<!-- footer -->
+		<div class="container align-self-end py-3 text-center text-sm text-secondary fw-lighter">
+			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		</div>
+		<!-- footer end -->
+
 	</div>
-	<!-- footer end -->
 
 </body>
 <!-- <script type="module" src="{{ asset('js/fullcalendar/bootstrap5/index.global.js') }}"></script> -->

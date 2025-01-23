@@ -9,9 +9,41 @@
 	<form action="{{ route('emailaccapp.store') }}" method="POST">
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
-		<div class="container row justify-content-between">
+		<div class="container d-flex justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
+				<h3>Applicant</h3>
+
+				<div class="col-sm-12 mt-2 row">
+					<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
+					<div class="col-sm-8">
+						<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+						<x-input-error :messages="$errors->get('nostaf')" />
+					</div>
+				</div>
+
+				<!-- staff name -->
+				<div class="col-sm-12 mt-2 row">
+					<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
+					<div class="col-sm-8">
+						<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+						<x-input-error :messages="$errors->get('nama')" />
+					</div>
+				</div>
+
+				<!-- date -->
+				<div class="col-sm-12 mt-2 row">
+					<x-input-label for="date" class="col-sm-4" :value="__('Date From : ')" />
+					<div class="col-sm-8">
+						<x-text-input id="date" name="date" value="{{ old('date') }}" class="{{ ($errors->has('date')?'is-invalid':NULL) }}" style="z-index: 10000;" />
+						<x-input-error :messages="$errors->get('date')" />
+					</div>
+				</div>
+
+
+
+
+
 				<h3>Proposed Email ID</h3>
 				<small>Please do not use nickname or number in your email ID</small>
 
@@ -47,7 +79,7 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 				<h3>Group Email</h3>
 				<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
 				<div class="form-check form-switch">
@@ -59,42 +91,49 @@
 				</div>
 			</div>
 
-			<!-- 3rd column -->
+		</div>
+		<!-- 3rd column -->
+		<div class="col-sm-12 m-0 p-1">
+			<h3>Department</h3>
 			<div class="col-sm-12 m-0 p-1">
-				<h3>Department</h3>
-				<div class="col-sm-12 m-0 p-1">
-					<p>Department :
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-					</p>
-					<h3>Approval From Director/Dean/Head of Department</h3>
-					<p>Approver :
-					@php
-					$j = \App\Models\Jabatan::find($idj);
-					if($j->belongstomanyappr->count()){
-						echo $j->belongstomanyappr->first()->nama;
-					} else {
-						echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-					}
-					@endphp
-					</p>
-					<p>Date : </p>
-					<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
-				</div>
+				<p>Department :
+				@php
+				$r = \App\Models\Staff::find(Auth::user()->nostaf);
+				echo $r->belongstomanydepartment()->first()->namajabatan;
+				$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+				@endphp
+				</p>
+				<h3>Approval From Director/Dean/Head of Department</h3>
+				<p>Approver :
+				@php
+				$j = \App\Models\Jabatan::find($idj);
+				if($j->belongstomanyappr->count()){
+					echo $j->belongstomanyappr->first()->nama;
+				} else {
+					echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+				}
+				@endphp
+				</p>
+				<p>Date : </p>
+				<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
 			</div>
+		</div>
 
-			<div class="col-sm-12 text-center">
-				<x-primary-button type="submit" class="m-2">
-					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
-				</x-primary-button>
-			</div>
+		<div class="col-sm-12 text-center">
+			<x-primary-button type="submit" class="m-2">
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
+			</x-primary-button>
 		</div>
 
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// datepicker
+$('#date').datepicker({
+	dateFormat: 'yy-mm-dd',
+	minDate: 0,
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // group email
 $(`#gemail`).change(function(){
@@ -293,9 +332,6 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 		}
 	});
 }
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add email
