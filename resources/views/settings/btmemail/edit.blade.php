@@ -14,7 +14,7 @@
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ $btmemailapplication->nostaf }}" readonly />
 
-		<div class="container row justify-content-between mx-auto border border-primary">
+		<div class="container row justify-content-between mx-auto">
 			<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
 				<h3>Proposed Email ID</h3>
@@ -135,7 +135,7 @@
 
 		</div>
 
-			<div class="row justify-content-center border border-primary">
+			<div class="row justify-content-center">
 				<!-- 3rd column -->
 				<div class="col-sm-6 m-0 p-1">
 					<h3>Department</h3>
