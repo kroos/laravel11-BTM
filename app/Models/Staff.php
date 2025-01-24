@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Notifications\Notifiable;
 use App\Models\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,7 +23,7 @@ class Staff extends Model
 	protected $primaryKey = 'nostaf';
 	protected $keyType = 'string';
 
-	use HasFactory/*, SoftDeletes*/;
+	use HasFactory/*, SoftDeletes, Notifiable*/;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasone relationship

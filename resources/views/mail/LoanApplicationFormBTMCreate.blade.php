@@ -1,7 +1,7 @@
 <x-mail::message>
 # Introduction
 
-Dear {{$admin}},
+Dear {{ $admin }},
 
 
 I hope this email finds you well.

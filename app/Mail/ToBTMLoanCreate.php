@@ -14,7 +14,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Address;
 
 // load model
-use App\Models\Staff;
+use App\Models\Login;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -32,9 +32,11 @@ class ToBTMLoanCreate extends Mailable
 	 * Create a new message instance.
 	 */
 	public function __construct($data1, $data2)
+	// public function __construct($data1)
 	{
 		$this->data1 = $data1;
 		$this->data2 = $data2;
+		// dd($this->data1, $this->data2);
 	}
 
 	/**
@@ -57,8 +59,10 @@ class ToBTMLoanCreate extends Mailable
 			view: 'mail.LoanApplicationFormBTMCreate',
 			with: [
 				'admin' =>$this->data1->name,
-				'name' => Staff::find($this->data2->nostaf)->nama,
+				'name' => Login::where('nostaf', $this->data2->nostaf)->where('is_active', 1)->first()->name,
+				// 'name' => $this->data2->nostaf,
 				'link' => route('loanapp.show', $this->data2->id),
+				// 'link' => route('loanapp.show', $this->data1->id),
 			]
 		);
 	}

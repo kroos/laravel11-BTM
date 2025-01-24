@@ -107,6 +107,7 @@ class LoanApplicationController extends Controller
 		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
 		$data += ['active' => 1];
 		$data += ['status_loan_id' => 3];
+
 		if ($request->has('lequ')) {
 			$r = \Auth::user()->belongstostaff->hasmanyloan()->create($data);
 			foreach ($request->lequ as $k => $v) {
@@ -136,18 +137,19 @@ class LoanApplicationController extends Controller
 					->send(new ToApprover($r, $apprv));
 			}
 
-		// finally send it to admin
-		if (BTMApprover::where('active', 1)->count()) {
-			foreach(BTMApprover::where('active', 1)->get() as $ad) {
-				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				// dd($adm, $r);
-				// Mail::to($adm->email, $adm->name)
-				Mail::to($adm)
-					// ->cc($moreUsers)
-					// ->bcc($evenMoreUsers)
-					->send(new ToBTMLoanCreate($adm, $r));
-			};
-		};
+			// finally send it to admin
+			// $user->notify(new ToBTMLoanCreate($r));
+			if (BTMApprover::where('active', 1)->count()) {
+				// $r will "dissolve" when lopp process
+				foreach(BTMApprover::where('active', 1)->get() as $ad) {
+					$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+					// $adm = $ad->belongstobtmappr->hasmanylogin()->where('is_active', 1)->first();
+					// dd($adm, $r);
+					// Mail::to($adm)
+					Mail::to($adm->email, $adm->name)
+							->send(new ToBTMLoanCreate($adm, $r));
+				}
+			}
 		} else {
 			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
