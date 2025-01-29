@@ -23,5 +23,6 @@ mix.js('resources/js/app.js', 'public/js/app.js')
 	//	'./node_modules/select2-theme-bootstrap5/dist/select2-bootstrap.css',
 	//	], 'public/css/app.css')
 	// .setPublicPath('public/)
-	.sourceMaps()
-;
+	.copyDirectory('node_modules/fullcalendar', 'public/js/fullcalendar')
+	.copyDirectory('node_modules/chart.js', 'public/js/chart.js')
+	.sourceMaps();

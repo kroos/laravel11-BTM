@@ -19,3 +19,17 @@ yarn-error.log
 /.vscode
 /public/Dwebappsstoragelogs/*.log
 .phpintel
+/public/css/app.css
+/public/css/app.css.map
+/public/fonts/vendor
+/public/images/vendor
+/public/fonts
+vendor
+fonts
+/public/mix-manifest.json
+assets
+/public/js/app.js.map
+app.js.LICENSE.txt
+chartjs
+fullcalendar
+/public/js/app.js
