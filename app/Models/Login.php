@@ -65,16 +65,16 @@ class Login extends Authenticatable
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function getAuthIdentifierName()
-	{
-		return 'username';
-	}
+	// public function getAuthIdentifierName()
+	// {
+	// 	return 'username';
+	// }
 
-	// for password
-	public function getAuthPassword()
-	{
-		return $this->password;
-	}
+	// // for password
+	// public function getAuthPassword()
+	// {
+	// 	return $this->password;
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation hasMany/hasOne

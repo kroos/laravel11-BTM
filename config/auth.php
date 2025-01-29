@@ -66,6 +66,7 @@ return [
             'driver' => 'loginuserprovider',
             'model' => App\Models\Login::class,
             'table' => 'users',
+            'connection' => 'mysql1'
         ],
 
         // 'users' => [
