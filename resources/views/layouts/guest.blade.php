@@ -17,7 +17,7 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>{!! config('app.name') !!}</title>
 	<!-- Styles -->
-	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
+	@vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])
 	<link href="{{ URL::asset('css/bootstrap.css') }}" rel="stylesheet">
 	@livewireStyles
 
@@ -83,16 +83,8 @@
 	</div>
 
 </body>
-<!-- <script type="module" src="{{ asset('js/fullcalendar/bootstrap5/index.global.js') }}"></script> -->
-<!-- <script type="module" src="{{ asset('js/fullcalendar/daygrid/index.global.js') }}"></script> -->
-<!-- <script type="module" src="{{ asset('js/fullcalendar/multimonth/index.global.js') }}"></script> -->
-<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
-<!-- <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script> -->
-<!-- <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script> -->
-<script src="{{ asset('js/chartjs/chart.umd.js') }}"></script>
-<script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
-<script src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
+<script type="javascript" src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
+<script type="javascript" src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
 
 <script type="module">
 	jQuery.noConflict ();

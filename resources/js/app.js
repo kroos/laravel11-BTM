@@ -1,86 +1,61 @@
-// window.Alpine = require('alpinejs');
-// Alpine.default.start();
+// Default Laravel bootstrapper, installs axios, jQuery
+import './bootstrap';
 
-window._ = require('lodash');
-window.Popper = require('../../node_modules/popper.js/src/index').default;
+// Added: Popper.js dependency for popover support in Bootstrap
+// import '@popperjs/core';
 
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
+// jquery-ui
+// import '../../node_modules/jquery-ui/dist/jquery-ui';
+import './jquery-ui-prefix';
 
-try {
-	window.$ = window.jQuery = require('../../node_modules/jquery/dist/jquery');
-	require('../../node_modules/bootstrap/dist/js/bootstrap');
-	require('@claviska/jquery-minicolors');
-	require('@fortawesome/fontawesome-free');
-	require('datatables.net');
-	require('datatables.net-autofill');
-	require('datatables.net-colreorder');
-	require('datatables.net-fixedheader');
-	require('datatables.net-responsive');
-	require('datatables.net-bs5');
-	require('datatables.net-autofill-bs5');
-	require('datatables.net-colreorder-bs5');
-	require('datatables.net-fixedheader-bs5');
-	require('datatables.net-responsive-bs5');
+// careful between these 2 (bootstrap and jquery-ui), cause it conflicts on "tooltips". this way, we override all components from jquery-ui which results we always use the bootstrap components.
+// Added: Actual Bootstrap JavaScript dependency
+import '../../node_modules/bootstrap/dist/js/bootstrap.bundle';
 
-	// these are different breed of javascript which previously compatible with jquery... hareyyyyy
-	// require('fullcalendar');
-	// require('chart.js');
+// select2
+import select2 from 'select2';
+select2();
 
-	require('../../node_modules/jquery-ui/dist/jquery-ui');
-	require('./dataTable-any-number');
-	require('./datetime-moment');
+// sweetalert2
+import swal from 'sweetalert2';
+window.swal = swal;
 
-	require('select2');
-	window.moment = require('moment');
-	moment().format();
+// moment
+import moment from 'moment';
+window.moment = moment;
 
-	const Swal = require('sweetalert2');
-	window.swal = require ('sweetalert2');
+// datatables
+import DataTable from 'datatables.net';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-bs5';
+import 'datatables.net-fixedheader-bs5';
+import 'datatables.net-colreorder-bs5';
+import 'datatables.net-autofill-bs5'
+window.DataTable = DataTable;
 
-	require ('./bootstrapValidator4/js/bootstrapValidator');
-} catch (e) {}
+// minicolors
+import '@claviska/jquery-minicolors';
 
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
+// Chart.js
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
 
-window.axios = require('axios');
+// @fullcalendar
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import multiMonthPlugin from "@fullcalendar/multimonth";
+import listPlugin from '@fullcalendar/list';
+import momentPlugin from '@fullcalendar/moment';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+window.Calendar = Calendar;
+window.multiMonthPlugin = multiMonthPlugin;
+window.dayGridPlugin = dayGridPlugin;
+window.timeGridPlugin = timeGridPlugin;
+window.listPlugin = listPlugin;
+window.momentPlugin = momentPlugin;
+window.bootstrap5Plugin = bootstrap5Plugin;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
-
-let token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-		window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-		console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo'
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });
+import Alpine from 'alpinejs';
+window.Alpine = Alpine;
+Alpine.start();

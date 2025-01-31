@@ -13,18 +13,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // fullcalendar
 const calendarEl = document.getElementById('calendar')
-const calendar = new FullCalendar.Calendar(calendarEl, {
-	// plugins: [
-	// 	timeGridPlugin,
-	// 	dayGridPlugin,
-	// 	multiMonthPlugin,
-	// 	momentPlugin,
-	// 	bootstrap5Plugin
-	// ],
+const calendar = new Calendar(calendarEl, {
+	plugins: [
+	timeGridPlugin,
+		dayGridPlugin,
+		multiMonthPlugin,
+		momentPlugin,
+		bootstrap5Plugin
+	],
 	aspectRatio: 1.3,
 	height: 2000,
 	weekNumbers: true,
-	themeSystem: 'bootstrap',
+	themeSystem: 'bootstrap5',
 	initialView: 'multiMonthYear',
 	// initialView: 'dayGridMonth',
 	headerToolbar: {
@@ -39,9 +39,6 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
 		extraParams: {
 			_token: '{!! csrf_token() !!}',
 		},
-	},
-	failure: function() {
-		alert('There was an error while fetching loan!');
 	},
 	// events: [
 	// 			{
