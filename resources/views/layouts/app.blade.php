@@ -22,7 +22,7 @@
 
 </head>
 <body class=" bg-secondary bg-opacity-75">
-	<div class="container-fluid row min-vh-100 align-items-center justify-content-center mx-auto">
+	<div class="container-fluid row min-vh-100 justify-content-center mx-auto">
 
 		<!-- navigator -->
 		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">

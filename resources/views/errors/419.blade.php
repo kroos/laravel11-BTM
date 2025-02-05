@@ -1,5 +1,4 @@
 <x-app-layout>
-
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			{{ __('419') }}
@@ -13,9 +12,4 @@
 			<p class="lead mb-0"><a href="{{ url('/dashboard') }}" class="btn btn-lg btn-outline-secondary text-body-emphasis fw-bold">Home</a></p>
 		</div>
 	</div>
-
-@section('js')
-/////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-@endsection
 </x-app-layout>
