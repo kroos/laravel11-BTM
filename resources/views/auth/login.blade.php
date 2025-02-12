@@ -27,10 +27,10 @@
 				<input type="checkbox" name="remember" id="remember_me" class="form-check-input rounded" >
 				<span class="text-sm">Remember me</span>
 			</label>
+		</div>
 			<x-primary-button class="ml-3" type="submit">
 				{{ __('Log in') }}
 			</x-primary-button>
-		</div>
 	</form>
 
 @section('js')

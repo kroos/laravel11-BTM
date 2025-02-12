@@ -26,7 +26,7 @@
 
 		<!-- navigator -->
 		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
-			<div class="container-fluid">
+			<div class="container">
 				<a class="navbar-brand" href="{{ url('/dashboard') }}">
 					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
 				</a>
@@ -97,7 +97,7 @@ $user->setConnection('mysql3');
 			@endisset
 		</div>
 
-		<div class="container row justify-content-center m-0">
+		<div class="col-sm-12 row justify-content-center m-0">
 			@yield('content')
 			{{ $slot }}
 		</div>

@@ -12,96 +12,126 @@
 		<div class="container d-flex justify-content-between">
 			<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
-				<h3>Applicant</h3>
 
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('nostaf')" />
+				<div class="card mb-2">
+					<div class="card-header">
+						<h3 class="card-title">Applicant</h3>
 					</div>
-				</div>
-
-				<!-- staff name -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('nama')" />
-					</div>
-				</div>
-
-				<h3>Proposed Email ID</h3>
-				<small>Please do not use nickname or number in your email ID</small>
-
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_emails">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
-					</x-primary-button>
-				</div>
-
-				<div class="wrap_emails">
-					<div class="col-sm-12 row mt-3">
-
-						<div class="col-sm-11 m-0 row">
-
-							<x-input-label for="email_0" class="col-sm-3" :value="__('Email ID : ')" />
-							<div class="col-sm-9">
-								<div class="input-group">
-									<input id="email_0" type="text" name="emreg[0][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_0">
-									<span class="input-group-text" id="emailID_0">@unishams.edu.my</span>
-								</div>
+					<div class="card-body">
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nostaf')" />
 							</div>
 						</div>
 
-						<!-- remove button -->
-						<div class="col-sm-1 m-0">
-							<x-danger-button type="button" class="remove_emails">
-								<i class="fa-regular fa-trash-can"></i>
-							</x-danger-button>
+								<!-- staff name -->
+								<div class="col-sm-12 mt-2 row">
+									<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
+									<div class="col-sm-8">
+										<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+											<x-input-error :messages="$errors->get('nama')" />
+									</div>
+								</div>
+					</div>
+				</div>
+
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Proposed Email ID</h3>
+						<small>Please do not use nickname or number in your email ID</small>
+					</div>
+					<div class="card-body">
+						<div class="col-sm-12 text-right mt-3">
+							<x-primary-button type="button" class="add_emails">
+								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
+							</x-primary-button>
 						</div>
 
+						<div class="wrap_emails">
+							<div class="col-sm-12 row mt-3">
+
+								<div class="col-sm-11 m-0 row">
+
+									<x-input-label for="email_0" class="col-sm-3" :value="__('Email ID : ')" />
+									<div class="col-sm-9">
+										<div class="input-group">
+											<input id="email_0" type="text" name="emreg[0][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_0">
+											<span class="input-group-text" id="emailID_0">@unishams.edu.my</span>
+										</div>
+									</div>
+								</div>
+
+								<!-- remove button -->
+								<div class="col-sm-1 m-0">
+									<x-danger-button type="button" class="remove_emails">
+										<i class="fa-regular fa-trash-can"></i>
+									</x-danger-button>
+								</div>
+
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-
 			<!-- 2nd column -->
 			<div class="col-sm-5 m-0 p-1">
-				<h3>Group Email</h3>
-				<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
-				<div class="form-check form-switch">
-					<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
-					<label class="form-check-label" for="gemail">Group Email</label>
-				</div>
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Group Email</h3>
+						<small>Flip the switch if you are applying for group email, then fill up inputs below.</small>
+					</div>
+					<div class="card-body">
+						<div class="form-check form-switch">
+							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
+							<label class="form-check-label" for="gemail">Group Email</label>
+						</div>
 
-				<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
+						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
+						</div>
+					</div>
 				</div>
 			</div>
-
 		</div>
+
 		<!-- 3rd column -->
 		<div class="col-sm-6 m-0 p-1 mx-auto">
-			<h3>Department</h3>
-			<p>Department :
-			@php
-			$r = \App\Models\Staff::find(Auth::user()->nostaf);
-			echo $r->belongstomanydepartment()->first()->namajabatan;
-			$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-			@endphp
-			</p>
-			<h3>Approval From Director/Dean/Head of Department</h3>
-			<p>Approver :
-			@php
-			$j = \App\Models\Jabatan::find($idj);
-			if($j->belongstomanyappr->count()){
-				echo $j->belongstomanyappr->first()->nama;
-			} else {
-				echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-			}
-			@endphp
-			</p>
-			<p>Date : </p>
-			<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Department</h3>
+					<p>Department :
+					@php
+					$r = \App\Models\Staff::find(Auth::user()->nostaf);
+					echo $r->belongstomanydepartment()->first()->namajabatan;
+					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+					@endphp
+					</p>
+				</div>
+				<div class="card-body">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
+						</div>
+						<div class="card-body">
+							<p>Approver :
+							@php
+							$j = \App\Models\Jabatan::find($idj);
+							if($j->belongstomanyappr->count()){
+								echo $j->belongstomanyappr->first()->nama;
+							} else {
+								echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+							}
+							@endphp
+							</p>
+							<p>Date : </p>
+						</div>
+						<div class="card-footer">
+							<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="col-sm-12 text-center">

@@ -9,137 +9,159 @@
 	<form action="{{ route('loanapp.store') }}" method="POST">
 			@csrf
 		<div class="container d-flex justify-content-between">
+
 			<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
-				<h3>Applicant</h3>
-				<!-- staff id -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('nostaf')" />
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Applicant</h3>
 					</div>
-				</div>
+					<div class="card-body">
+						<!-- staff id -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nostaf')" />
+							</div>
+						</div>
 
-				<!-- staff name -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
-						<x-input-error :messages="$errors->get('nama')" />
-					</div>
-				</div>
+						<!-- staff name -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nama')" />
+							</div>
+						</div>
 
-				<!-- date loan -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="dafrom" class="col-sm-4" :value="__('Date From : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="dafrom" name="date_loan_from" value="{{ old('date_loan_from') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
-						<x-input-error :messages="$errors->get('date_loan_from')" />
-					</div>
-				</div>
+						<!-- date loan -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="dafrom" class="col-sm-4" :value="__('Date From : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="dafrom" name="date_loan_from" value="{{ old('date_loan_from') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+								<x-input-error :messages="$errors->get('date_loan_from')" />
+							</div>
+						</div>
 
-				<!-- date loan -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="dato" class="col-sm-4" :value="__('Date To : ')" />
-					<div class="col-sm-8">
-						<x-text-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
-						<x-input-error :messages="$errors->get('date_loan_to')" />
-					</div>
-				</div>
+						<!-- date loan -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="dato" class="col-sm-4" :value="__('Date To : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+								<x-input-error :messages="$errors->get('date_loan_to')" />
+							</div>
+						</div>
 
-				<!-- purpose -->
-				<div class="col-sm-12 mt-2 row">
-					<x-input-label for="purp" class="col-sm-4" :value="__('Purpose of Loan : ')" />
-					<div class="col-sm-8">
-						<x-textarea-input id="purp" name="loan_purpose" value="{{ old('loan_purpose') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
-						<x-input-error :messages="$errors->get('loan_purpose')" />
+						<!-- purpose -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="purp" class="col-sm-4" :value="__('Purpose of Loan : ')" />
+							<div class="col-sm-8">
+								<x-textarea-input id="purp" name="loan_purpose" value="{{ old('loan_purpose') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+								<x-input-error :messages="$errors->get('loan_purpose')" />
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- 2nd column -->
 			<div class="col-sm-5 m-0 p-1">
-				<h3>Equipments</h3>
-
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_equipments">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
-					</x-primary-button>
-				</div>
-
-				<div class="wrap_equipments">
-					<div class="col-sm-12 row mt-3">
-
-						<!-- chainedselect2 -->
-						<div class="col-sm-11 m-0 row">
-							<x-input-label for="catequip_0" class="col-sm-4" :value="__('Equipment Category : ')" />
-							<div class="col-sm-8">
-								<select id="catequip_0" name="lequ[0][catequipment_id]" class="{{ ($errors->has('lequ.*.catequipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Category"/>
-									<!-- must have this to make sure $request catch the data -->
-									<option value="">Please choose category</option>
-								</select>
-							</div>
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Equipments</h3>
+					</div>
+					<div class="card-body">
+						<div class="col-sm-12 text-right mt-3">
+							<x-primary-button type="button" class="add_equipments">
+								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Equipments
+							</x-primary-button>
 						</div>
 
+						<div class="wrap_equipments">
+							<div class="col-sm-12 row mt-3">
 
-						<!-- equipment -->
-						<div class="col-sm-11 m-0 row">
-							<x-input-label for="equip_0" class="col-sm-4" :value="__('Equipment : ')" />
-							<div class="col-sm-8">
-								<select id="equip_0" name="lequ[0][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
-									<!-- must have this to make sure $request catch the data -->
-									<option value="">Please choose equipment</option>
-								</select>
-							</div>
-						</div>
-						<!-- remove button -->
-						<div class="col-sm-1 m-0">
-							<x-danger-button type="button" class="remove_equipments">
-								<i class="fa-regular fa-trash-can"></i>
-							</x-danger-button>
-						</div>
+								<!-- chainedselect2 -->
+								<div class="col-sm-11 m-0 row">
+									<x-input-label for="catequip_0" class="col-sm-4" :value="__('Equipment Category : ')" />
+									<div class="col-sm-8">
+										<select id="catequip_0" name="lequ[0][catequipment_id]" class="{{ ($errors->has('lequ.*.catequipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Category"/>
+											<!-- must have this to make sure $request catch the data -->
+											<option value="">Please choose category</option>
+										</select>
+									</div>
+								</div>
 
-						<!-- equipment description -->
-						<div class="col-sm-12 m-0" id="desc_0">
-							<div id="desc_wrap_0">
-								<p>Brand :<br/>
-								Model :<br/>
-								Serial Number :<br/>
-								Description :</p>
+
+								<!-- equipment -->
+								<div class="col-sm-11 m-0 row">
+									<x-input-label for="equip_0" class="col-sm-4" :value="__('Equipment : ')" />
+									<div class="col-sm-8">
+										<select id="equip_0" name="lequ[0][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+											<!-- must have this to make sure $request catch the data -->
+											<option value="">Please choose equipment</option>
+										</select>
+									</div>
+								</div>
+								<!-- remove button -->
+								<div class="col-sm-1 m-0">
+									<x-danger-button type="button" class="remove_equipments">
+										<i class="fa-regular fa-trash-can"></i>
+									</x-danger-button>
+								</div>
+
+								<!-- equipment description -->
+								<div class="col-sm-12 m-0" id="desc_0">
+									<div id="desc_wrap_0">
+										<p>Brand :<br/>
+										Model :<br/>
+										Serial Number :<br/>
+										Description :</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-
 				</div>
-
 			</div>
-
 		</div>
+
 		<!-- 3rd column -->
-		<div class="col-sm-12 m-0 p-1">
-			<h3>Department</h3>
-			<div class="col-sm-12 m-0 p-1">
-				<p>Department :
-				@php
-				$r = \App\Models\Staff::find(Auth::user()->nostaf);
-				echo $r->belongstomanydepartment()->first()->namajabatan;
-				$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-				@endphp
-				</p>
-				<h3>Approval From Director/Dean/Head of Department</h3>
-				<p>Approver :
-				@php
-				$j = \App\Models\Jabatan::find($idj);
-				if($j->belongstomanyappr->count()){
-					echo $j->belongstomanyappr->first()->nama;
-				} else {
-					echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-				}
-				@endphp
-				</p>
-				<p>Date : </p>
-				<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+		<div class="col-sm-6 mx-auto m-0 p-1">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Department</h3>
+					<p>Department :
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+					</p>
+				</div>
+				<div class="card-body">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
+						</div>
+						<div class="card-body">
+							<p>Approver :
+							@php
+							$j = \App\Models\Jabatan::find($idj);
+							if($j->belongstomanyappr->count()){
+								echo $j->belongstomanyappr->first()->nama;
+							} else {
+								echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+							}
+							@endphp
+							</p>
+							<p>Date : </p>
+						</div>
+						<div class="card-footer">
+							<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
