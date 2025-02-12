@@ -7,19 +7,30 @@
 	</x-slot>
 
 	<div class="col-sm-12 d-flex justify-content-center">
-		<p>Just checked on the name and you will be fine.</p>
 		<form action="#" method="PATCH">
 			@csrf
-			@if($stfbtm->count())
-				@foreach($stfbtm as $v)
-					<div class="form-check m-3">
-						<input class="form-check-input cnostaf" type="checkbox" name="nostaf[]" id="{{ $v['nostaf'] }}" value="1" data-id="{{ $v['nostaf'] }}" {{ ($v->hasmanybtmapprover()->where('active', 1)->count())?'checked=checked':NULL }}>
-						<label class="form-check-label" for="{{ $v['nostaf'] }}">
-							{!! $v['nostaf'].'&nbsp;->&nbsp;'.$v['nama'] !!}
-						</label>
-					</div>
-				@endforeach
-			@endif
+
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">
+					</h3>
+					<p>Just checked on the name and you will be fine.</p>
+				</div>
+				<div class="card-body">
+					@if($stfbtm->count())
+						@foreach($stfbtm as $v)
+							<div class="form-check m-3">
+								<input class="form-check-input cnostaf" type="checkbox" name="nostaf[]" id="{{ $v['nostaf'] }}" value="1" data-id="{{ $v['nostaf'] }}" {{ ($v->hasmanybtmapprover()->where('active', 1)->count())?'checked=checked':NULL }}>
+								<label class="form-check-label" for="{{ $v['nostaf'] }}">
+									{!! $v['nostaf'].'&nbsp;->&nbsp;'.$v['nama'] !!}
+								</label>
+							</div>
+						@endforeach
+					@endif
+				</div>
+				<div class="card-footer"></div>
+			</div>
+		</form>
 	</div>
 
 @section('js')

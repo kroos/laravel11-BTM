@@ -9,44 +9,60 @@
 	<div class="colontainer d-flex justify-content-center">
 		<form action="{{ route('addapprover.store') }}" method="POST">
 			@csrf
-
-			<div class="col-sm-12 text-right mt-3">
-				<x-primary-button type="button" class="add_approver">
-					<i class="fa-solid fa-user-plus"></i>&nbsp;Add Approver
-				</x-primary-button>
-			</div>
-
-			<div class="wrap_approver">
-				<div class="col-sm-12 row mt-3">
-					<!-- Staff -->
-					<div class="col-sm-5 m-0 row">
-						<x-input-label for="staf_1" class="col-sm-4" :value="__('Staff : ')" />
-						<div class="col-sm-8">
-							<x-select-input id="staf_1" name="approver[1][nostaf]" class="{{ ($errors->has('approver.*.nostaf')?'is-invalid':NULL) }}" >
-							</x-select-input>
-						</div>
-					</div>
-					<!-- department -->
-					<div class="col-sm-5 m-0 row">
-						<x-input-label for="dep_1" class="col-sm-4" :value="__('Department : ')" />
-						<div class="col-sm-8">
-							<x-select-input id="dep_1" name="approver[1][kod_jabatan]" class="{{ ($errors->has('approver.*.kod_jabatan')?'is-invalid':NULL) }}" >
-							</x-select-input>
-						</div>
-					</div>
-					<!-- opt -->
-					<div class="col-sm-2 m-0 ">
-						<x-danger-button type="button" class="remove_approver">
-							<i class="fa-regular fa-trash-can"></i>
-						</x-danger-button>
+<!--
+<div class="card">
+	<div class="card-header">
+		<h3 class="card-title"></h3>
+	</div>
+	<div class="card-body">
+	</div>
+	<div class="card-footer"></div>
+</div>
+ -->
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Add Approver</h3>
+					<div class="col-sm-12 text-right mt-3">
+						<x-primary-button type="button" class="add_approver">
+							<i class="fa-solid fa-user-plus"></i>&nbsp;Add Approver
+						</x-primary-button>
 					</div>
 				</div>
-
+				<div class="card-body">
+					<div class="wrap_approver">
+						<div class="col-sm-12 row m-0">
+							<!-- Staff -->
+							<div class="col-sm-8 m-2 row">
+								<x-input-label for="staf_1" class="col-sm-4" :value="__('Staff : ')" />
+								<div class="col-sm-8">
+									<x-select-input id="staf_1" name="approver[1][nostaf]" class="{{ ($errors->has('approver.*.nostaf')?'is-invalid':NULL) }}" >
+									</x-select-input>
+								</div>
+							</div>
+							<!-- department -->
+							<div class="col-sm-8 m-2 row">
+								<x-input-label for="dep_1" class="col-sm-4" :value="__('Department : ')" />
+								<div class="col-sm-8">
+									<x-select-input id="dep_1" name="approver[1][kod_jabatan]" class="{{ ($errors->has('approver.*.kod_jabatan')?'is-invalid':NULL) }}" >
+									</x-select-input>
+								</div>
+							</div>
+							<!-- opt -->
+							<div class="col-sm-2 m-2 ">
+								<x-danger-button type="button" class="remove_approver">
+									<i class="fa-regular fa-trash-can"></i>
+								</x-danger-button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<x-primary-button type="submit" class="m-3">
+						{{ __('Save') }}
+					</x-primary-button>
+				</div>
 			</div>
 
-			<x-primary-button type="submit" class="m-3">
-				{{ __('Save') }}
-			</x-primary-button>
 		</form>
 	</div>
 
@@ -114,7 +130,7 @@ $(appr_btn).click(function(){
 		counter++;
 		apprv_wrapper.append(
 				'<div class="col-sm-12 row mt-3">' +
-					'<div class="col-sm-5 m-0 row">' +
+					'<div class="col-sm-8 m-2 row">' +
 						'<label class="form-label form-label-sm col-sm-4" for="staf_' + counter + '">Staff : </label>' +
 						'<div class="col-sm-8">' +
 							'<select id="staf_' + counter + '" name="approver[' + counter + '][nostaf]" class="{{ ($errors->has('approver.*.nostaf')?'is-invalid':NULL) }}" >' +
@@ -124,7 +140,7 @@ $(appr_btn).click(function(){
 							'@enderror' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-sm-5 m-0 row">' +
+					'<div class="col-sm-8 m-2 row">' +
 						'<label class="form-label form-label-sm col-sm-4" for="dep_' + counter + '">Department : </label>' +
 						'<div class="col-sm-8">' +
 							'<select id="dep_' + counter + '" name="approver[' + counter + '][kod_jabatan]" class="{{ ($errors->has('approver.*.kod_jabatan')?'is-invalid':NULL) }}" >' +
@@ -134,7 +150,7 @@ $(appr_btn).click(function(){
 							'@enderror' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-sm-2 m-0 ">' +
+					'<div class="col-sm-2 m-2 ">' +
 						'<button type="button" class="btn btn-sm btn-danger remove_approver">' +
 							'<i class="fa-regular fa-trash-can"></i>' +
 						'</button>' +

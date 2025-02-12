@@ -139,7 +139,7 @@
 				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
 			</x-primary-button>
 		</div>
-
+	</form>
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -455,5 +455,4 @@ $(apprv_wrapper).on("click", ".remove_emails", function (e) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
-	</form>
 </x-app-layout>

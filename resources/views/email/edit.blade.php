@@ -167,6 +167,7 @@
 				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
 			</x-primary-button>
 		</div>
+	</form>
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -621,5 +622,4 @@ $(document).on('click', '.swal2-confirm', function(e){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
-	</form>
 </x-app-layout>

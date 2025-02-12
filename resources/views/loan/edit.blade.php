@@ -137,60 +137,51 @@
 			</div>
 		</div>
 
-<!--
-<div class="card">
-	<div class="card-header">
-		<h3 class="card-title"></h3>
-	</div>
-	<div class="card-body">
-	</div>
-</div>
- -->
-
-			<!-- 3rd column -->
-			<div class="col-sm-6 mx-auto m-0 p-1">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Department</h3>
-						<p>Department :
+		<!-- 3rd column -->
+		<div class="col-sm-6 mx-auto m-0 p-1">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Department</h3>
+					<p>Department :
+						@php
+						$r = \App\Models\Staff::find($loanapp->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+					</p>
+				</div>
+				<div class="card-body">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
+						</div>
+						<div class="card-body">
+							<p>Approver :
 							@php
-							$r = \App\Models\Staff::find($loanapp->nostaf);
-							echo $r->belongstomanydepartment()->first()->namajabatan;
-							$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+							$j = \App\Models\Jabatan::find($idj);
+							if($j->belongstomanyappr->count()){
+								echo $j->belongstomanyappr->first()->nama;
+							} else {
+								echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+							}
 							@endphp
-						</p>
-					</div>
-					<div class="card-body">
-						<div class="card">
-							<div class="card-header">
-								<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
-							</div>
-							<div class="card-body">
-								<p>Approver :
-								@php
-								$j = \App\Models\Jabatan::find($idj);
-								if($j->belongstomanyappr->count()){
-									echo $j->belongstomanyappr->first()->nama;
-								} else {
-									echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-								}
-								@endphp
-								</p>
-								<p>Date : {{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</p>
-							</div>
-							<div class="card-footer">
-								<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
-							</div>
+							</p>
+							<p>Date : {{ (!is_null($loanapp->approver_date))?\Carbon\Carbon::parse($loanapp->approver_date)->format('D, j F Y'):NULL }}</p>
+						</div>
+						<div class="card-footer">
+							<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<div class="col-sm-12 m-0 p-1 text-center">
-				<x-primary-button type="submit" class="m-2">
-					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
-				</x-primary-button>
-			</div>
+		<div class="col-sm-12 m-0 p-1 text-center">
+			<x-primary-button type="submit" class="m-2">
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
+			</x-primary-button>
+		</div>
+	</form>
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -473,5 +464,4 @@ $(document).on('click', '.swal2-confirm', function(e){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
-	</form>
 </x-app-layout>

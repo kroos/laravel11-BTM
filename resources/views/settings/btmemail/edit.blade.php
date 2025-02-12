@@ -14,132 +14,145 @@
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ $btmemailapplication->nostaf }}" readonly />
 
-		<div class="container row justify-content-between mx-auto">
+		<div class="container row justify-content-evenly mx-auto">
 			<!-- 1st column -->
-			<div class="col-sm-5 m-0 p-1">
-				<h3>Proposed Email ID</h3>
-				<small>Please do not use nickname or number in your email ID</small>
+			<div class="col-sm-6 m-0">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Proposed Email ID
+						</h3>
+						<small>Please do not use nickname or number in your email ID</small>
+					</div>
+					<div class="card-body">
+						<div class="col-sm-12 text-right mt-3">
+							<x-primary-button type="button" class="add_emails">
+								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
+							</x-primary-button>
+						</div>
 
-				<div class="col-sm-12 text-right mt-3">
-					<x-primary-button type="button" class="add_emails">
-						<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
-					</x-primary-button>
-				</div>
+						<div class="wrap_emails">
+							@if($btmemailapplication->hasmanyemailsuggestion()->count())
+								<?php $i = 0; ?>
+								@foreach($btmemailapplication->hasmanyemailsuggestion()->get() as $emailsugg)
+									<div class="col-sm-12 row mt-3">
+										<div class="col-sm-11 m-0 row">
+											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email ID : ')" />
+											<div class="col-sm-9">
+												<div class="input-group">
+													<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $emailsugg->id }}">
+													<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_{{ $i }}" value="{{ $emailsugg->email_suggestion }}">
+													<span class="input-group-text" id="emailID_{{ $i }}">@unishams.edu.my</span>
+												</div>
+											</div>
+										</div>
 
-				<div class="wrap_emails">
-					@if($btmemailapplication->hasmanyemailsuggestion()->count())
-						<?php $i = 0; ?>
-						@foreach($btmemailapplication->hasmanyemailsuggestion()->get() as $emailsugg)
-							<div class="col-sm-12 row mt-3">
-								<div class="col-sm-11 m-0 row">
-									<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email ID : ')" />
-									<div class="col-sm-9">
-										<div class="input-group">
-											<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $emailsugg->id }}">
-											<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_{{ $i }}" value="{{ $emailsugg->email_suggestion }}">
-											<span class="input-group-text" id="emailID_{{ $i }}">@unishams.edu.my</span>
+										<!-- remove button -->
+										<div class="col-sm-1 m-0">
+											<x-danger-button type="button" class="delete_emails" data-id="{{ $emailsugg->id }}">
+												<i class="fa-regular fa-trash-can"></i>
+											</x-danger-button>
 										</div>
 									</div>
-								</div>
-
-								<!-- remove button -->
-								<div class="col-sm-1 m-0">
-									<x-danger-button type="button" class="delete_emails" data-id="{{ $emailsugg->id }}">
-										<i class="fa-regular fa-trash-can"></i>
-									</x-danger-button>
-								</div>
-							</div>
-							<div class="col-sm-12 row mt-3">
-								<div class="col-sm-8 m-0 row">
-									<x-input-label for="tpass_{{ $i }}" class="col-sm-3" :value="__('Temp Pass : ')" />
-									<div class="col-sm-9">
-										<div class="input-group">
-											<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ !old('emreg.*.temp_password')?$emailsugg->temp_password:old('emreg.*.temp_password') }}">
+									<div class="col-sm-12 row mt-3">
+										<div class="col-sm-8 m-0 row">
+											<x-input-label for="tpass_{{ $i }}" class="col-sm-3" :value="__('Temp Pass : ')" />
+											<div class="col-sm-9">
+												<div class="input-group">
+													<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ !old('emreg.*.temp_password')?$emailsugg->temp_password:old('emreg.*.temp_password') }}">
+												</div>
+												<x-input-error :messages="$errors->get('emreg[{{ $i }}][temp_password]')" />
+											</div>
 										</div>
-										<x-input-error :messages="$errors->get('emreg[{{ $i }}][temp_password]')" />
+										<div class="col-sm-4 m-0 row">
+											<div class="form-check form-switch">
+												<input type="hidden" name="emreg[{{ $i }}][approved_email]" value="">
+												<input name="emreg[{{ $i }}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_{{ $i }}" {{ ($emailsugg->approved_email)?'checked':NULL }}>
+												<x-input-error :messages="$errors->get('emreg[{{ $i }}][approved_email]')" />
+												<label class="form-check-label" for="aemail_{{ $i }}">Approved Email</label>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div class="col-sm-4 m-0 row">
-									<div class="form-check form-switch">
-										<input type="hidden" name="emreg[{{ $i }}][approved_email]" value="">
-										<input name="emreg[{{ $i }}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_{{ $i }}" {{ ($emailsugg->approved_email)?'checked':NULL }}>
-										<x-input-error :messages="$errors->get('emreg[{{ $i }}][approved_email]')" />
-										<label class="form-check-label" for="aemail_{{ $i }}">Approved Email</label>
-									</div>
-								</div>
-							</div>
-							<?php $i++; ?>
-						@endforeach
-					@endif
+									<?php $i++; ?>
+								@endforeach
+							@endif
+						</div>
+					</div>
 				</div>
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-5 m-0 p-1">
-				<h3>Group Email</h3>
-				<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
-				<div class="form-check form-switch">
-					<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail" {{ ($btmemailapplication->group_email)?'checked':NULL }}>
-					<label class="form-check-label" for="gemail">Group Email</label>
-				</div>
-
-				<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
-					@if($btmemailapplication->hasmanyemailgroupmember()->count())
-						<?php $o = 0; ?>
-						<small>Please choose personnels associate with the suggested email.</small>
-
-						<div class="col-sm-12 text-right mt-3">
-							<button class="btn btn-primary btn-sm add_personnels" type="button">
-								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels
-							</button>
+			<div class="col-sm-6 m-0">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Group Email
+						</h3>
+						<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
+					</div>
+					<div class="card-body">
+						<div class="form-check form-switch">
+							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail" {{ ($btmemailapplication->group_email)?'checked':NULL }}>
+							<label class="form-check-label" for="gemail">Group Email</label>
 						</div>
+						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
+							@if($btmemailapplication->hasmanyemailgroupmember()->count())
+								<?php $o = 0; ?>
+								<small>Please choose personnels associate with the suggested email.</small>
 
-						<div class="wrap_personnels">
-						@foreach($btmemailapplication->hasmanyemailgroupmember()->get() as $emailmem)
-							<div class="col-sm-12 row mt-3">
-								<div class="col-sm-11 m-0 mt-2 row">
-									<label for="dept_{{ $o }}" class="col-sm-4">Department : </label>
-									<div class="col-sm-8">
-										<input type="hidden" name="emregmem[{{ $o }}][id]" value="{{ $emailmem->id }}">
-										<select name="emregmem[{{ $o }}][email_member_department]" id="dept_{{ $o }}" class="form-select form-select-sm {{ $errors->has('emregmem.*.email_member_department')?'is-invalid':NULL }}" placeholder="Department">
-											<option value="">Please choose department</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-sm-11 m-0 mt-1 row">
-									<label for="staff_{{ $o }}" class="col-sm-4">Staff Email : </label>
-									<div class="col-sm-8">
-										<select name="emregmem[{{ $o }}][email_member]" id="staff_{{ $o }}" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">
-											<option value="">Please choose staff</option>
-										</select>
-									</div>
-									<small>if the person you are looking for is not in the list, that person maybe
-										<ul>
-											<li>been deactivated</li>
-											<li>his/her email was not set in the system</li>
-										</ul>
-									</small>
-								</div>
-								<div class="col-sm-1 m-0">
-									<button class="btn btn-danger btn-sm delete_personnels" type="button" data-id="{{ $emailmem->id }}">
-										<i class="fa-regular fa-trash-can"></i>
+								<div class="col-sm-12 text-right mt-3">
+									<button class="btn btn-primary btn-sm add_personnels" type="button">
+										<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels
 									</button>
 								</div>
-							</div>
-							<?php $o++; ?>
-						@endforeach
+
+								<div class="wrap_personnels">
+								@foreach($btmemailapplication->hasmanyemailgroupmember()->get() as $emailmem)
+									<div class="col-sm-12 row mt-3">
+										<div class="col-sm-11 m-0 mt-2 row">
+											<label for="dept_{{ $o }}" class="col-sm-4">Department : </label>
+											<div class="col-sm-8">
+												<input type="hidden" name="emregmem[{{ $o }}][id]" value="{{ $emailmem->id }}">
+												<select name="emregmem[{{ $o }}][email_member_department]" id="dept_{{ $o }}" class="form-select form-select-sm {{ $errors->has('emregmem.*.email_member_department')?'is-invalid':NULL }}" placeholder="Department">
+													<option value="">Please choose department</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-sm-11 m-0 mt-1 row">
+											<label for="staff_{{ $o }}" class="col-sm-4">Staff Email : </label>
+											<div class="col-sm-8">
+												<select name="emregmem[{{ $o }}][email_member]" id="staff_{{ $o }}" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">
+													<option value="">Please choose staff</option>
+												</select>
+											</div>
+											<small>if the person you are looking for is not in the list, that person maybe
+												<ul>
+													<li>been deactivated</li>
+													<li>his/her email was not set in the system</li>
+												</ul>
+											</small>
+										</div>
+										<div class="col-sm-1 m-0">
+											<button class="btn btn-danger btn-sm delete_personnels" type="button" data-id="{{ $emailmem->id }}">
+												<i class="fa-regular fa-trash-can"></i>
+											</button>
+										</div>
+									</div>
+									<?php $o++; ?>
+								@endforeach
+								</div>
+							@endif
 						</div>
-					@endif
+					</div>
 				</div>
 			</div>
-
 		</div>
 
-			<div class="row justify-content-center">
-				<!-- 3rd column -->
-				<div class="col-sm-6 m-0 p-1">
-					<h3>Department</h3>
-					<div class="col-sm-12 m-0 p-1">
+		<div class="row justify-content-center">
+			<!-- 3rd column -->
+			<div class="col-sm-6 m-0 p-1">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Department
+						</h3>
 						<p>Department :
 						@php
 						$r = \App\Models\Staff::find(Auth::user()->nostaf);
@@ -147,56 +160,74 @@
 						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
 						@endphp
 						</p>
-						<h3>Approval From Director/Dean/Head of Department</h3>
-						<p>Approver :
-						@php
-						$j = \App\Models\Jabatan::find($idj);
-						if($j->belongstomanyappr->count()){
-							echo $j->belongstomanyappr->first()->nama;
-						} else {
-							echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-						}
-						@endphp
-						</p>
-						<p>Date : </p>
+					</div>
+					<div class="card-body">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">Approval From Director/Dean/Head of Department
+								</h3>
+							</div>
+							<div class="card-body">
+								<p>Approver :
+								@php
+								$j = \App\Models\Jabatan::find($idj);
+								if($j->belongstomanyappr->count()){
+									echo $j->belongstomanyappr->first()->nama;
+								} else {
+									echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+								}
+								@endphp
+								</p>
+								<p>Date : </p>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer">
 						<p class="text-sm fs-6 fw-bolder">I hereby confirm that the new email registration is intended for official purposes.</p>
 					</div>
 				</div>
+			</div>
 
-				<!-- 4th column -->
-				<div class="col-sm-6 m-0 p-1">
-					<h3>BTM Used</h3>
-					<!-- <legend class="m-4">Loan Equipment Approval</legend> -->
-					<div class="btn-group" role="group" aria-label="New Email Registration Approval">
-						<?php
-							$p = 0;
-						?>
-						@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
-							<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
-							<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
-							<?php
-								$p++;
-							?>
-						@endforeach
-						<x-input-error :messages="$errors->get('status_email_id')" />
+			<!-- 4th column -->
+			<div class="col-sm-6 m-0 p-1">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">BTM Used
+						</h3>
 					</div>
-
-					<div class="col-sm-12 mt-2 row">
-						<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
-						<div class="col-sm-8">
-							<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmemailapplication->btm_remarks }}</textarea>
-							<x-input-error :messages="$errors->get('btm_remarks')" />
+					<div class="card-body">
+						<div class="row">
+							<div class="btn-group {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" role="group" aria-label="New Email Registration Approval">
+								<?php
+									$p = 0;
+								?>
+								@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
+									<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
+									<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+									<?php
+										$p++;
+									?>
+								@endforeach
+							</div>
+							<x-input-error :messages="$errors->get('status_email_id')" />
+						</div>
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
+							<div class="col-sm-8">
+								<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmemailapplication->btm_remarks }}</textarea>
+								<x-input-error :messages="$errors->get('btm_remarks')" />
+							</div>
 						</div>
 					</div>
-
-				</div>
-
-				<div class="col-sm-12 text-center">
-					<x-primary-button type="submit" class="m-2">
-						<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
-					</x-primary-button>
 				</div>
 			</div>
+
+			<div class="col-sm-12 text-center">
+				<x-primary-button type="submit" class="m-2">
+					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
+				</x-primary-button>
+			</div>
+		</div>
 	</form>
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
