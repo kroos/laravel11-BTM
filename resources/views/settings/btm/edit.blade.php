@@ -9,7 +9,7 @@
 	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST" class="container row justify-content-evenly mx-auto">
 			@csrf
 			@method('PATCH')
-		<div class="container row justify-content-evenly">
+		<div class="container row justify-content-evenly mx-auto mt-2 mb-2">
 			<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
 				<div class="card">

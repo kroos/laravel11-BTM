@@ -14,7 +14,7 @@
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ $btmemailapplication->nostaf }}" readonly />
 
-		<div class="container row justify-content-evenly mx-auto">
+		<div class="container row justify-content-evenly mx-auto mt-2 mb-2">
 			<!-- 1st column -->
 			<div class="col-sm-6 m-0">
 				<div class="card">
@@ -38,8 +38,8 @@
 										<div class="col-sm-11 m-0 row">
 											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email ID : ')" />
 											<div class="col-sm-9">
-												<div class="input-group">
-													<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $emailsugg->id }}">
+												<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $emailsugg->id }}">
+												<div class="input-group input-group-sm">
 													<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_{{ $i }}" value="{{ $emailsugg->email_suggestion }}">
 													<span class="input-group-text" id="emailID_{{ $i }}">@unishams.edu.my</span>
 												</div>
@@ -47,24 +47,25 @@
 										</div>
 
 										<!-- remove button -->
-										<div class="col-sm-1 m-0">
+										<div class="col-sm-1 m-0 my-auto">
 											<x-danger-button type="button" class="delete_emails" data-id="{{ $emailsugg->id }}">
 												<i class="fa-regular fa-trash-can"></i>
 											</x-danger-button>
 										</div>
 									</div>
+
 									<div class="col-sm-12 row mt-3">
-										<div class="col-sm-8 m-0 row">
-											<x-input-label for="tpass_{{ $i }}" class="col-sm-3" :value="__('Temp Pass : ')" />
-											<div class="col-sm-9">
+										<div class="col-sm-9 m-0 row">
+											<x-input-label for="tpass_{{ $i }}" class="col-sm-4 my-auto" :value="__('Temp Pass : ')" />
+											<div class="col-sm-8 my-auto">
 												<div class="input-group">
 													<input id="tpass_{{ $i }}" type="text" name="emreg[{{ $i }}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="{{ !old('emreg.*.temp_password')?$emailsugg->temp_password:old('emreg.*.temp_password') }}">
 												</div>
 												<x-input-error :messages="$errors->get('emreg[{{ $i }}][temp_password]')" />
 											</div>
 										</div>
-										<div class="col-sm-4 m-0 row">
-											<div class="form-check form-switch">
+										<div class="col-sm-3 m-0 row">
+											<div class="form-check form-switch my-auto">
 												<input type="hidden" name="emreg[{{ $i }}][approved_email]" value="">
 												<input name="emreg[{{ $i }}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_{{ $i }}" {{ ($emailsugg->approved_email)?'checked':NULL }}>
 												<x-input-error :messages="$errors->get('emreg[{{ $i }}][approved_email]')" />
@@ -202,7 +203,7 @@
 									$p = 0;
 								?>
 								@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
-									<input type="checkbox" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
+									<input type="radio" class="btn-check {{ ($errors->has('status_email_id')?'is-invalid':NULL) }}" name="status_email_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($btmemailapplication->status_email_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
 									<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
 									<?php
 										$p++;
@@ -541,30 +542,30 @@ $(appr_btn).click(function () {
 				`<div class="col-sm-11 m-0 row">` +
 					`<x-input-label for="email_${counter}" class="col-sm-3" :value="__('Email ID : ')" />` +
 					`<div class="col-sm-9">` +
-						`<div class="input-group">` +
-							`<input type="hidden" name="emreg[${counter}][id]" value="">` +
+						`<input type="hidden" name="emreg[${counter}][id]" value="">` +
+						`<div class="input-group input-group-sm">` +
 							`<input id="email_${counter}" type="text" name="emreg[${counter}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${counter}">` +
 							`<span class="input-group-text" id="emailID_${counter}">@unishams.edu.my</span>` +
 						`</div>` +
 					`</div>` +
 				`</div>` +
-				`<div class="col-sm-1 m-0">` +
+				`<div class="col-sm-1 m-0 my-auto">` +
 					`<x-danger-button type="button" class="btn btn-sm remove_emails">` +
 						`<i class="fa-regular fa-trash-can"></i>` +
 					`</x-danger-button>` +
 				`</div>` +
 			`</div>` +
 			`<div class="col-sm-12 row mt-3">
-				<div class="col-sm-8 m-0 row">
-					<x-input-label for="tpass_${counter}" class="col-sm-3" :value="__('Temp Pass : ')" />
-					<div class="col-sm-9">
+				<div class="col-sm-9 m-0 row">
+					<x-input-label for="tpass_${counter}" class="col-sm-4 my-auto" :value="__('Temp Pass : ')" />
+					<div class="col-sm-8 my-auto">
 						<div class="input-group">
 							<input id="tpass_${counter}" type="text" name="emreg[${counter}][temp_password]" class="form-control form-control-sm {{ ($errors->has('emreg.*.temp_password')?'is-invalid':NULL) }}" placeholder="Temporary Password" value="">
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4 m-0 row">
-					<div class="form-check form-switch">
+				<div class="col-sm-3 m-0 row">
+					<div class="form-check form-switch my-auto">
 						<input type="hidden" name="emreg[${counter}][approved_email]" value="">
 						<input name="emreg[${counter}][approved_email]" value="1" class="form-check-input {{ ($errors->has('emreg.*.approved_email')?'is-invalid':NULL) }}" type="checkbox" role="switch" id="aemail_${counter}" {{ ($btmemailapplication->approved_email)?'checked':NULL }}>
 						<label class="form-check-label" for="aemail_${counter}">Approved Email</label>
