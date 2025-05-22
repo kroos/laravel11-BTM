@@ -53,7 +53,7 @@
 								<a href="{{ route('logout') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0" type="submit" onclick="event.preventDefault();this.closest('form').submit();">Log Out</a>
 							</form>
 						@else
-							<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
+							<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Log Masuk</a>
 						@endauth
 					</div>
 				</div>

@@ -9,12 +9,12 @@
 		<table class="table table-hover table-sm" id="loanapp" style="font: 12px sans-serif;">
 			<thead>
 				<tr>
-					<th>Reg No</th>
-					<th>Name</th>
-					<th>Apply On</th>
-					<th>Email Application Type</th>
-					<th>HOD Approval</th>
-					<th>Email Application Status</th>
+					<th>No. Rujukan</th>
+					<th>Pemohon</th>
+					<th>Mohon Pada</th>
+					<th>Jenis Emel</th>
+					<th>Sokongan Ketua K/P/B</th>
+					<th>Status Permohonan</th>
 					<th>#</th>
 				</tr>
 			</thead>

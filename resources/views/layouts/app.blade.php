@@ -11,7 +11,12 @@
 	<title>{{ config('app.name', 'Laravel') }}</title>
 
 	<!-- Fonts -->
-	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<!--<link rel="dns-prefetch" href="//fonts.gstatic.com"> -->
+	<!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+	<!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> -->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet"
+  />
 	<link href="{{ asset('images/logo.jpg') }}" type="image/x-icon" rel="icon" />
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
@@ -36,7 +41,7 @@
 				<div class="collapse navbar-collapse" id="navbarColor01">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="{{ url('/dashboard') }}">Home
+							<a class="nav-link" href="{{ url('/dashboard') }}">Utama
 								<span class="visually-hidden">(current)</span>
 							</a>
 						</li>

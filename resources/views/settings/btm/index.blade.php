@@ -5,16 +5,18 @@
 		</h2>
 	</x-slot>
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm" id="loanapp" style="font: 12px sans-serif;">
+		<table class="table table-hover table-sm" id="loanapp" style="font: 12px montserrat;">
 			<thead>
 				<tr>
-					<th>Loan No</th>
-					<th>Name</th>
-					<th>Apply On</th>
-					<th>Loan From</th>
-					<th>Loan To</th>
-					<th>Equipments Pick Up On</th>
-					<th>Equipments</th>
+					<th>No Ruj</th>
+					<th>Peminjam</th>
+					<th>Mohon Pada</th>
+					<th>Pinjam DARI</th>
+					<th>Pinjam HINGGA</th>
+					<th>Tarikh Ambil</th>
+					<th>Jenis Peralatan</th>
+					<th>Kelulusan Ketua KPB</th>
+					<th>Status Pinjaman</th>
 					<th>#</th>
 				</tr>
 			</thead>

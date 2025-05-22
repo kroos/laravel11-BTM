@@ -1,13 +1,13 @@
 <li class="nav-item">
 	<a class="nav-link" href="{{ route('emailaccapp.index') }}">
 		<i class="fa-regular fa-envelope fa-beat"></i>&nbsp;
-		Email Account Application
+		BTM01 - Emel Rasmi
 	</a>
 </li>
 <li>
 	<a class="nav-link" href="{{ route('loanapp.index') }}">
 		<i class="fa-solid fa-gavel fa-beat"></i>&nbsp;
-		Equipment Loan Application
+		BTM03 - Pinjaman Peralatan
 	</a>
 </li>
 <li class="nav-item dropdown">

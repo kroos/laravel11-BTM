@@ -1,8 +1,8 @@
 <x-app-layout>
 
 	<x-slot name="header">
-		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Email Registration Account Form') }}
+		<h2 class="font-montserrat font-semibold text-xl text-gray-800 leading-tight">
+			{{ __('BTM01 - BORANG PERMOHONAN ALAMAT EMEL RASMI unishams.edu.my') }}
 		</h2>
 	</x-slot>
 
@@ -10,16 +10,17 @@
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
 		<div class="container d-flex justify-content-between">
-			<!-- 1st column -->
+			
+		<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
 
 				<div class="card mb-2">
 					<div class="card-header">
-						<h3 class="card-title">Applicant</h3>
+						<h3 class="card-title">Maklumat Pemohon</h3>
 					</div>
 					<div class="card-body">
 						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="id" class="col-sm-4" :value="__('Staff ID : ')" />
+							<x-input-label for="id" class="col-sm-4" :value="__('No. Staf : ')" />
 							<div class="col-sm-8">
 								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
 								<x-input-error :messages="$errors->get('nostaf')" />
@@ -28,7 +29,7 @@
 
 								<!-- staff name -->
 								<div class="col-sm-12 mt-2 row">
-									<x-input-label for="staf" class="col-sm-4" :value="__('Staff : ')" />
+									<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
 									<div class="col-sm-8">
 										<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
 											<x-input-error :messages="$errors->get('nama')" />
@@ -39,13 +40,14 @@
 
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Proposed Email ID</h3>
-						<small>Please do not use nickname or number in your email ID</small>
+						<h3 class="card-title">Cadangan Alamat Emel</h3>
+						<small>1) Tidak dibenarkan meletak nombor atau nama timangan selain nama asal</small> <br>
+						<small>2) Masukkan sekurang-kurangnya dua (2) cadangan alamat emel</small>
 					</div>
 					<div class="card-body">
 						<div class="col-sm-12 text-right mt-3">
 							<x-primary-button type="button" class="add_emails">
-								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
+								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Emel
 							</x-primary-button>
 						</div>
 
@@ -54,7 +56,7 @@
 
 								<div class="col-sm-11 m-0 row">
 
-									<x-input-label for="email_0" class="col-sm-3" :value="__('Email ID : ')" />
+									<x-input-label for="email_0" class="col-sm-3" :value="__('Alamat Emel : ')" />
 									<div class="col-sm-9">
 										<div class="input-group">
 											<input id="email_0" type="text" name="emreg[0][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_0">
@@ -75,17 +77,33 @@
 					</div>
 				</div>
 			</div>
+			
 			<!-- 2nd column -->
-			<div class="col-sm-5 m-0 p-1">
+
+			<div class="col-sm-6 m-0 p-1 mx-auto">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
+					@php
+					$r = \App\Models\Staff::find(Auth::user()->nostaf);
+					echo $r->belongstomanydepartment()->first()->namajabatan;
+					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+					@endphp
+					</p>
+				</div>
+
+				
+		<div class="col m-0 p-1">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Group Email</h3>
-						<small>Flip the switch if you are applying for group email, then fill up inputs below.</small>
+						<h3 class="card-title">Emel Berkumpulan</h3>
+						<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
 					</div>
 					<div class="card-body">
 						<div class="form-check form-switch">
 							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
-							<label class="form-check-label" for="gemail">Group Email</label>
+							<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
 						</div>
 
 						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
@@ -96,38 +114,26 @@
 		</div>
 
 		<!-- 3rd column -->
-		<div class="col-sm-6 m-0 p-1 mx-auto">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Department</h3>
-					<p>Department :
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-					</p>
-				</div>
 				<div class="card-body">
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
+							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 						</div>
 						<div class="card-body">
-							<p>Approver :
+							<p>Status :
 							@php
 							$j = \App\Models\Jabatan::find($idj);
 							if($j->belongstomanyappr->count()){
 								echo $j->belongstomanyappr->first()->nama;
 							} else {
-								echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
+								echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
 							}
 							@endphp
 							</p>
-							<p>Date : </p>
+							<p>Tarikh : </p>
 						</div>
 						<div class="card-footer">
-							<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+							<p class="text-sm fs-6 fw-bolder">Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.</p>
 						</div>
 					</div>
 				</div>
@@ -136,7 +142,7 @@
 
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">
-				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Save') }}
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
 			</x-primary-button>
 		</div>
 	</form>
@@ -155,11 +161,11 @@ $(`#gemail`).change(function(){
 	if(this.checked) {
 		// console.log($(this).val());
 		$(`#wrap_group_email`).append(
-				`<small>Please choose personnels associate with the suggested email.</small>` +
+				`<small>Sila masukkan senarai emel ahli kumpulan anda</small>` +
 
 				`<div class="col-sm-12 text-right mt-3">` +
 					`<button class="btn btn-primary btn-sm add_personnels" type="button">` +
-						`<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels` +
+						`<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Ahli` +
 					`</button>` +
 				`</div>` +
 
@@ -167,7 +173,7 @@ $(`#gemail`).change(function(){
 					`<div class="col-sm-12 row mt-3">` +
 
 						`<div class="col-sm-11 m-0 mt-2 row">` +
-							`<label for="dept_0" class="col-sm-4">Department : </label>` +
+							`<label for="dept_0" class="col-sm-4">K/P/B : </label>` +
 							`<div class="col-sm-8">` +
 									`<select name="emregmem[0][email_member_department]" id="dept_0" class="form-select form-select-sm {{ $errors->has('emregmem.*.email_member_department')?'is-invalid':NULL }}" placeholder="Department">` +
 										`<option value="">Please choose department</option>` +
@@ -176,16 +182,17 @@ $(`#gemail`).change(function(){
 						`</div>` +
 
 						`<div class="col-sm-11 m-0 mt-1 row">` +
-							`<label for="staff_0" class="col-sm-4">Staff Email : </label>` +
+							`<label for="staff_0" class="col-sm-4">Staf </label>` +
 							`<div class="col-sm-8">` +
 									`<select name="emregmem[0][email_member]" id="staff_0" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">` +
 										`<option value="">Please choose staff</option>` +
 									`</select>` +
 							`</div>` +
-							`<small>if the person you are looking for is not in the list, that person maybe :`+
+							`<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :`+
 								`<ul>`+
-									`<li>been deactivated</li>`+
-									`<li>his/her email was not set in the system</li>`+
+									`<li> 1) alamat emel telah dibekukan, atau;</li>`+
+									`<li> 2) alamat emel tiada di dalam sistem, atau;</li>`+
+									`<li> 3) alamat emel belum didaftarkan</li>`+
 								`</ul>`+
 							`</small>` +
 						`</div>` +
@@ -245,7 +252,7 @@ function createPersonnelRow(index) {
 	return `
 		<div class="col-sm-12 row mt-3">
 			<div class="col-sm-11 m-0 mt-2 row">
-				<label for="dept_${index}" class="col-sm-4">Department : </label>
+				<label for="dept_${index}" class="col-sm-4">K/P/B : </label>
 				<div class="col-sm-8">
 					<select name="emregmem[${index}][email_member_department]" id="dept_${index}" class="form-select form-select-sm">
 						<option value="">Please choose department</option>
@@ -253,16 +260,17 @@ function createPersonnelRow(index) {
 				</div>
 			</div>
 			<div class="col-sm-11 m-0 mt-1 row">
-				<label for="staff_${index}" class="col-sm-4">Staff : </label>
+				<label for="staff_${index}" class="col-sm-4">Staf : </label>
 				<div class="col-sm-8">
 					<select name="emregmem[${index}][email_member]" id="staff_${index}" class="form-select form-select-sm">
 						<option value="">Please choose staff</option>
 					</select>
 				</div>
-				<small>if the person you are looking for is not in the list, that person maybe :
-					<ul>
-						<li>been deactivated</li>
-						<li>his/her email was not set in the system</li>
+							<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :
+								<ul>
+									<li> 1) alamat emel telah dibekukan, atau;</li>
+									<li> 2) alamat emel tiada di dalam sistem, atau;</li>
+									<li> 3) alamat emel belum didaftarkan</li>
 					</ul>
 				</small>
 			</div>
@@ -427,7 +435,7 @@ $(appr_btn).click(function () {
 		apprv_wrapper.append(
 			`<div class="col-sm-12 row mt-3">` +
 				`<div class="col-sm-11 m-0 row">` +
-					`<x-input-label for="email_${counter}" class="col-sm-3" :value="__('Email ID : ')" />` +
+					`<x-input-label for="email_${counter}" class="col-sm-3" :value="__('Alamat Emel : ')" />` +
 					`<div class="col-sm-9">` +
 						`<div class="input-group">` +
 							`<input id="email_${counter}" type="text" name="emreg[${counter}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${counter}">` +

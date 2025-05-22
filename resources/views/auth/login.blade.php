@@ -1,7 +1,7 @@
 <x-guest-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Login') }}
+			{{ __('BTM KLIK') }}
 		</h2>
 	</x-slot>
 	<form method="POST" action="{{ route('login') }}" id="form" class="col-sm-4" >
@@ -9,14 +9,14 @@
 
 		<!-- Username -->
 		<div class="form-group row mb-3">
-			<x-input-label for="username" :value="__('Username : ')" />
+			<x-input-label for="username" :value="__('No. Staf : ')" />
 			<x-text-input id="username" name="username" :value="old('username')" class="{{ $errors->has('username') ? 'is-invalid' : NULL }}"/>
 			<x-input-error :messages="$errors->get('username')" />
 		</div>
 
 		<!-- Password -->
 		<div class="form-group row mb-3">
-			<x-input-label for="password" :value="__('Password : ')" />
+			<x-input-label for="password" :value="__('No. PIN : ')" />
 			<x-text-input type="password" id="password" name="password" :value="old('password')" autocomplete="current-password" class="{{ $errors->has('password') ? 'is-invalid' : NULL }}" />
 			<x-input-error :messages="$errors->get('password')" />
 		</div>
@@ -25,11 +25,11 @@
 		<div class="form-check mb-3">
 			<label for="remember_me" class="form-check-label">
 				<input type="checkbox" name="remember" id="remember_me" class="form-check-input rounded" >
-				<span class="text-sm">Remember me</span>
+				<span class="text-sm">Ingatkan Saya</span>
 			</label>
 		</div>
 			<x-primary-button class="ml-3" type="submit">
-				{{ __('Log in') }}
+				{{ __('Log Masuk') }}
 			</x-primary-button>
 	</form>
 
