@@ -1,24 +1,24 @@
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Email Registration List') }}
+			{{ __('BTM01 - PERMOHONAN ALAMAT EMEL RASMI unishams.edu.my') }}
 		</h2>
 	</x-slot>
 	<div class="col-sm-12">
 		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('emailaccapp.create') }}">
-			Email Registration Application
+			MOHON
 		</x-link>
 	</div>
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm" id="loanapp" style="font: 12px sans-serif;">
+		<table class="table table-hover table-sm" id="loanapp" style="font: 12px montserrat;">
 			<thead>
 				<tr>
-					<th>Reg No</th>
-					<th>Name</th>
-					<th>Apply On</th>
-					<th>Email Application Type</th>
-					<th>HOD Approval</th>
-					<th>Email Application Status</th>
+					<th>No. Ruj</th>
+					<th>Nama Pemohon</th>
+					<th>Tarikh Mohon</th>
+					<th>Jenis Emel</th>
+					<th>Sokongan Ketua KPB</th>
+					<th>Status Permohonan</th>
 					<th>#</th>
 				</tr>
 			</thead>

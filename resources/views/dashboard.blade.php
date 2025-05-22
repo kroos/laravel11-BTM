@@ -2,7 +2,7 @@
 
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Dashboard') }}
+			{{ __('Welcome to BTM KLIK') }}
 		</h2>
 	</x-slot>
 	<div class="col-sm-12 justify-content-center">

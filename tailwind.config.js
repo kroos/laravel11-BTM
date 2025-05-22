@@ -13,6 +13,9 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+				'montserrat': ["Montserrat", 'sans-serif'],
+				// KG: ['Kalnia Glaze', 'serif'],
+				// poppins: ["Poppins", ...defaultTheme.fontFamily.sans],
 			},
 		},
 	},

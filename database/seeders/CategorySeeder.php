@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
 		// 			// 'name' => Str::random(10),
 		// 			// 'email' => Str::random(10).'@example.com',
 		// 			// 'password' => Hash::make('password'),
-		// 			'category' => 'Network Peripheral',
+		// 			'category' => 'WiFi',
 		// 		], [
 		// 			'category' => 'Audio Visual Apparatus',
 		// 		], [
@@ -27,7 +27,7 @@ class CategorySeeder extends Seeder
 		// ]]);
 
 		// or (complete with timestamp)
-		\App\Models\Settings\Category::create(['category' => 'Network Peripheral']);
+		\App\Models\Settings\Category::create(['category' => 'WiFi']);
 		\App\Models\Settings\Category::create(['category' => 'Audio Visual Apparatus']);
 		\App\Models\Settings\Category::create(['category' => 'Computers And Notebooks']);
 	}

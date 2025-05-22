@@ -1,27 +1,27 @@
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Loan Equipment List') }}
+			{{ __('BTM03 - PINJAMAN PERALATAN') }}
 		</h2>
 	</x-slot>
 	<div class="col-sm-12">
 		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('loanapp.create') }}">
-			Loan Application
+			MOHON
 		</x-link>
 	</div>
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm" id="loanapp" style="font: 12px sans-serif;">
+		<table class="table table-hover table-sm" id="loanapp" style="font: 12px montserrat;">
 			<thead>
 				<tr>
-					<th>Loan No</th>
-					<th>Name</th>
-					<th>Apply On</th>
-					<th>Loan From</th>
-					<th>Loan To</th>
-					<th>Equipments Pick Up On</th>
-					<th>Equipments</th>
-					<th>HOD Approval</th>
-					<th>Loan Status</th>
+					<th>No Ruj</th>
+					<th>Peminjam</th>
+					<th>Mohon Pada</th>
+					<th>Pinjam DARI</th>
+					<th>Pinjam HINGGA</th>
+					<th>Tarikh Ambil</th>
+					<th>Jenis Peralatan</th>
+					<th>Kelulusan Ketua KPB</th>
+					<th>Status Pinjaman</th>
 					<th>#</th>
 				</tr>
 			</thead>
