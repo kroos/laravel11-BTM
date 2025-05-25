@@ -245,7 +245,7 @@ tr:nth-child(even) {
 				</tr>
 @endforeach
 				<tr>
-					<th colspan="2"><span class="center">Kelulusan Pengarah/Dekan/Ketua Jabatan</span></th>
+					<th colspan="2"><span class="center">Sokongan Pengarah/Dekan/Ketua Jabatan</span></th>
 				</tr>
 				<tr>
 				</tr>
@@ -261,7 +261,7 @@ tr:nth-child(even) {
 					<td>Status : <span class="bold">{{ $btmloanapplication->belongstoapproverstatusloan->status_approval }}</span></td>
 				</tr>
 				<tr>
-					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
+					<th colspan="2"><span class="center">UNTUK KEGUNAAN PEJABAT</span></th>
 				</tr>
 				<tr>
 					<td colspan="2">

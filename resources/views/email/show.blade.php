@@ -42,7 +42,7 @@ body {
 	padding: 30;
 	box-sizing: border-box;
 	font-family: Arial, sans-serif;
-	background-color: #f0f0f0; /* Light gray shade */
+	background-color: white; /* Light gray shade */
 }
 
 /* Center class for centering elements */
@@ -133,7 +133,7 @@ td {
 }
 
 th {
-	background-color: #d9e9ff; /* Light blue background */
+	background-color: blue; /* Light blue background */
 	font-weight: bold;
 }
 
@@ -147,7 +147,7 @@ tr:nth-child(even) {
 <body>
 <div class="content">
 	<!-- Your content goes here -->
-	<h1>Borang Permohonan Akaun Email Rasmi @unishams.edu.my</h1>
+	<h1>Borang Permohonan Alamat Emel Rasmi @unishams.edu.my</h1>
 
 	<table>
 			<thead>
@@ -166,12 +166,12 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
+					<!-- <td colspan="2">
 						<p class="bold underline">Terma & Syarat :</p>
 						<ul>
 								<li>Permohonan yang tidak lengkap tidak akan diproses</li>
 								<li>Digalakkan untuk tidak menggunakan nombor, simbol, space, dash atau underscore sebagai email ID</li>
-								<li>Digalakkan untuk menggunakan nama sendiri sebagai email ID</li>
+								<li>Digalakkan untuk menggunakan nama sendiri sebagai email ID</li> -->
 						</ul>
 					</td>
 				</tr>
@@ -187,26 +187,26 @@ tr:nth-child(even) {
 						Nama : <span class="bold">{{ $email->belongstostaff->nama }}</span>
 					</td>
 					<td style="width: 50%;">
-						Kuliyyah : <span class="bold">{{ $email->belongstostaff->belongstomanydepartment->first()->namajabatan }}</span>
+						KPB : <span class="bold">{{ $email->belongstostaff->belongstomanydepartment->first()->namajabatan }}</span>
 					</td>
 				</tr>
 			</tbody>
 			<thead>
 				<tr>
-					<th colspan="2"><span class="center">Email ID Yang Dipohon</span></th>
+					<th colspan="2"><span class="center">Emel ID Yang Dipohon</span></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td colspan="2">Jenis Akaun : {{ ($email->group_email == 1)?'Email Berkumpulan':'Email Individu' }}</td>
+					<td colspan="2">Jenis Emel : {{ ($email->group_email == 1)?'Emel Berkumpulan':'Emel Individu' }}</td>
 				</tr>
 				<tr>
 					<td {!! ($email->group_email==1)?NULL:'colspan="2"' !!} style="padding: 0px;">
 						<table style="margin-bottom: 0px;">
 							<thead>
 								<tr>
-									<th>Cadangan Email ID</th>
-									<th>Email ID Yang Diluluskan</th>
+									<th>Cadangan Emel ID</th>
+									<th>Emel ID Yang Diluluskan</th>
 									<th>Katalaluan Sementara</th>
 								</tr>
 							</thead>
@@ -227,7 +227,7 @@ tr:nth-child(even) {
 								<thead>
 									<tr>
 										<th>Ahli Kumpulan</th>
-										<th>Email Ahli Kumpulan</th>
+										<th>Emel Ahli Kumpulan</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -245,12 +245,12 @@ tr:nth-child(even) {
 			</tbody>
 			<thead>
 				<tr>
-					<th colspan="2"><span class="center red bold">*Peringatan Penting : Anda dikehendaki untuk menukar katalaluan sementara dengan segera setelah mendapat kelulusan dari Bahagian Teknologi Maklumat.*</span></th>
+					<th colspan="2"><span class="center red bold">*Peringatan Penting : Anda dikehendaki untuk menukar katalaluan sementara dengan segera setelah mendapat kelulusan daripada Bahagian Teknologi Maklumat.*</span></th>
 				</tr>
 			</thead>
 			<thead>
 				<tr>
-					<th colspan="2"><span class="center">Kelulusan Pengarah/Dekan/Ketua Jabatan</span></th>
+					<th colspan="2"><span class="center">Sokongan Pengarah/Dekan/Ketua Jabatan</span></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -268,7 +268,7 @@ tr:nth-child(even) {
 					<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa maklumat yang diberikan adalah benar dan untuk urusan rasmi.</span></td>
 				</tr>
 				<tr>
-					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
+					<th colspan="2"><span class="center">UNTUK KEGUNAAN PEJABAT</span></th>
 				</tr>
 				<tr>
 					<td colspan="2">

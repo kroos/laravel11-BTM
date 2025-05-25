@@ -13,10 +13,9 @@
 			
 		<!-- 1st column -->
 			<div class="col-sm-5 m-0 p-1">
-
 				<div class="card mb-2">
 					<div class="card-header">
-						<h3 class="card-title">Maklumat Pemohon</h3>
+						<h3 class="card-title">Pemohon</h3>
 					</div>
 					<div class="card-body">
 						<div class="col-sm-12 mt-2 row">
@@ -45,12 +44,6 @@
 						<small>2) Masukkan sekurang-kurangnya dua (2) cadangan alamat emel</small>
 					</div>
 					<div class="card-body">
-						<div class="col-sm-12 text-right mt-3">
-							<x-primary-button type="button" class="add_emails">
-								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Emel
-							</x-primary-button>
-						</div>
-
 						<div class="wrap_emails">
 							<div class="col-sm-12 row mt-3">
 
@@ -71,49 +64,69 @@
 										<i class="fa-regular fa-trash-can"></i>
 									</x-danger-button>
 								</div>
+							</div>
+						</div>
 
+								<!-- add email button -->
+									<x-primary-button type="button" class="add_emails">
+										<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Emel
+									</x-primary-button>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+	
+		<!-- 2nd column side kanan -->
+			<div class="col-sm-0 mx-auto m-0 p-1">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+					</p>
+				</div>
+			</div>
+			
+		<!-- 2nd column -->
+			<div class="col-sm-6 m-0 p-1 mx-auto">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+						<p>
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+						</p>
+					</div>
+
+			<div class="col m-0 p-1">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Emel Berkumpulan</h3>
+							<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
+						</div>
+						<div class="card-body">
+							<div class="form-check form-switch">
+								<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
+								<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
+							</div>
+
+							<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			<!-- 2nd column -->
 
-			<div class="col-sm-6 m-0 p-1 mx-auto">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-					</p>
-				</div>
 
-				
-		<div class="col m-0 p-1">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Emel Berkumpulan</h3>
-						<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
-					</div>
-					<div class="card-body">
-						<div class="form-check form-switch">
-							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
-							<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
-						</div>
-
-						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- 3rd column -->
+		<!-- 3rd column emel -->
 				<div class="card-body">
 					<div class="card">
 						<div class="card-header">
@@ -161,7 +174,12 @@ $(`#gemail`).change(function(){
 	if(this.checked) {
 		// console.log($(this).val());
 		$(`#wrap_group_email`).append(
-				`<small>Sila masukkan senarai emel ahli kumpulan anda</small>` +
+				`<small> Sila masukkan senarai emel ahli kumpulan anda.</small>`+
+				`<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :`+
+					`<ul>`+
+						`<li> 1) alamat emel telah dibekukan, atau;</li>`+
+						`<li> 2) alamat emel tiada di dalam sistem, atau;</li>`+
+						`<li> 3) alamat emel belum didaftarkan.</li>`+
 
 				`<div class="col-sm-12 text-right mt-3">` +
 					`<button class="btn btn-primary btn-sm add_personnels" type="button">` +
@@ -188,13 +206,6 @@ $(`#gemail`).change(function(){
 										`<option value="">Please choose staff</option>` +
 									`</select>` +
 							`</div>` +
-							`<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :`+
-								`<ul>`+
-									`<li> 1) alamat emel telah dibekukan, atau;</li>`+
-									`<li> 2) alamat emel tiada di dalam sistem, atau;</li>`+
-									`<li> 3) alamat emel belum didaftarkan</li>`+
-								`</ul>`+
-							`</small>` +
 						`</div>` +
 
 						`<div class="col-sm-1 m-0">` +

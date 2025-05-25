@@ -1,7 +1,7 @@
 <x-guest-layout>
-	<x-slot name="header">
+	<x-slot name="header" >
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('BTM KLIK') }}
+			{{ __('Welcome to BTMgo') }}
 		</h2>
 	</x-slot>
 	<form method="POST" action="{{ route('login') }}" id="form" class="col-sm-4" >
@@ -25,7 +25,7 @@
 		<div class="form-check mb-3">
 			<label for="remember_me" class="form-check-label">
 				<input type="checkbox" name="remember" id="remember_me" class="form-check-input rounded" >
-				<span class="text-sm">Ingatkan Saya</span>
+				<span class="text-sm">Remember me</span>
 			</label>
 		</div>
 			<x-primary-button class="ml-3" type="submit">
