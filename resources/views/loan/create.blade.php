@@ -65,7 +65,7 @@
 						<div class="col-sm-12 mt-2 row">
 							<x-input-label for="dato" class="col-sm-4" :value="__('Lokasi / Tempat : ')" />
 							<div class="col-sm-8">
-								<x-text-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+								<x-textarea-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
 								<x-input-error :messages="$errors->get('date_loan_to')" />
 							</div>
 						</div>
@@ -73,18 +73,32 @@
 				</div>
 			</div>
 
-			<!-- 2nd column -->
-			<div class="col-sm-5 m-0 p-1">
+		<!-- 2nd column side kanan -->
+			<div class="col-sm-0 mx-auto m-0 p-1">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+					</p>
+				</div>
+			</div>
+
+			<div class="col-sm m-1 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Butiran Peralatan</h3>
-					</div>
+					<!-- </div>
 					<div class="card-body">
 						<div class="col-sm-12 text-right mt-3">
 							<x-primary-button type="button" class="add_equipments">
 								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
 							</x-primary-button>
-						</div>
+						</div> -->
 
 						<div class="wrap_equipments">
 							<div class="col-sm-12 row mt-3">
@@ -100,7 +114,6 @@
 									</div>
 								</div>
 
-
 								<!-- equipment -->
 								<div class="col-sm-11 m-0 row">
 									<x-input-label for="equip_0" class="col-sm-4" :value="__('Kuantiti : ')" />
@@ -111,6 +124,7 @@
 										</select>
 									</div>
 								</div>
+								
 								<!-- remove button -->
 								<div class="col-sm-1 m-0">
 									<x-danger-button type="button" class="remove_equipments">
@@ -122,6 +136,17 @@
 								<div class="col-sm-12 m-0" id="desc_0">
 									<div id="desc_wrap_0">
 									</div>
+
+								<!-- add item -->
+								</div>
+								<div class="card-body">
+									<div class="col-sm-12 text-right mt-3">
+										<x-primary-button type="button" class="add_equipments">
+											<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
+										</x-primary-button>
+
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -130,26 +155,14 @@
 			</div>
 		</div>
 
-		<!-- 3rd column -->
-		<div class="col-sm-6 mx-auto m-0 p-1">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
-				</div>
-				<div class="card-body">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-						</div>
-						<div class="card-body">
-							<p>Status :
+		<!-- 3rd column bawah -->
+			<div class="card-body">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
+					</div>
+					<div class="card-body">
+						<p>Status :
 							@php
 							$j = \App\Models\Jabatan::find($idj);
 							if($j->belongstomanyappr->count()){
@@ -158,16 +171,16 @@
 								echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Sokong</span>';
 							}
 							@endphp
-							</p>
-							<p>Tarikh : </p>
-						</div>
-						<div class="card-footer">
-							<p class="text-sm fs-6 fw-bolder">Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.</p>
-						</div>
+						</p>
+						<p>Tarikh : </p>
+					</div>
+					<div class="card-footer">
+						<p class="text-sm fs-6 fw-bolder">Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.</p>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">

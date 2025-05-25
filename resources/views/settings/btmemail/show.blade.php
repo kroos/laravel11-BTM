@@ -246,7 +246,7 @@ tr:nth-child(even) {
 			</thead>
 			<thead>
 				<tr>
-					<th colspan="2"><span class="center">Kelulusan Pengarah/Dekan/Ketua Jabatan</span></th>
+					<th colspan="2"><span class="center">Sokongan Pengarah/Dekan/Ketua Jabatan</span></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -264,7 +264,7 @@ tr:nth-child(even) {
 					<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa maklumat yang diberikan adalah benar dan untuk urusan rasmi.</span></td>
 				</tr>
 				<tr>
-					<th colspan="2"><span class="center">Untuk Kegunaan Pejabat</span></th>
+					<th colspan="2"><span class="center">UNTUK KEGUNAAN PEJABAT</span></th>
 				</tr>
 				<tr>
 					<td colspan="2">

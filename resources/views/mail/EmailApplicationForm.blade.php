@@ -1,17 +1,17 @@
 <x-mail::message>
-# Introduction
+# BTMgo
 
 Dear {{$name}},
 
-I hope this email finds you well.
+We hope this email finds you well.
 
-We would like to inform you that your application for new email registration application is currently being processed. To expedite the approval, you may follow up directly with your designated approver for quicker confirmation.
+We would like to inform that your application is currently being processed.
 
 For your reference, please find the attached copy of your application form.
 
 Should you need further assistance, please feel free to reach out Bahagian Teknologi Maklumat, UniSHAMS.
 
-Thank you for your attention and cooperation.
+Thank you for your attention.
 
 <x-mail::button :url="$link">
 View Form
