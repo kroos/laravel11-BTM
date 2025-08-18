@@ -120,8 +120,10 @@ $user->setConnection('mysql3');
 	jQuery.noConflict ();
 	(function($){
 		$(document).ready(function(){
-			@section('js')
-			@show
+			$.get('/sanctum/csrf-cookie').done(function () {
+				@section('js')
+				@show
+			});
 		});
 	})(jQuery);
 </script>

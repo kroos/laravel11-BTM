@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AjaxDBController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 	Route::apiResources([
 		// 'ppls' => PplController::class,
 		// 'posts' => PostController::class,
@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
 	// 	Route::delete('/{id}', [ItemController::class, 'destroy']);
 	// });
 
+Route::middleware('auth:sanctum')->group(function () {
 	Route::get('/liststaff', [AjaxDBController::class, 'liststaff'])->name('liststaff');
 	Route::get('/listjabatan', [AjaxDBController::class, 'listjabatan'])->name('listjabatan');
 	Route::get('/equipmentstatus', [AjaxDBController::class, 'equipmentstatus'])->name('equipmentstatus');
@@ -36,4 +37,5 @@ Route::middleware('auth')->group(function () {
 	Route::patch('/emailappapprv/{emailapp}', [AjaxDBController::class, 'emailappsapprv'])->name('emailappsapprv');
 	Route::get('/loancalendar', [AjaxDBController::class, 'loancalendar'])->name('loancalendar');
 	Route::get('/listemailjabatan', [AjaxDBController::class, 'listemailjabatan'])->name('listemailjabatan');
+});
 
