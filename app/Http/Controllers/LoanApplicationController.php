@@ -90,20 +90,23 @@ class LoanApplicationController extends Controller
 				'date_loan_from' => 'required|date_format:"Y-m-d"',
 				'date_loan_to' => 'required|date_format:"Y-m-d"',
 				'loan_purpose' => 'required',
+				'location' => 'required',
 				'lequ.*.equipment_id' => 'required',
 			], [
 				'date_loan_from' => 'Please insert :attribute',
 				'date_loan_to' => 'Please insert :attribute',
 				'loan_purpose' => 'Please insert :attribute',
+				'location' => 'Please insert :attribute',
 				'lequ.*.equipment_id' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'date_loan_from' => 'Date From',
 				'date_loan_to' => 'Date To',
 				'loan_purpose' => 'Purpose of Loan',
+				'location' => 'Location',
 				'lequ.*.equipment_id' => 'Equipment',
 		]);
 
-		$data = $request->only(['date_loan_from', 'date_loan_to']);
+		$data = $request->only(['date_loan_from', 'date_loan_to', 'location']);
 		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
 		$data += ['active' => 1];
 		$data += ['status_loan_id' => 3];
@@ -184,20 +187,23 @@ class LoanApplicationController extends Controller
 				'date_loan_from' => 'required|date_format:"Y-m-d"',
 				'date_loan_to' => 'required|date_format:"Y-m-d"',
 				'loan_purpose' => 'required',
+				'location' => 'required',
 				'lequ.*.equipment_id' => 'required',
 			], [
 				'date_loan_from' => 'Please insert :attribute',
 				'date_loan_to' => 'Please insert :attribute',
 				'loan_purpose' => 'Please insert :attribute',
+				'location' => 'Please insert :attribute',
 				'lequ.*.equipment_id' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'date_loan_from' => 'Date From',
 				'date_loan_to' => 'Date To',
 				'loan_purpose' => 'Purpose of Loan',
+				'location' => 'Location',
 				'lequ.*.equipment_id' => 'Equipment',
 		]);
 
-		$data = $request->only(['date_loan_from', 'date_loan_to']);
+		$data = $request->only(['date_loan_from', 'date_loan_to', 'location']);
 		$data += ['loan_purpose' => ucwords(Str::lower(trim($request->loan_purpose)))];
 		$data += ['active' => 1];
 		$data += ['status_loan_id' => 3];

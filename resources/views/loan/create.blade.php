@@ -63,10 +63,10 @@
 
 						<!-- tempat pinjaman -->
 						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="dato" class="col-sm-4" :value="__('Lokasi / Tempat : ')" />
+							<x-input-label for="loc" class="col-sm-4" :value="__('Lokasi / Tempat : ')" />
 							<div class="col-sm-8">
-								<x-textarea-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
-								<x-input-error :messages="$errors->get('date_loan_to')" />
+								<x-textarea-input id="loc" name="location" value="{{ old('location') }}" class="{{ ($errors->has('location')?'is-invalid':NULL) }}"  />
+								<x-input-error :messages="$errors->get('location')" />
 							</div>
 						</div>
 					</div>
@@ -124,7 +124,7 @@
 										</select>
 									</div>
 								</div>
-								
+
 								<!-- remove button -->
 								<div class="col-sm-1 m-0">
 									<x-danger-button type="button" class="remove_equipments">
