@@ -10,9 +10,8 @@
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
 		<div class="container d-flex justify-content-between">
-			
-		<!-- 1st column -->
-			<div class="col-sm-5 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
+
 				<div class="card mb-2">
 					<div class="card-header">
 						<h3 class="card-title">Pemohon</h3>
@@ -25,18 +24,16 @@
 								<x-input-error :messages="$errors->get('nostaf')" />
 							</div>
 						</div>
-
-								<!-- staff name -->
-								<div class="col-sm-12 mt-2 row">
-									<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
-									<div class="col-sm-8">
-										<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
-											<x-input-error :messages="$errors->get('nama')" />
-									</div>
-								</div>
+						<!-- staff name -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+									<x-input-error :messages="$errors->get('nama')" />
+							</div>
+						</div>
 					</div>
 				</div>
-
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Cadangan Alamat Emel</h3>
@@ -46,9 +43,7 @@
 					<div class="card-body">
 						<div class="wrap_emails">
 							<div class="col-sm-12 row mt-3">
-
 								<div class="col-sm-11 m-0 row">
-
 									<x-input-label for="email_0" class="col-sm-3" :value="__('Alamat Emel : ')" />
 									<div class="col-sm-9">
 										<div class="input-group">
@@ -57,102 +52,84 @@
 										</div>
 									</div>
 								</div>
-
 								<!-- remove button -->
 								<div class="col-sm-1 m-0">
 									<x-danger-button type="button" class="remove_emails">
 										<i class="fa-regular fa-trash-can"></i>
 									</x-danger-button>
 								</div>
+
 							</div>
 						</div>
-
-								<!-- add email button -->
-									<x-primary-button type="button" class="add_emails">
-										<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Emel
-									</x-primary-button>
+						<!-- add email button -->
+						<x-primary-button type="button" class="add_emails">
+							<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Emel
+						</x-primary-button>
 					</div>
-				</div>	
-			</div>
-		</div>
-	</div>
-	
-		<!-- 2nd column side kanan -->
-			<div class="col-sm-0 mx-auto m-0 p-1">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
 				</div>
+
+
+
 			</div>
-			
-		<!-- 2nd column -->
-			<div class="col-sm-6 m-0 p-1 mx-auto">
+			<div class="col-sm-6 m-0 p-1">
+
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-						<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-						</p>
+						<h3 class="card-title">Emel Berkumpulan</h3>
+						<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
 					</div>
-
-			<div class="col m-0 p-1">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Emel Berkumpulan</h3>
-							<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
+					<div class="card-body">
+						<div class="form-check form-switch">
+							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
+							<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
 						</div>
-						<div class="card-body">
-							<div class="form-check form-switch">
-								<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
-								<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
-							</div>
 
-							<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
-							</div>
+						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
 						</div>
 					</div>
 				</div>
-			</div>
 
 
-		<!-- 3rd column emel -->
-				<div class="card-body">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-						</div>
-						<div class="card-body">
-							<p>Status :
-							@php
-							$j = \App\Models\Jabatan::find($idj);
-							if($j->belongstomanyappr->count()){
-								echo $j->belongstomanyappr->first()->nama;
-							} else {
-								echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
-							}
-							@endphp
-							</p>
-							<p>Tarikh : </p>
-						</div>
-						<div class="card-footer">
-							<p class="text-sm fs-6 fw-bolder">Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.</p>
-						</div>
-					</div>
-				</div>
+
 			</div>
 		</div>
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+				<p>
+					@php
+					$r = \App\Models\Staff::find(Auth::user()->nostaf);
+					echo $r->belongstomanydepartment()->first()->namajabatan;
+					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+					@endphp
+				</p>
+			</div>
+			<div class="card-body">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
+					</div>
+					<div class="card-body">
+						<p>Status :
+						@php
+						$j = \App\Models\Jabatan::find($idj);
+						if($j->belongstomanyappr->count()){
+							echo $j->belongstomanyappr->first()->nama;
+						} else {
+							echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+						}
+						@endphp
+						</p>
+						<p>Tarikh : </p>
+					</div>
+					<div class="card-footer">
+						<p class="text-sm fs-6 fw-bolder">Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.</p>
+					</div>
+				</div>
+			</div>
 
+
+		</div>
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">
 				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
