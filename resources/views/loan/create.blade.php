@@ -73,20 +73,9 @@
 				</div>
 			</div>
 
-		<!-- 2nd column side kanan -->
-			<div class="col-sm-0 mx-auto m-0 p-1">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
-				</div>
-			</div>
+			<!-- 2nd column side kanan -->
+			<div class="col-sm-5 mx-auto m-0 p-1">
+
 
 			<div class="col-sm m-1 p-1">
 				<div class="card">
@@ -144,18 +133,30 @@
 										<x-primary-button type="button" class="add_equipments">
 											<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
 										</x-primary-button>
-
-										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+					</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- 3rd column bawah -->
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
+					</p>
+				</div>
+			</div>
 			<div class="card-body">
 				<div class="card">
 					<div class="card-header">
@@ -396,6 +397,32 @@ var apprv_wrapper = $(".wrap_equipments");
 // Counter to track added dropdowns
 var counter = 0;
 
+function preventDuplicateSelection() {
+	// Gather all selected equipment IDs
+	let selected = [];
+	$("select[id^='equip_']").each(function() {
+		let val = $(this).val();
+		if (val) selected.push(val);
+	});
+
+	// Loop through each dropdown and strip out already-selected options
+	$("select[id^='equip_']").each(function() {
+		let currentVal = $(this).val();
+		let $select = $(this);
+
+		$select.find("option").each(function() {
+			let optVal = $(this).val();
+
+			// always keep placeholder and current value
+			if (optVal === "" || optVal === currentVal) return;
+
+			if (selected.includes(optVal)) {
+				$(this).remove();
+			}
+		});
+	});
+}
+
 // Function to update the description dynamically
 function updateDescription(equipSelector, descSelector) {
 	$(equipSelector).on('change', function () {
@@ -495,6 +522,8 @@ function initializeChainedSelects(counter) {
 						closeOnSelect: true,
 						data: equipmentOptions
 					});
+					// 🔥 Remove already-selected equipment from this dropdown
+					preventDuplicateSelection();
 				}
 			});
 		}
@@ -502,6 +531,11 @@ function initializeChainedSelects(counter) {
 
 	// Update the description when equipment is changed
 	updateDescription(equipmentSelector, descriptionSelector);
+
+	// Prevent duplicates when equipment changes
+	$(equipmentSelector).on("change", function () {
+		preventDuplicateSelection();
+	});
 }
 
 // Add equipment fields dynamically
