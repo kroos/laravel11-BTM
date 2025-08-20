@@ -103,8 +103,9 @@ $(document).on('click', '.swal2-confirm', function(e){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
-$.fn.dataTable.moment( 'D MMM YYYY' );
-$.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
+DataTable.datetime( 'D MMM YYYY' );
+DataTable.datetime( 'YYYY' );
+DataTable.datetime( 'D MMM YYYY h:mm a' );
 $('#approver').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"columnDefs": [ { type: 'date', 'targets': [1] } ],

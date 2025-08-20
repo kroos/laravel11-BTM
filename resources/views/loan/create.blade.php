@@ -74,24 +74,15 @@
 			</div>
 
 			<!-- 2nd column side kanan -->
-			<div class="col-sm-5 mx-auto m-0 p-1">
+			<div class="col-sm-5 m-0 p-1">
 
-
-			<div class="col-sm m-1 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Butiran Peralatan</h3>
-					<!-- </div>
+					</div>
 					<div class="card-body">
-						<div class="col-sm-12 text-right mt-3">
-							<x-primary-button type="button" class="add_equipments">
-								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
-							</x-primary-button>
-						</div> -->
-
 						<div class="wrap_equipments">
 							<div class="col-sm-12 row mt-3">
-
 								<!-- chainedselect2 -->
 								<div class="col-sm-11 m-0 row">
 									<x-input-label for="catequip_0" class="col-sm-4" :value="__('Jenis Peralatan : ')" />
@@ -123,28 +114,30 @@
 
 								<!-- equipment description -->
 								<div class="col-sm-12 m-0" id="desc_0">
-									<div id="desc_wrap_0">
-									</div>
+									<div id="desc_wrap_0"></div>
+								</div>
 
-								<!-- add item -->
-								</div>
-								<div class="card-body">
-									<div class="col-sm-12 text-right mt-3">
-										<x-primary-button type="button" class="add_equipments">
-											<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
-										</x-primary-button>
-									</div>
-								</div>
 							</div>
 						</div>
+						<!-- add item -->
+						<div class="col-sm-12 text-right mt-3">
+							<x-primary-button type="button" class="add_equipments">
+								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Peralatan
+							</x-primary-button>
+						</div>
+
 					</div>
 
 					</div>
 				</div>
 			</div>
+
+
+
+
 		</div>
 
-		<!-- 3rd column bawah -->
+			<!-- 3rd column bawah -->
 			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
