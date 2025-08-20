@@ -10,7 +10,7 @@
 			@csrf
 		<div class="container d-flex justify-content-between">
 			<!-- 1st column -->
-			<div class="col-sm-5 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Peminjam</h3>
@@ -65,7 +65,7 @@
 						<div class="col-sm-12 mt-2 row">
 							<x-input-label for="loc" class="col-sm-4" :value="__('Lokasi / Tempat : ')" />
 							<div class="col-sm-8">
-								<x-textarea-input id="loc" name="location" value="{{ old('location') }}" class="{{ ($errors->has('location')?'is-invalid':NULL) }}"  />
+								<x-text-input id="loc" name="location" value="{{ old('location') }}" class="{{ ($errors->has('location')?'is-invalid':NULL) }}"  />
 								<x-input-error :messages="$errors->get('location')" />
 							</div>
 						</div>
@@ -74,7 +74,7 @@
 			</div>
 
 			<!-- 2nd column side kanan -->
-			<div class="col-sm-5 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 
 				<div class="card">
 					<div class="card-header">
@@ -131,12 +131,6 @@
 					</div>
 				</div>
 			</div>
-
-
-
-
-		</div>
-
 			<!-- 3rd column bawah -->
 			<div class="card">
 				<div class="card-header">
@@ -149,32 +143,32 @@
 						@endphp
 					</p>
 				</div>
-			</div>
-			<div class="card-body">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-					</div>
-					<div class="card-body">
-						<p>Status :
-							@php
-							$j = \App\Models\Jabatan::find($idj);
-							if($j->belongstomanyappr->count()){
-								echo $j->belongstomanyappr->first()->nama;
-							} else {
-								echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Sokong</span>';
-							}
-							@endphp
-						</p>
-						<p>Tarikh : </p>
-					</div>
-					<div class="card-footer">
-						<p class="text-sm fs-6 fw-bolder">Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.</p>
+				<div class="card-body">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
+						</div>
+						<div class="card-body">
+							<p>Status :
+								@php
+								$j = \App\Models\Jabatan::find($idj);
+								if($j->belongstomanyappr->count()){
+									echo $j->belongstomanyappr->first()->nama;
+								} else {
+									echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Sokong</span>';
+								}
+								@endphp
+							</p>
+							<p>Tarikh : </p>
+						</div>
+						<div class="card-footer">
+							<p class="text-sm fs-6 fw-bolder">Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+
 
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">
@@ -538,7 +532,7 @@ $(appr_btn).click(function () {
 		apprv_wrapper.append(
 			'<div class="col-sm-12 row mt-3">' +
 				'<div class="col-sm-11 m-0 row">' +
-					'<label for="catequip_' + counter + '" class="form-label form-label-sm col-sm-4">Equipment Category : </label>' +
+					'<label for="catequip_' + counter + '" class="form-label form-label-sm col-sm-4">Category : </label>' +
 					'<div class="col-sm-8">' +
 						'<select id="catequip_' + counter + '" name="lequ[' + counter + '][catequipment_id]" class="form-control"></select>' +
 					'</div>' +

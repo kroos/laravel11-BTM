@@ -15,8 +15,8 @@
 					<th>Pinjam HINGGA</th>
 					<th>Tarikh Ambil</th>
 					<th>Jenis Peralatan</th>
-					<th>Kelulusan Ketua KPB</th>
-					<th>Status Pinjaman</th>
+					<!-- <th>Kelulusan Ketua KPB</th> -->
+					<!-- <th>Status Pinjaman</th> -->
 					<th>#</th>
 				</tr>
 			</thead>
