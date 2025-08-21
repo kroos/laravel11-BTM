@@ -32,11 +32,17 @@ class ToBTMLoanCreate extends Mailable
 	 * Create a new message instance.
 	 */
 	public function __construct($data1, $data2)
-	// public function __construct($data1)
 	{
 		$this->data1 = $data1;
 		$this->data2 = $data2;
-		// dd($this->data1, $this->data2);
+		// dd($this->data1,
+		// 	$this->data2,
+		// 	$this->data2->nostaf,
+		// 	Login::where('nostaf', $this->data2->nostaf)->where('is_active', 1)->first()->name,
+		// 	$this->data2->id,
+		// 	Carbon::parse($this->data2->created_at)->format('ym'),
+		// 	storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($this->data2->created_at)->format('ym').str_pad($this->data2->id, 3, "0", STR_PAD_LEFT).'.pdf'
+		// );
 	}
 
 	/**
@@ -75,7 +81,7 @@ class ToBTMLoanCreate extends Mailable
 	public function attachments(): array
 	{
 		return [
-			Attachment::fromPath(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($this->data2->created_at)->format('ym').str_pad( $this->data2->id, 3, "0", STR_PAD_LEFT).'.pdf'),
+			Attachment::fromPath(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($this->data2->created_at)->format('ym').str_pad($this->data2->id, 3, "0", STR_PAD_LEFT).'.pdf'),
 		];
 	}
 }

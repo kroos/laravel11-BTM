@@ -146,11 +146,8 @@ class LoanApplicationController extends Controller
 				// $r will "dissolve" when lopp process
 				foreach(BTMApprover::where('active', 1)->get() as $ad) {
 					$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-					// $adm = $ad->belongstobtmappr->hasmanylogin()->where('is_active', 1)->first();
-					// dd($adm, $r);
-					// Mail::to($adm)
 					Mail::to($adm->email, $adm->name)
-							->send(new ToBTMLoanCreate($adm, $r));
+					->send(new ToBTMLoanCreate($adm, $r));
 				}
 			}
 		} else {
