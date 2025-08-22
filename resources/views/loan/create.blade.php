@@ -95,14 +95,17 @@
 								</div>
 
 								<!-- equipment -->
-								<div class="col-sm-11 m-0 row">
+								<div class="col-sm-11 m-0 row @error('lequ.*.equipment_id') has-error @enderror">
 									<x-input-label for="equip_0" class="col-sm-4" :value="__('Kuantiti : ')" />
-									<div class="col-sm-8">
-										<select id="equip_0" name="lequ[0][equipment_id]" class="{{ ($errors->has('lequ.*.equipment_id')?'is-invalid':NULL) }}" palceholder="Please Choose Equipment"/>
+									<div class="col-sm-8 @error('lequ.*.equipment_id') is-invalid @enderror">
+										<select id="equip_0" name="lequ[0][equipment_id]" class="form-select form-select-sm @error('lequ.*.equipment_id') is-invalid @enderror" palceholder="Please Choose Equipment"/>
 											<!-- must have this to make sure $request catch the data -->
 											<option value="">Please choose equipment</option>
 										</select>
 									</div>
+						@error('lequ.*.equipment_id')
+						<div class="invalid-feedback">{{ $message }}</div>
+						@enderror
 								</div>
 
 								<!-- remove button -->
@@ -114,7 +117,12 @@
 
 								<!-- equipment description -->
 								<div class="col-sm-12 m-0" id="desc_0">
-									<div id="desc_wrap_0"></div>
+									<div id="desc_wrap_0">
+										<p>Brand :<br/>
+										Model :<br/>
+										Serial Number :<br/>
+										Description :</p>
+									</div>
 								</div>
 
 							</div>
@@ -161,8 +169,16 @@
 							</p>
 							<p>Tarikh : </p>
 						</div>
-						<div class="card-footer">
-							<p class="text-sm fs-6 fw-bolder">Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.</p>
+						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+									Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.
+								</label>
+							</div>
+							@error('acknowledge')
+							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+							@enderror
 						</div>
 					</div>
 				</div>
@@ -537,11 +553,14 @@ $(appr_btn).click(function () {
 						'<select id="catequip_' + counter + '" name="lequ[' + counter + '][catequipment_id]" class="form-control"></select>' +
 					'</div>' +
 				'</div>' +
-				'<div class="col-sm-11 m-0 row">' +
+				'<div class="col-sm-11 m-0 row @error('lequ.*.equipment_id') has-error @enderror">' +
 					'<label class="form-label form-label-sm col-sm-4" for="equip_' + counter + '">Equipment :</label>' +
-					'<div class="col-sm-8">' +
-						'<select id="equip_' + counter + '" name="lequ[' + counter + '][equipment_id]" class="form-control"></select>' +
+					'<div class="col-sm-8 @error('lequ.*.equipment_id') is-invalid @enderror">' +
+						'<select id="equip_' + counter + '" name="lequ[' + counter + '][equipment_id]" class="form-select form-select-sm @error('lequ.*.equipment_id') is-invalid @enderror"></select>' +
 					'</div>' +
+						'@error('lequ.*.equipment_id')' +
+						'<div class="invalid-feedback">{{ $message }}</div>' +
+						'@enderror' +
 				'</div>' +
 				'<div class="col-sm-1 m-0">' +
 					'<button type="button" class="btn btn-sm btn-danger remove_equipments">' +

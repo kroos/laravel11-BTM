@@ -91,18 +91,21 @@ class LoanApplicationController extends Controller
 				'date_loan_to' => 'required|date_format:"Y-m-d"',
 				'loan_purpose' => 'required',
 				'location' => 'required',
+				'acknowledge' => 'required',
 				'lequ.*.equipment_id' => 'required',
 			], [
 				'date_loan_from' => 'Please insert :attribute',
 				'date_loan_to' => 'Please insert :attribute',
 				'loan_purpose' => 'Please insert :attribute',
 				'location' => 'Please insert :attribute',
+				'acknowledge' => 'Please click on :attribute',
 				'lequ.*.equipment_id' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'date_loan_from' => 'Date From',
 				'date_loan_to' => 'Date To',
 				'loan_purpose' => 'Purpose of Loan',
 				'location' => 'Location',
+				'acknowledge' => 'Acknowledgement',
 				'lequ.*.equipment_id' => 'Equipment',
 		]);
 

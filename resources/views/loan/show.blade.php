@@ -198,9 +198,10 @@ tr:nth-child(even) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
+					<td>
 						Tujuan Pinjaman : <span class="bold">{{ $loanapp->loan_purpose }}</span>
 					</td>
+					<td>Lokasi : <span class="bold">{{ $loanapp->location }}</span></td>
 				</tr>
 				<tr>
 					<td>
