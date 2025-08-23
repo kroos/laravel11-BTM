@@ -97,18 +97,21 @@ class EmailRegistrationApplicationController extends Controller
 				'group_email' => 'nullable',
 				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
 				'emreg' => [new UniqueEmail],
+				'acknowledge' => 'required',
 				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
 				'emregmem.*.email_member' => 'required_if_accepted:group_email',
 			], [
 				'nostaf' => 'Please insert :attribute',
 				'group_email' => 'Please click :attribute',
 				'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
+				'acknowledge' => 'Please click on :attribute',
 				'emregmem.*.email_member_department' => 'Please choose :attribute at #:position',	//:index
 				'emregmem.*.email_member' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
 				'emreg.*.email_suggestion' => 'Email ID',
+				'acknowledge' => 'Acknowledgement',
 				'emregmem.*.email_member_department' => 'Department',
 				'emregmem.*.email_member' => 'Staff',
 		]);

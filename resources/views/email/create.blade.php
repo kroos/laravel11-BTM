@@ -122,8 +122,16 @@
 						</p>
 						<p>Tarikh : </p>
 					</div>
-					<div class="card-footer">
-						<p class="text-sm fs-6 fw-bolder">Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.</p>
+					<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+						<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+							<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+								<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+								Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.
+							</label>
+						</div>
+						@error('acknowledge')
+						<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+						@enderror
 					</div>
 				</div>
 			</div>
