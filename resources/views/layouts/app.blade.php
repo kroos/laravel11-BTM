@@ -109,6 +109,7 @@ $user->setConnection('mysql3');
 
 		<!-- footer -->
 		<div class="container py-3 align-self-end text-center text-sm text-secondary">
+			&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
 			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
 		</div>
 		<!-- footer end -->

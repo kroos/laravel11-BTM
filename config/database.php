@@ -45,7 +45,7 @@ return [
 
         'mysql1' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_1', '127.0.0.1'),
             'port' => env('DB_PORT_1', '3306'),
             'database' => env('DB_DATABASE_1', 'forge'),
@@ -65,7 +65,7 @@ return [
 
         'mysql2' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_2', '127.0.0.1'),
             'port' => env('DB_PORT_2', '3306'),
             'database' => env('DB_DATABASE_2', 'forge'),
@@ -85,7 +85,7 @@ return [
 
         'mysql3' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_3', '127.0.0.1'),
             'port' => env('DB_PORT_3', '3306'),
             'database' => env('DB_DATABASE_3', 'forge'),

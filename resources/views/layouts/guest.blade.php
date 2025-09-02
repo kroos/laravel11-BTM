@@ -76,6 +76,7 @@
 
 		<!-- footer -->
 		<div class="container align-self-end py-3 text-center text-sm text-secondary fw-lighter">
+			&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
 			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
 		</div>
 		<!-- footer end -->
