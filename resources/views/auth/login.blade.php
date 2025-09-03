@@ -16,7 +16,7 @@
 
 		<!-- Password -->
 		<div class="form-group row mb-3">
-			<x-input-label for="password" :value="__('No. PIN : ')" />
+			<x-input-label for="password" :value="__('Password : ')" />
 			<x-text-input type="password" id="password" name="password" :value="old('password')" autocomplete="current-password" class="{{ $errors->has('password') ? 'is-invalid' : NULL }}" />
 			<x-input-error :messages="$errors->get('password')" />
 		</div>

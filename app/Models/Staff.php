@@ -65,7 +65,7 @@ class Staff extends Model
 	// BelongsToMany relationship
 	public function belongstomanydeptappr(): BelongsToMany
 	{
-			return $this->belongsToMany(\App\Models\Jabatan::class, env('DB_DATABASE_3').'.dept_approval', 'nostaf', 'kod_jabatan')->using(\App\Models\DepartmentApproval::class)->withPivot('nostaf', 'kod_jabatan', 'active')->wherePivot('active', 1);
+			return $this->belongsToMany(\App\Models\Jabatan::class, 'btm_loan.dept_approval', 'nostaf', 'kod_jabatan')->using(\App\Models\DepartmentApproval::class)->withPivot('nostaf', 'kod_jabatan', 'active')->wherePivot('active', 1);
 	}
 
 	public function belongstomanydepartment(): BelongsToMany
