@@ -23,9 +23,15 @@ class EmailGroupMember extends Model
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// change value attribute
+	public function setEmailStaffAttribute($value)
+	{
+		$this->attributes['email_staff'] = Str::lower($value);
+	}
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-
-
 	// public function hasmanyapprover(): HasMany
 	// {
 	// 	return $this->hasMany(\App\Models\Staff::class, 'nostaf');

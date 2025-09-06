@@ -23,6 +23,13 @@ class EmailRegistrationApplication extends Model
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// change value attribute
+	public function setBTMRemarksAttribute($value)
+	{
+		$this->attributes['btm_remarks'] = ucwords(Str::lower($value));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyemailsuggestion(): HasMany
 	{

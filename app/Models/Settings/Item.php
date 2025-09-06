@@ -23,6 +23,14 @@ class Item extends Model
 	use HasFactory/*, SoftDeletes*/;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// change value attribute
+	public function setDescriptionAttribute($value)
+	{
+		$this->attributes['description'] = Str::lower($value);
+	}
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	// public function hasmanylogin(): HasMany
 	// {

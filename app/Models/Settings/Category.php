@@ -24,7 +24,7 @@ class Category extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanylogin(): HasMany
+	public function hasmanyitem(): HasMany
 	{
 		return $this->hasMany(\App\Models\Settings\Item::class, 'category_id');
 	}
