@@ -29,6 +29,20 @@ class Item extends Model
 		$this->attributes['description'] = Str::lower($value);
 	}
 
+	public function setItemAttribute($value)
+	{
+		$this->attributes['item'] = ucwords(Str::lower($value));
+	}
+
+	public function setBrandAttribute($value)
+	{
+		$this->attributes['brand'] = Str::upper(Str::lower($value));
+	}
+
+	public function setModelAttribute($value)
+	{
+		$this->attributes['model'] = Str::upper(Str::lower($value));
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship

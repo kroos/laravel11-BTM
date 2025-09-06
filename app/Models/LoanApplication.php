@@ -23,6 +23,28 @@ class LoanApplication extends Model
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// change value attribute
+	public function setLoanPurposeAttribute($value)
+	{
+		$this->attributes['loan_purpose'] = ucwords(Str::lower($value));
+	}
+
+	public function setLocationAttribute($value)
+	{
+		$this->attributes['location'] = ucwords(Str::lower($value));
+	}
+
+	public function setApproverRemarksAttribute($value)
+	{
+		$this->attributes['approver_remarks'] = ucwords(Str::lower($value));
+	}
+
+	public function setBTMRemarksAttribute($value)
+	{
+		$this->attributes['btm_remarks'] = ucwords(Str::lower($value));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyequipments(): HasMany
 	{

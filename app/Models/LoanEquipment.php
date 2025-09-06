@@ -23,6 +23,13 @@ class LoanEquipment extends Model
 	use HasFactory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// change value attribute
+	public function setStatusConditionRemarksAttribute($value)
+	{
+		$this->attributes['status_condition_remarks'] = ucwords(Str::lower($value));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyapprover(): HasMany
 	{
