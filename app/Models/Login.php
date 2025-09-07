@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -20,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 // custom email reset password in
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
+
+// load helper
+use Illuminate\Support\Str;
 
 class Login extends Authenticatable
 {
