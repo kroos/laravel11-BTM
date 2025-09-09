@@ -1,0 +1,462 @@
+<x-app-layout>
+
+	<x-slot name="header">
+		<h2 class="font-montserrat font-semibold text-xl text-gray-800 leading-tight">
+			{{ __('BTM01 - BORANG PERMOHONAN ALAMAT EMEL RASMI unishams.edu.my') }}
+		</h2>
+	</x-slot>
+
+	<form action="{{ route('emailaccapp.store') }}" method="POST">
+		@csrf
+		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
+		<div class="container d-flex justify-content-between">
+			<div class="col-sm-6 m-0 p-1">
+
+				<div class="card mb-2">
+					<div class="card-header">
+						<h3 class="card-title">Pemohon</h3>
+					</div>
+					<div class="card-body">
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="id" class="col-sm-4" :value="__('No. Staf : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nostaf')" />
+							</div>
+						</div>
+						<!-- staff name -->
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+									<x-input-error :messages="$errors->get('nama')" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Cadangan Alamat Emel</h3>
+						<small>1) Tidak dibenarkan meletak nombor atau nama timangan selain nama asal</small> <br>
+						<small>2) Masukkan sekurang-kurangnya dua (2) cadangan alamat emel</small>
+					</div>
+					<div class="card-body">
+						<div class="wrap_emails">
+							<div class="col-sm-12 row mt-3">
+								<div class="col-sm-11 m-0 row">
+									<x-input-label for="email_0" class="col-sm-3" :value="__('Alamat Emel : ')" />
+									<div class="col-sm-9">
+										<div class="input-group">
+											<input id="email_0" type="text" name="emreg[0][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_0">
+											<span class="input-group-text" id="emailID_0">@unishams.edu.my</span>
+										</div>
+									</div>
+								</div>
+								<!-- remove button -->
+								<div class="col-sm-1 m-0">
+									<x-danger-button type="button" class="remove_emails">
+										<i class="fa-regular fa-trash-can"></i>
+									</x-danger-button>
+								</div>
+
+							</div>
+						</div>
+						<!-- add email button -->
+						<x-primary-button type="button" class="add_emails">
+							<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Emel
+						</x-primary-button>
+					</div>
+				</div>
+
+
+
+			</div>
+			<div class="col-sm-6 m-0 p-1">
+
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Emel Berkumpulan</h3>
+						<small>Tekan butang di bawah, kemudian masukkan senarai emel ahli kumpulan</small>
+					</div>
+					<div class="card-body">
+						<div class="form-check form-switch">
+							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail">
+							<label class="form-check-label" for="gemail">Cipta Emel Berkumpulan</label>
+						</div>
+
+						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
+						</div>
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+				<p>
+					@php
+					$r = \App\Models\Staff::find(Auth::user()->nostaf);
+					echo $r->belongstomanydepartment()->first()->namajabatan;
+					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+					@endphp
+				</p>
+			</div>
+			<div class="card-body">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
+					</div>
+					<div class="card-body">
+						<p>Status :
+						@php
+						$j = \App\Models\Jabatan::find($idj);
+						if($j->belongstomanyappr->count()){
+							echo $j->belongstomanyappr->first()->nama;
+						} else {
+							echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+						}
+						@endphp
+						</p>
+						<p>Tarikh : </p>
+					</div>
+					<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+						<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+							<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+								<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+								Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.
+							</label>
+						</div>
+						@error('acknowledge')
+						<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+						@enderror
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		<div class="col-sm-12 text-center">
+			<x-primary-button type="submit" class="m-2">
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
+			</x-primary-button>
+		</div>
+	</form>
+
+@section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// datepicker
+$('#date').datepicker({
+	dateFormat: 'yy-mm-dd',
+	minDate: 0,
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// group email
+$(`#gemail`).change(function(){
+	if(this.checked) {
+		// console.log($(this).val());
+		$(`#wrap_group_email`).append(
+				`<small> Sila masukkan senarai emel ahli kumpulan anda.</small>`+
+				`<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :`+
+					`<ul>`+
+						`<li> 1) alamat emel telah dibekukan, atau;</li>`+
+						`<li> 2) alamat emel tiada di dalam sistem, atau;</li>`+
+						`<li> 3) alamat emel belum didaftarkan.</li>`+
+
+				`<div class="col-sm-12 text-right mt-3">` +
+					`<button class="btn btn-primary btn-sm add_personnels" type="button">` +
+						`<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Tambah Ahli` +
+					`</button>` +
+				`</div>` +
+
+				`<div class="wrap_personnels">` +
+					`<div class="col-sm-12 row mt-3">` +
+
+						`<div class="col-sm-11 m-0 mt-2 row">` +
+							`<label for="dept_0" class="col-sm-4">K/P/B : </label>` +
+							`<div class="col-sm-8">` +
+									`<select name="emregmem[0][email_member_department]" id="dept_0" class="form-select form-select-sm {{ $errors->has('emregmem.*.email_member_department')?'is-invalid':NULL }}" placeholder="Department">` +
+										`<option value="">Please choose department</option>` +
+									`</select>` +
+							`</div>` +
+						`</div>` +
+
+						`<div class="col-sm-11 m-0 mt-1 row">` +
+							`<label for="staff_0" class="col-sm-4">Staf </label>` +
+							`<div class="col-sm-8">` +
+									`<select name="emregmem[0][email_member]" id="staff_0" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">` +
+										`<option value="">Please choose staff</option>` +
+									`</select>` +
+							`</div>` +
+						`</div>` +
+
+						`<div class="col-sm-1 m-0">` +
+							`<button class="btn btn-danger remove_personnels" type="button">` +
+								`<i class="fa-regular fa-trash-can"></i>` +
+							`</button>` +
+						`</div>` +
+
+					`</div>` +
+				`</div>`
+		);
+		// create personnels email
+		createPersonnels();
+		// initialized select2
+		initializeChainedSelectsForPersonnels(0);
+	} else {
+		// console.log($(this).val());
+		$(`#wrap_group_email`).children().remove();
+	}
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// create personnels
+function createPersonnels(){
+	// Maximum input boxes allowed
+	var personnels_max_fields = 20;
+
+	// Buttons and wrapper
+	var personnels_btn = $(".add_personnels");
+	var personnels_wrapper = $(".wrap_personnels");
+
+	// Counter to track added dropdowns
+	var personnels_counter = 0;
+
+	// Add equipment fields dynamically
+	$(personnels_btn).click(function () {
+		console.log('button click');
+		if (personnels_counter < personnels_max_fields) {
+			personnels_counter++;
+			personnels_wrapper.append(createPersonnelRow(personnels_counter));
+			initializeChainedSelectsForPersonnels(personnels_counter);
+		}
+	});
+
+	// Remove equipment fields dynamically
+	$(personnels_wrapper).on("click", ".remove_personnels", function (e) {
+		e.preventDefault();
+		$(this).closest('.row').remove();
+		personnels_counter--;
+	});
+
+};
+
+function createPersonnelRow(index) {
+	return `
+		<div class="col-sm-12 row mt-3">
+			<div class="col-sm-11 m-0 mt-2 row">
+				<label for="dept_${index}" class="col-sm-4">K/P/B : </label>
+				<div class="col-sm-8">
+					<select name="emregmem[${index}][email_member_department]" id="dept_${index}" class="form-select form-select-sm">
+						<option value="">Please choose department</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-sm-11 m-0 mt-1 row">
+				<label for="staff_${index}" class="col-sm-4">Staf : </label>
+				<div class="col-sm-8">
+					<select name="emregmem[${index}][email_member]" id="staff_${index}" class="form-select form-select-sm">
+						<option value="">Please choose staff</option>
+					</select>
+				</div>
+							<small> Sekiranya ahli yang ingin ditambah tiada dalam pilihan senarai, mungkin :
+								<ul>
+									<li> 1) alamat emel telah dibekukan, atau;</li>
+									<li> 2) alamat emel tiada di dalam sistem, atau;</li>
+									<li> 3) alamat emel belum didaftarkan</li>
+					</ul>
+				</small>
+			</div>
+			<div class="col-sm-1 m-0">
+				<button class="btn btn-danger remove_personnels" type="button">
+					<i class="fa-regular fa-trash-can"></i>
+				</button>
+			</div>
+		</div>`;
+}
+
+// Function to initialize Select2 and chain dropdowns with description update
+function initializeChainedSelectsForPersonnels(personnels_counter) {
+	const departmentSelector = `#dept_${personnels_counter}`;
+	const personnelsSelector = `#staff_${personnels_counter}`;
+
+	// Initialize Select2 for department dropdown
+	$(departmentSelector).select2({
+		placeholder: "Please choose department",
+		width: '100%',
+		allowClear: true,
+		closeOnSelect: true,
+		ajax: {
+			url: '{{ route('listjabatan') }}',
+			dataType: 'json',
+			data: function (params) {
+				var query = {
+					_token: '{!! csrf_token() !!}',
+					search: params.term,
+				}
+				return query;
+			},
+		}
+	});
+
+	// Initialize Select2 for equipment dropdown
+	$(personnelsSelector).select2({
+		placeholder: "Please choose staff",
+		width: '100%',
+		allowClear: true,
+		closeOnSelect: true,
+	});
+
+	// Chain the category dropdown to the equipment dropdown
+	$(departmentSelector).on('change', function () {
+		const selectedDepartmentId = $(this).val();
+
+		// Clear and reload the equipment dropdown
+		$(personnelsSelector).empty().trigger('change').append('<option value="">Please choose staff</option>'); // Clear existing options
+
+		if (selectedDepartmentId) {
+			$.ajax({
+				url: '{{ route('listemailjabatan') }}',
+				dataType: 'json',
+				data: {dept_id: selectedDepartmentId},
+				success: function (data) {
+					let options = ''; // Initialize an empty string to hold the options HTML
+
+					// Loop through the data and generate <option> elements
+					data.forEach(function (item) {
+							// Extract the first key and value from the object
+							const [name, email] = Object.entries(item)[0];
+							options += `<option value="${email}">${name}</option>`;
+					});
+
+					console.log(options);
+
+					// Append the options to the select element
+					$(personnelsSelector).append(options);
+
+					$(personnelsSelector).select2({
+						placeholder: 'Please choose staff',
+						width: '100%',
+						allowClear: true,
+						closeOnSelect: true,
+					});
+				},
+				error: function (xhr, status, error) {
+						console.error('AJAX Error:', status, error);
+				}
+			});
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// add email
+
+// Maximum input boxes allowed
+var apprv_max_fields = 10;
+
+// Buttons and wrapper
+var appr_btn = $(".add_emails");
+var apprv_wrapper = $(".wrap_emails");
+
+// Counter to track added dropdowns
+var counter = 0;
+
+// Function to initialize Select2 and chain dropdowns with description update
+function initializeChainedSelects(counter) {
+	const categorySelector = `#catequip_${counter}`;
+	const equipmentSelector = `#equip_${counter}`;
+	const descriptionSelector = `#desc_wrap_${counter}`;
+
+	// Initialize Select2 for category dropdown
+	$(categorySelector).select2({
+		placeholder: "Please choose category",
+		width: '100%',
+		allowClear: true,
+		closeOnSelect: true,
+		ajax: {
+			url: CATEGORY_API,
+			dataType: 'json',
+			processResults: function (data) {
+				return {
+					results: data.map(cat => ({
+						id: cat.id,
+						text: cat.cat
+					}))
+				};
+			}
+		}
+	});
+
+
+	// Chain the category dropdown to the equipment dropdown
+	$(categorySelector).on('change', function () {
+		const selectedCategoryId = $(this).val();
+
+		// Clear and reload the equipment dropdown
+		$(equipmentSelector).empty().trigger('change').append('<option value="">Please choose category</option>'); // Clear existing options
+
+		if (selectedCategoryId) {
+			$.ajax({
+				url: EQUIPMENT_API,
+				dataType: 'json',
+				success: function (data) {
+					const equipmentOptions = data.results[0].children
+						.filter(item => item.class == selectedCategoryId)
+						.map(item => ({
+							id: item.id,
+							text: item.text
+						}));
+
+					$(equipmentSelector).select2({
+						placeholder: 'Please choose equipments',
+						width: '100%',
+						allowClear: true,
+						closeOnSelect: true,
+						data: equipmentOptions
+					});
+				}
+			});
+		}
+	});
+}
+
+// Add equipment fields dynamically
+$(appr_btn).click(function () {
+	if (counter < apprv_max_fields) {
+		counter++;
+		apprv_wrapper.append(
+			`<div class="col-sm-12 row mt-3">` +
+				`<div class="col-sm-11 m-0 row">` +
+					`<x-input-label for="email_${counter}" class="col-sm-3" :value="__('Alamat Emel : ')" />` +
+					`<div class="col-sm-9">` +
+						`<div class="input-group">` +
+							`<input id="email_${counter}" type="text" name="emreg[${counter}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${counter}">` +
+							`<span class="input-group-text" id="emailID_${counter}">@unishams.edu.my</span>` +
+						`</div>` +
+					`</div>` +
+				`</div>` +
+				`<div class="col-sm-1 m-0">` +
+					`<x-danger-button type="button" class="remove_emails">` +
+						`<i class="fa-regular fa-trash-can"></i>` +
+					`</x-danger-button>` +
+				`</div>` +
+			`</div>`
+		);
+
+	}
+});
+
+// Remove equipment fields dynamically
+$(apprv_wrapper).on("click", ".remove_emails", function (e) {
+	e.preventDefault();
+	$(this).closest('.row').remove();
+	counter--;
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+@endsection
+</x-app-layout>

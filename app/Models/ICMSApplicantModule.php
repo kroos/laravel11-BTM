@@ -1,8 +1,7 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Models;
 
-{{ factoryImport }}
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -18,12 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // load helper
 use Illuminate\Support\Str;
 
-class {{ class }} extends Model
+class ICMSApplicantModule extends Model
 {
-    {{ factory }}
     use SoftDeletes;
-    // protected $connection = '';
-    // protected $table = '';
+    protected $connection = 'mysql3';
+    protected $table = 'icms_applicant_modules';
     // protected $primaryKey = '';
     // public $incrementing = false;
     // protected $keyType = '';

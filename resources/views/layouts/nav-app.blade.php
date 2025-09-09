@@ -4,6 +4,12 @@
 		BTM01 - Emel Rasmi
 	</a>
 </li>
+<li class="nav-item">
+	<a class="nav-link" href="{{ route('regaccicms.index') }}">
+		<i class="fa-regular fa-address-card fa-beat"></i>&nbsp;
+		BTM02 - Pendaftaran Akaun & Modul ICMS
+	</a>
+</li>
 <li>
 	<a class="nav-link" href="{{ route('loanapp.index') }}">
 		<i class="fa-solid fa-gavel fa-beat"></i>&nbsp;

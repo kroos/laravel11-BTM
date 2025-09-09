@@ -21,7 +21,7 @@ return new class extends Migration
 		Schema::connection('mysql3')->create('email_suggestions', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('email_application_id');
-			$table->string('email_suggestion')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
+			$table->string('email_suggestion')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci')->unique();
 			$table->string('temp_password')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->integer('approved_email')->nullable();
 			$table->text('remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');

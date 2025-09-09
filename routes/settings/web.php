@@ -23,4 +23,12 @@ Route::middleware('auth')->group(function () {
 		'btmemailapplications' => BTMEmailApplicationController::class,
 	]);
 
+
+
+
+
+
+
+
+
 });

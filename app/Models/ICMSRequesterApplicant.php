@@ -1,8 +1,7 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Models;
 
-{{ factoryImport }}
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -18,12 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // load helper
 use Illuminate\Support\Str;
 
-class {{ class }} extends Model
+class ICMSRequesterApplicant extends Model
 {
-    {{ factory }}
     use SoftDeletes;
-    // protected $connection = '';
-    // protected $table = '';
+    protected $connection = 'mysql3';
+    protected $table = 'icms_requester_applicants';
     // protected $primaryKey = '';
     // public $incrementing = false;
     // protected $keyType = '';
@@ -34,10 +32,10 @@ class {{ class }} extends Model
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // set column attribute
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucwords(Str::lower($value));
-    }
+    // public function setNameAttribute($value)
+    // {
+    //     $this->attributes['name'] = ucwords(Str::lower($value));
+    // }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // relationship
