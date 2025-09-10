@@ -39,4 +39,23 @@ class ICMSApplicantModule extends Model
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // relationship
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // belongsto relationship
+    public function belongstoicmsrequester(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\ICMSRequester::class, 'icms_requester_id');
+    }
+
+    public function belongstoicmsapplicant(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // hasmany relationship
+    public function hasmanyicmsmodule(): HasMany
+    {
+        return $this->hasMany(\App\Models\ICMSModule::class, 'icms_module_id');
+    }
+
 }

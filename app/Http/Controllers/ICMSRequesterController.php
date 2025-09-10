@@ -47,7 +47,8 @@ class ICMSRequesterController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('regaccicms.index');
+		$regaccicms = \Auth::user()->belongstostaff->hasmanyregaccicms()->get();
+		return view('regaccicms.index', ['regaccicms' => $regaccicms]);
 	}
 
 	/**

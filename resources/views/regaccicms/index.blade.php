@@ -5,12 +5,12 @@
 		</h2>
 	</x-slot>
 	<div class="col-sm-12">
-		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('regaccicms 67 .create') }}">
+		<x-link class="btn btn-sm btn-primary m-3 active" href="{{ route('regaccicms.create') }}">
 			MOHON
 		</x-link>
 	</div>
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm" id="loanapp" style="font: 12px montserrat;">
+		<table class="table table-hover table-sm" id="regaccicms" style="font: 12px montserrat;">
 			<thead>
 				<tr>
 					<th>No. Ruj</th>
@@ -18,9 +18,9 @@
 				</tr>
 			</thead>
 			<tbody>
-				@if($emails->count())
-					@foreach($emails as $email)
-						@if((\Auth::user()->nostaf == $email->nostaf))
+				@if($regaccicms->count())
+					@foreach($regaccicms as $regaccicm)
+						@if((\Auth::user()->nostaf == $regaccicms->nostaf))
 											<tr>
 												<td>
 													BTM-RAICMS-{{ \Carbon\Carbon::parse($email->created_at)->format('ym').str_pad( $email->id, 3, "0", STR_PAD_LEFT) }}
@@ -121,25 +121,6 @@
 												<i class="fa-regular fa-trash-can"></i>
 											</x-danger-button>
 										@endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 									</td>
 								</tr>
 							@endif
@@ -156,7 +137,7 @@
 DataTable.datetime( 'D MMM YYYY' );
 DataTable.datetime( 'YYYY' );
 DataTable.datetime( 'h:mm a' );
-$('#loanapp').DataTable({
+$('#regaccicms').DataTable({
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
 	"columnDefs": [
 		{ type: 'date', 'targets': [2,3] },

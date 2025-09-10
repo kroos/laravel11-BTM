@@ -177,6 +177,12 @@ class Login extends Authenticatable
 		return false;
 	}
 
-
+	public function isOwner($id)
+	{
+		if(\Auth::user()->nostaf == $id) {
+			return true;
+		}
+		return false;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }

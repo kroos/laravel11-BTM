@@ -56,6 +56,11 @@ class Staff extends Model
 		return $this->hasMany(\App\Models\EmailRegistrationApplication::class, 'nostaf');
 	}
 
+	public function hasmanyicmsrequester(): HasMany
+	{
+		return $this->hasMany(\App\Models\ICMSRequester::class, 'nostaf');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
 	// public function belongstojabatan(): BelongsTo
@@ -74,8 +79,5 @@ class Staff extends Model
 	{
 			return $this->belongsToMany(\App\Models\Jabatan::class, 'stf_jabatan', 'nostaf', 'kod_jab')->using(\App\Models\StaffJabatan::class)->withPivot('nostaf', 'kod_jab', 'terkini')->wherePivot('terkini', 1);
 	}
-
-
-
 
 }
