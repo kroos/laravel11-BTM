@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('emailaccapp.store') }}" method="POST">
+	<form action="{{ route('regaccicms.store') }}" method="POST" >
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
 		<div class="container d-flex justify-content-between">

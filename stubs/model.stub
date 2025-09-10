@@ -34,10 +34,10 @@ class {{ class }} extends Model
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // set column attribute
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucwords(Str::lower($value));
-    }
+    // public function setNameAttribute($value)
+    // {
+    //     $this->attributes['name'] = ucwords(Str::lower($value));
+    // }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // relationship

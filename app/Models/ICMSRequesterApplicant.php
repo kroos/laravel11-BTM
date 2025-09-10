@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 // use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-// use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 // load helper
 use Illuminate\Support\Str;
@@ -53,9 +53,18 @@ class ICMSRequesterApplicant extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyicmsmodule(): HasMany
+	// public function hasmanyicmsmodule(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\ICMSModule::class, 'icms_module_id');
+	// }
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// belongstomany relationship
+	public function belongstoicmsmodule(): BelongsToMany
 	{
-		return $this->hasMany(\App\Models\ICMSModule::class, 'icms_module_id');
+		// return $this->belongsTo(\App\Models\ICMSModule::class, 'icms_applicant_modules', 'icms_applicant_module_id', 'icms_module_id')->withTimestamps();
+		return $this->belongsTo(\App\Models\ICMSModule::class, 'icms_applicant_modules', 'icms_applicant_module_id', 'icms_module_id')->using(ICMSApplicantModule::class)->withTimestamps();
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////}
+	/////////////////////////////////////////////////////////////////////////////////////////
+}

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 // load helper
 use Illuminate\Support\Str;
@@ -32,18 +32,19 @@ class ICMSModule extends Model
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // set column attribute
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucwords(Str::lower($value));
-    }
+    // public function setNameAttribute($value)
+    // {
+    //     $this->attributes['name'] = ucwords(Str::lower($value));
+    // }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // relationship
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // belongsto relationship
-    public function belongstoicmsapplicant(): BelongsTo
+    // belongstomany relationship
+    public function belongstoicmsrequesterapplicant(): BelongsToMany
     {
-        return $this->belongsTo(\App\Models\ICMSRequesterApplicant::class, 'icms_module_id');
+        // return $this->belongsTo(\App\Models\ICMSModule::class, 'icms_applicant_modules', 'icms_applicant_module_id', 'icms_module_id' )->withTimestamps();
+        return $this->belongsTo(\App\Models\ICMSRequesterApplicant::class, 'icms_applicant_modules', 'icms_module_id', 'icms_applicant_module_id')->using(ICMSApplicantModule::class)->withTimestamps();
     }
 
 }

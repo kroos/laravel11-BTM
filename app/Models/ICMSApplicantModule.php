@@ -13,17 +13,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 // load helper
 use Illuminate\Support\Str;
 
-class ICMSApplicantModule extends Model
+class ICMSApplicantModule extends Pivot
 {
     use SoftDeletes;
     protected $connection = 'mysql3';
     protected $table = 'icms_applicant_modules';
     // protected $primaryKey = '';
-    // public $incrementing = false;
+    public $incrementing = true;
     // protected $keyType = '';
     // const CREATED_AT = '';
     // const UPDATED_AT = '';
@@ -32,30 +33,30 @@ class ICMSApplicantModule extends Model
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // set column attribute
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucwords(Str::lower($value));
-    }
+    // public function setNameAttribute($value)
+    // {
+    //     $this->attributes['name'] = ucwords(Str::lower($value));
+    // }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // relationship
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // belongsto relationship
-    public function belongstoicmsrequester(): BelongsTo
-    {
-        return $this->belongsTo(\App\Models\ICMSRequester::class, 'icms_requester_id');
-    }
+    // public function belongstoicmsrequester(): BelongsTo
+    // {
+    //     return $this->belongsTo(\App\Models\ICMSRequester::class, 'icms_requester_id');
+    // }
 
-    public function belongstoicmsapplicant(): BelongsTo
-    {
-        return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
-    }
+    // public function belongstoicmsapplicant(): BelongsTo
+    // {
+    //     return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
+    // }
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    // hasmany relationship
-    public function hasmanyicmsmodule(): HasMany
-    {
-        return $this->hasMany(\App\Models\ICMSModule::class, 'icms_module_id');
-    }
+    // /////////////////////////////////////////////////////////////////////////////////////////
+    // // hasmany relationship
+    // public function hasmanyicmsmodule(): HasMany
+    // {
+    //     return $this->hasMany(\App\Models\ICMSModule::class, 'icms_module_id');
+    // }
 
 }
