@@ -73,6 +73,8 @@
 $('#staf_1').select2({
 	placeholder: 'Please Choose Staff',
 	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
 	ajax: {
 		url: '{{ route('liststaff') }}',
 		// data: { '_token': '{!! csrf_token() !!}' },
@@ -80,16 +82,36 @@ $('#staf_1').select2({
 		type: 'GET',
 		dataType: 'json',
 		data: function (params) {
-			var query = {
+			return {
+			// var query = {
 				_token: '{!! csrf_token() !!}',
 				search: params.term,
 				type: 'public'
 			}
-			return query;
+			// return query;
+		},
+		processResults: function (data) {
+			console.log("Raw response:", data);
+			// ✅ map children properly
+			var processed = $.map(data.results[0].children, function (item) {
+				return {
+					id: item.id,
+					text: item.text,
+					email: item.element // 👈 keep email
+				};
+			});
+			console.log("Processed items:", processed);
+			return {
+				results: processed
+			};
 		}
 	},
-	allowClear: true,
-	closeOnSelect: true,
+	templateResult: function (data) {
+		return data.text; // only show the staff name/id
+	},
+	templateSelection: function (data) {
+		return data.text;
+	}
 });
 
 $('#dep_1').select2({

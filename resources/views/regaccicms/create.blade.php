@@ -9,6 +9,7 @@
 	<form action="{{ route('regaccicms.store') }}" method="POST" class="needs-validation" novalidate>
 		@csrf
 		<div class="container d-flex justify-content-between">
+<!--
 			<div class="col-4-sm m-2 p-1">
 				<div class="card">
 					<div class="card-header">
@@ -23,7 +24,6 @@
 							</div>
 						</div>
 
-						<!-- staff name -->
 						<div class="col-sm-12 mt-2 row">
 							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
 							<div class="col-sm-8">
@@ -35,7 +35,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-8 mt-2 p-1">
+ -->
+			<div class="col-sm-12 mt-2 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Maklumat Pemohon</h3>
@@ -43,25 +44,13 @@
 					<div class="card-body">
 
 						<div class="wrap_emails">
-							<div class="col-sm-12 row m-3  border border-primary rounded">
-								<div class="col-sm-8 m-0 p-1">
-
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="nostaf_0" class="col-sm-3" :value="__('No Staff : ')" />
-										<div class="col-sm-9">
-											<input id="nostaf_0" type="text" name="emreg[0][nostaf]" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff">
-											@error('emreg.*.nostaf')
-												<div class="invalid-feedback">
-													Please provide ID Staff.
-												</div>
-											@enderror
-										</div>
-									</div>
+							<div class="col-sm-12 row m-3">
+								<div class="col-sm-7 m-0 p-1 border border-primary">
 
 									<div class="col-sm-12 m-1 row">
 										<x-input-label for="nama_0" class="col-sm-3" :value="__('Nama : ')" />
 										<div class="col-sm-9">
-											<input id="nama_0" type="text" name="emreg[0][nama]" class="form-control form-control-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Nama">
+											<select id="nama_0" name="emreg[0][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
 											@error('emreg.*.nama')
 												<div class="invalid-feedback">
 													Please provide Staff Name.
@@ -71,26 +60,23 @@
 									</div>
 
 									<div class="col-sm-12 m-1 row">
-										<x-input-label for="jawatan_0" class="col-sm-3" :value="__('Jawatan : ')" />
+										<x-input-label for="nostaf_0" class="col-sm-3" :value="__('No Staff : ')" />
 										<div class="col-sm-9">
-											<input id="jawatan_0" type="text" name="emreg[0][position]" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
-											@error('emreg.*.position')
-												<div class="invalid-feedback">
-													Please provide Staff Position.
-												</div>
-											@enderror
+											<input id="nostaf_0" type="text" name="emreg[0][nostaf]" value="{{ old('emreg.*.nostaf') }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
 										</div>
 									</div>
 
 									<div class="col-sm-12 m-1 row">
 										<x-input-label for="email_0" class="col-sm-3" :value="__('Email : ')" />
 										<div class="col-sm-9">
-											<input id="email_0" type="text" name="emreg[0][email]" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email">
-											@error('emreg.*.email')
-												<div class="invalid-feedback">
-													Please provide Staff Email.
-												</div>
-											@enderror
+											<input id="email_0" type="text" name="emreg[0][email]" value="{{ old('emreg.*.email') }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+										</div>
+									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="jawatan_0" class="col-sm-3" :value="__('Jawatan : ')" />
+										<div class="col-sm-9">
+											<input id="jawatan_0" type="text" name="emreg[0][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan" readonly>
 										</div>
 									</div>
 
@@ -110,7 +96,8 @@
 									</div>
 
 								</div>
-								<div class="col-sm-4 m-0 p-1">
+
+								<div class="col-sm-5 m-0 p-1 border border-warning">
 									this 1 is for the module list
 								</div>
 
@@ -128,7 +115,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 m-2">
+		<div class="col-sm-10 m-2 mx-auto">
 			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
@@ -189,7 +176,61 @@ $('#date').datepicker({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+$('#nama_0').select2({
+	placeholder: 'Please Choose',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('liststaff') }}',
+		type: 'GET',
+		dataType: 'json',
+		data: function (params) {
+			return {
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+				type: 'public'
+			};
+		},
+		processResults: function (data) {
+			return {
+				results: $.map(data.results[0].children, function (item) {
+					return {
+						id: item.id,       // staff no
+						text: item.text,   // display in dropdown
+						email: item.element // email from JSON
+					};
+				})
+			};
+		}
+	},
+	templateResult: function (data) {
+		return data.text;
+	},
+	templateSelection: function (data) {
+		return data.text;
+	}
+});
 
+// ✅ When staff selected, populate NoStaf + Email
+$('#nama_0').on('select2:select', function (e) {
+	var data = e.params.data;
+
+	$('#nostaf_0').val(data.id);      // staff number
+	$('#email_0').val(data.email);    // staff email
+});
+
+// ✅ Optional: clear inputs if selection cleared
+$('#nama_0').on('select2:clear', function () {
+	$('#nostaf_0').val('');
+	$('#email_0').val('');
+});
+
+// also check on page load (for F5 refresh case)
+if (!$('#nama_0').val()) {
+    $('#nostaf_0').val('');
+    $('#email_0').val('');
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection

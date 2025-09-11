@@ -59,13 +59,18 @@ class AjaxDBController extends Controller
 	public function liststaff(Request $request): JsonResponse
 	{
 		$values = Staff::where('status', 'A')
-											->where('nama','LIKE','%'.$request->search.'%')
+											->with('hasmanylogin')
+											->when($request->search, function($query) use ($request){
+												$query->where('nama','LIKE','%'.$request->search.'%')
+												->orWhere('nostaf','LIKE','%'.$request->search.'%');
+											})
 											->orderBy('nama')
 											->get();
 		foreach ($values as $value) {
 			$g['children'][] = [
 								'id' => $value->nostaf,
-								'text' => $value->nama,
+								'text' => $value->nostaf.' => '.$value->nama,
+								'element' => $value->hasmanylogin?->first()?->email??'No Email Recorded',
 							];
 		}
 		$staff['results'][] = $g;

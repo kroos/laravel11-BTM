@@ -38,7 +38,7 @@ class Staff extends Model
 	// hasmany relationship
 	public function hasmanylogin(): HasMany
 	{
-		return $this->hasMany(\App\Models\Login::class, 'nostaf');
+		return $this->hasMany(\App\Models\Login::class, 'nostaf')->where('is_active', 1);
 	}
 
 	public function hasmanyloan(): HasMany
