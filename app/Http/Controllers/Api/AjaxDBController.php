@@ -47,6 +47,7 @@ use App\Models\LoanApplication;
 use App\Models\StatusEquipment;
 use App\Models\StaffJabatan;
 use App\Models\EmailRegistrationApplication;
+use App\Models\ICMSModule;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
 
@@ -70,7 +71,7 @@ class AjaxDBController extends Controller
 			$g['children'][] = [
 								'id' => $value->nostaf,
 								'text' => $value->nostaf.' => '.$value->nama,
-								'element' => $value->hasmanylogin?->first()?->email??'No Email Recorded',
+								'element' => $value->hasmanylogin?->first()?->email,
 							];
 		}
 		$staff['results'][] = $g;
@@ -99,11 +100,24 @@ class AjaxDBController extends Controller
 		$values = Category::where('category','LIKE','%'.$request->search.'%')->get();
 		// dd($values);
 		foreach ($values as $value) {
-				$g[] = [
-									'id' => $value->id,
-									'cat' => $value->category,
-								];
+			$g[] = [
+								'id' => $value->id,
+								'cat' => $value->category,
+							];
 		}
+		return response()->json($g);
+	}
+
+	public function listicmsmodule(): JsonResponse
+	{
+		$ims = ICMSModule::all();
+		foreach($ims as $im) {
+			$g[] = [
+								'id' => $im->id,
+								'text' => $im->icms_module,
+							];
+		}
+		// $icmsmod['results'][] = $g;
 		return response()->json($g);
 	}
 

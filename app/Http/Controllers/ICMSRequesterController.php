@@ -64,7 +64,7 @@ class ICMSRequesterController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		//
+		dd($request->all());
 	}
 
 	/**

@@ -22,3 +22,5 @@ require __DIR__.'/emailaccapp/web.php';
 require __DIR__.'/loaneqapp/web.php';
 require __DIR__.'/regaccicms/web.php';
 require __DIR__.'/settings/web.php';
+
+
