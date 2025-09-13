@@ -32,10 +32,15 @@ class ICMSRequester extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// set column attribute
-	// public function setNameAttribute($value)
-	// {
-	//     $this->attributes['name'] = ucwords(Str::lower($value));
-	// }
+	public function setApproverRemarksAttribute($value)
+	{
+	    $this->attributes['approver_remarks'] = ucwords(Str::lower($value));
+	}
+
+	public function setBTMRemarksAttribute($value)
+	{
+	    $this->attributes['btm_remarks'] = ucwords(Str::lower($value));
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// relationship
@@ -46,11 +51,16 @@ class ICMSRequester extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
 	}
 
+	public function belongstostatusrequest(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_request_id')->withDefault();
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyapplicant(): HasMany
 	{
-		return $this->hasMany(\App\Models\ICMSRequesterApplicant::class);
+		return $this->hasMany(\App\Models\ICMSRequesterApplicant::class, 'icms_requester_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

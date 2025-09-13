@@ -24,7 +24,7 @@ return new class extends Migration
 			$table->string('btm_approver')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->dateTime('btm_date')->nullable();
 			$table->text('btm_remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
-			$table->tinyInteger('status_loan_id')->nullable();
+			$table->tinyInteger('status_request_id')->nullable();
 			$table->text('remarks')->nullable()->charset('utf8mb4')->collation('utf8mb4_general_ci');
 			$table->timestamps();
 			$table->softDeletes();

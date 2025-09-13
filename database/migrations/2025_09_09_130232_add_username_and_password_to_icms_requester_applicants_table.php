@@ -13,8 +13,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('mysql3')->table('icms_requester_applicants', function (Blueprint $table) {
-            $table->string('username')->after('menu_setting_only');   // change 'id' to whichever column you want it after
-            $table->string('password')->after('username');
+            $table->string('username')->nullable()->after('menu_setting_only');   // change 'id' to whichever column you want it after
+            $table->string('password')->nullable()->after('username');
         });
     }
 

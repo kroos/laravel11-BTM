@@ -14,31 +14,57 @@
 			<thead>
 				<tr>
 					<th>No. Ruj</th>
+					<th>Tarikh Pohon</th>
+					<th>Pemohon</th>
+					<th>Status</th>
 					<th>#</th>
 				</tr>
 			</thead>
 			<tbody>
 				@if($regaccicms->count())
 					@foreach($regaccicms as $regaccicm)
-						@if((\Auth::user()->nostaf == $regaccicms->nostaf))
+
+						@if((\Auth::user()->nostaf == $regaccicm->nostaf) && ($regaccicm->status_request_id == 3))
+							<tr>
+								<td>
+									BTM-RAICMS-{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT) }}
+								</td>
+								<td>{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('j M Y') }}</td>
+								<td>
+									<table class="table table-hover table-sm" id="regaccicms" style="font: 12px montserrat;">
+										<thead>
 											<tr>
-												<td>
-													BTM-RAICMS-{{ \Carbon\Carbon::parse($email->created_at)->format('ym').str_pad( $email->id, 3, "0", STR_PAD_LEFT) }}
-												</td>
-												<td>
-													<x-link href="{{ route('regaccicms 67 .show', $email->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
-														<i class="fa-regular fa-file-pdf"></i>
-													</x-link>
-													@if((is_null($email->approver_staff) && is_null($email->approver_date)) && (is_null($email->btm_approver) && is_null($email->btm_date)))
-														<x-link href="{{ route('regaccicms 67 .edit', $email->id) }}" class="btn btn-primary btn-sm" title="Edit">
-															<i class="fa-regular fa-pen-to-square"></i>
-														</x-link>
-														<x-danger-button type="button" class="delete_email" data-id="{{ $email->id }}" title="Delete">
-															<i class="fa-regular fa-trash-can"></i>
-														</x-danger-button>
-													@endif
-												</td>
+												<th>Nama</th>
+												<th>No Staff</th>
+												<th>Jawatan</th>
 											</tr>
+										</thead>
+										<tbody>
+											@foreach($regaccicm->hasmanyapplicant()->get() as $v1)
+											<tr>
+												<td>{{ $v1->belongstoicmsapplicant->nama }}</td>
+												<td>{{ $v1->nostaf }}</td>
+												<td>{{ $v1->position }}</td>
+											</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</td>
+								<td>{{ $regaccicm->belongstostatusrequest->status_loan }}</td>
+								<td>
+									<x-link href="{{ route('regaccicms.show', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
+										<i class="fa-regular fa-file-pdf"></i>
+									</x-link>
+									@if((is_null($regaccicm->approver_staff) && is_null($regaccicm->approver_date)) && (is_null($regaccicm->btm_approver) && is_null($regaccicm->btm_date)))
+										<x-link href="{{ route('regaccicms.edit', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="Edit">
+											<i class="fa-regular fa-pen-to-square"></i>
+										</x-link>
+										<x-danger-button type="button" class="delete_email" data-id="{{ $regaccicm->id }}" title="Delete">
+											<i class="fa-regular fa-trash-can"></i>
+										</x-danger-button>
+									@endif
+								</td>
+							</tr>
 						@elseif(request()->user()->isDeptApprover())
 							<?php
 								$deptapprvs = \Auth::user()->belongstostaff->belongstomanydeptappr()->get();
@@ -46,7 +72,7 @@
 								foreach ($deptapprvs as $deptapprv) {
 									$m[] = $deptapprv->kodjabatan;
 								}
-								$stafs = \App\Models\Staff::find($email->nostaf);
+								$stafs = \App\Models\Staff::find($regaccicm->nostaf);
 								$stafdepts = $stafs->belongstomanydepartment()->first()->kodjabatan;
 
 								// find the same between session and url
@@ -54,31 +80,48 @@
 							?>
 							@if($stafdeptapprv)
 								<tr>
-									<td>BTM-ER-{{ \Carbon\Carbon::parse($email->created_at)->format('ym').str_pad( $email->id, 3, "0", STR_PAD_LEFT) }}</td>
-									<td>{{ $email->belongstostaff->nama }}</td>
-									<td>{{ \Carbon\Carbon::parse($email->created_at)->format('j M Y') }}</td>
-									<td>{{ ($email->group_email == 1)?'Group Email':'Individual Email' }}</td>
-									<td>{{ $email->belongstoappr->nama }}</td>
-									<td>{{ $email->belongstostatusemail->status_loan }}</td>
+									<td>BTM-RAICMS-{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT) }}</td>
+									<td>{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('j M Y') }}</td>
 									<td>
-										<x-link href="{{ route('regaccicms 67 .show', $email->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
+										<table class="table table-hover table-sm" id="regaccicms" style="font: 12px montserrat;">
+											<thead>
+												<tr>
+													<th>Nama</th>
+													<th>No Staff</th>
+													<th>Jawatan</th>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach($regaccicm->hasmanyapplicant()->get() as $v1)
+												<tr>
+													<td>{{ $v1->belongstoicmsapplicant->nama }}</td>
+													<td>{{ $v1->nostaf }}</td>
+													<td>{{ $v1->position }}</td>
+												</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</td>
+									<td>{{ $regaccicm->belongstostatusrequest->status_loan }}</td>
+									<td>
+										<x-link href="{{ route('regaccicms.show', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 											<i class="fa-regular fa-file-pdf"></i>
 										</x-link>
-										@if((is_null($email->approver_staff) && is_null($email->approver_date)) && (is_null($email->btm_approver) && is_null($email->btm_date)))
-											<x-link href="{{ route('regaccicms 67 .edit', $email->id) }}" class="btn btn-primary btn-sm" title="Edit">
+										@if((is_null($regaccicm->approver_staff) && is_null($regaccicm->approver_date)) && (is_null($regaccicm->btm_approver) && is_null($regaccicm->btm_date)))
+											<x-link href="{{ route('regaccicms.edit', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="Edit">
 												<i class="fa-regular fa-pen-to-square"></i>
 											</x-link>
-											<x-primary-button type="button" class="approval" title="Approval" data-bs-toggle="modal" data-bs-target="#apprv{{ $email->id }}">
+											<x-primary-button type="button" class="approval" title="Approval" data-bs-toggle="modal" data-bs-target="#apprv{{ $regaccicm->id }}">
 												<i class="fa-solid fa-person-circle-check"></i>
 											</x-primary-button>
 											<!-- Modal -->
-											<div class="modal fade" id="apprv{{ $email->id }}" tabindex="-1" aria-labelledby="label_{{ $email->id }}" aria-hidden="true">
+											<div class="modal fade" id="apprv{{ $regaccicm->id }}" tabindex="-1" aria-labelledby="label_{{ $regaccicm->id }}" aria-hidden="true">
 												<div class="modal-dialog modal-lg">
-													<form action="{{ route('emailappsapprv', $email->id) }}" method="PATCH" class="form" data-id="{{ $email->id }}">
+													<form action="{{ route('emailappsapprv', $regaccicm->id) }}" method="PATCH" class="form" data-id="{{ $regaccicm->id }}">
 														@csrf
 													<div class="modal-content">
 														<div class="modal-header">
-															<h1 class="modal-title fs-5" id="label_{{ $email->id }}">HOD/Director/Dean Approval</h1>
+															<h1 class="modal-title fs-5" id="label_{{ $regaccicm->id }}">HOD/Director/Dean Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
 														<div class="modal-body">
@@ -86,23 +129,23 @@
 																<fieldset>
 																	@foreach(\App\Models\StatusApproval::get() as $v)
 																		<div class="form-check">
-																			<input name="status" class="form-check-input" type="radio" id="rd_{{ $email->id }}_{{ $v->id }}" value="{{ $v->id }}">
-																			<label class="form-check-label" for="rd_{{ $email->id }}_{{ $v->id }}">
+																			<input name="status" class="form-check-input" type="radio" id="rd_{{ $regaccicm->id }}_{{ $v->id }}" value="{{ $v->id }}">
+																			<label class="form-check-label" for="rd_{{ $regaccicm->id }}_{{ $v->id }}">
 																				{{ $v->status_approval }}
 																			</label>
 																		</div>
 																	@endforeach
 																</fieldset>
 																<div class="col-sm-12 m-2 row">
-																	<x-input-label for="txtareaid{{ $email->id }}" class="col-sm-4" :value="__('Remarks : ')" />
+																	<x-input-label for="txtareaid{{ $regaccicm->id }}" class="col-sm-4" :value="__('Remarks : ')" />
 																	<div class="col-sm-8">
-																		<x-textarea-input id="txtareaid{{ $email->id }}" name="remarks_approver" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" />
+																		<x-textarea-input id="txtareaid{{ $regaccicm->id }}" name="remarks_approver" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" />
 																		<x-input-error :messages="$errors->get('nostaf')" />
 																	</div>
 																</div>
 																<div class="form-check">
-																	<input name="acknowledge" class="form-check-input {{ ($errors->has('acknowledge')?'is-invalid':NULL) }}" type="checkbox" value="true" id="cb_{{ $email->id }}">
-																	<label class="form-check-label text-sm fs-6 fw-bolder" for="cb_{{ $email->id }}">
+																	<input name="acknowledge" class="form-check-input {{ ($errors->has('acknowledge')?'is-invalid':NULL) }}" type="checkbox" value="true" id="cb_{{ $regaccicm->id }}">
+																	<label class="form-check-label text-sm fs-6 fw-bolder" for="cb_{{ $regaccicm->id }}">
 																		I hereby confirm that the loaned equipment is intended for official purposes.
 																	</label>
 																	<x-input-error :messages="$errors->get('acknowledge')" />
@@ -117,7 +160,7 @@
 												</form>
 												</div>
 											</div>
-											<x-danger-button type="button" class="delete_email" data-id="{{ $email->id }}" title="Delete">
+											<x-danger-button type="button" class="delete_email" data-id="{{ $regaccicm->id }}" title="Delete">
 												<i class="fa-regular fa-trash-can"></i>
 											</x-danger-button>
 										@endif
@@ -140,9 +183,9 @@ DataTable.datetime( 'h:mm a' );
 $('#regaccicms').DataTable({
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
 	"columnDefs": [
-		{ type: 'date', 'targets': [2,3] },
+		{ type: 'date', 'targets': [1] },
 	],
-	"order": [[ 2, 'desc' ]],
+	"order": [[ 1, 'desc' ]],
 	"responsive": true,
 	"autoWidth": false,
 	"fixedHeader": true,
@@ -224,7 +267,7 @@ function SwalDeleteR(ackID){
 		preConfirm: function() {
 			return new Promise(function(resolve) {
 				$.ajax({
-					url: '{{ url('regaccicms 67 ') }}' + '/' + ackID,
+					url: '{{ url('regaccicms') }}' + '/' + ackID,
 					type: 'DELETE',
 					dataType: 'json',
 					data: {

@@ -53,7 +53,7 @@
 											<select id="nama_0" name="emreg[0][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
 											@error('emreg.*.nama')
 											<div class="invalid-feedback">
-												{{ message }}
+												{{ $message }}
 											</div>
 											@enderror
 										</div>
@@ -79,7 +79,7 @@
 											<input id="jawatan_0" type="text" name="emreg[0][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
 											@error('emreg.*.position')
 											<div class="invalid-feedback">
-												{{ message }}
+												{{ $message }}
 											</div>
 											@enderror
 										</div>
@@ -94,7 +94,7 @@
 											</div>
 											@error('emreg.*.proposed_id')
 											<div class="invalid-feedback">
-												{{ message }}
+												{{ $message }}
 											</div>
 											@enderror
 										</div>
@@ -314,7 +314,7 @@
 							<select id="nama_${i}" name="emreg[${i}][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
 							@error('emreg.*.nama')
 							<div class="invalid-feedback">
-								{{ message }}
+								{{ $message }}
 							</div>
 							@enderror
 						</div>
@@ -340,7 +340,7 @@
 							<input id="jawatan_${i}" type="text" name="emreg[${i}][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
 							@error('emreg.*.proposed_id')
 							<div class="invalid-feedback">
-								{{ message }}
+								{{ $message }}
 							</div>
 							@enderror
 						</div>
@@ -355,7 +355,7 @@
 							</div>
 							@error('emreg.*.proposed_id')
 							<div class="invalid-feedback">
-								{{ message }}
+								{{ $message }}
 							</div>
 							@enderror
 						</div>
@@ -459,9 +459,9 @@
 					const row = `
 						<div id="cb_${y}_${i}" class="m-1">
 							<div class="form-check">
-								<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id.*') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}">
-								<label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
-								@error('emreg.*.icms_module_id.*')
+								<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}">
+								<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
+								@error('emreg.*.icms_module_id')
 								<div class="invalid-feedback">
 									{{ $message }}
 								</div>

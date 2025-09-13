@@ -41,10 +41,10 @@ class ICMSModule extends Model
     // relationship
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // belongstomany relationship
-    public function belongstoicmsrequesterapplicant(): BelongsToMany
+    public function belongstomanyicmsrequesterapplicant(): BelongsToMany
     {
         // return $this->belongsTo(\App\Models\ICMSModule::class, 'icms_applicant_modules', 'icms_applicant_module_id', 'icms_module_id' )->withTimestamps();
-        return $this->belongsTo(\App\Models\ICMSRequesterApplicant::class, 'icms_applicant_modules', 'icms_module_id', 'icms_applicant_module_id')->using(ICMSApplicantModule::class)->withTimestamps();
+        return $this->BelongsToMany(\App\Models\ICMSRequesterApplicant::class, 'icms_applicant_modules', 'icms_module_id', 'icms_applicant_module_id')->using(ICMSApplicantModule::class)->withTimestamps();
     }
 
 }
