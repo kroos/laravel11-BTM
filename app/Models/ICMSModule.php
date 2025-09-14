@@ -44,7 +44,7 @@ class ICMSModule extends Model
     public function belongstomanyicmsrequesterapplicant(): BelongsToMany
     {
         // return $this->belongsTo(\App\Models\ICMSModule::class, 'icms_applicant_modules', 'icms_applicant_module_id', 'icms_module_id' )->withTimestamps();
-        return $this->BelongsToMany(\App\Models\ICMSRequesterApplicant::class, 'icms_applicant_modules', 'icms_module_id', 'icms_applicant_module_id')->using(ICMSApplicantModule::class)->withTimestamps();
+        return $this->BelongsToMany(\App\Models\ICMSRequesterApplicant::class, 'icms_applicant_modules', 'icms_module_id', 'icms_applicant_module_id')->withPivot('remarks')->using(ICMSApplicantModule::class)->withTimestamps();
     }
 
 }
