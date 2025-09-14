@@ -51,7 +51,7 @@ class ICMSRequester extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
 	}
 
-	public function belongstostatusrequest(): BelongsTo
+	public function belongstostatusapp(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_request_id')->withDefault();
 	}

@@ -1,625 +1,528 @@
 <x-app-layout>
 
 	<x-slot name="header">
-		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-			{{ __('Email Registration Account Form') }}
+		<h2 class="font-montserrat font-semibold text-xl text-gray-800 leading-tight text-center">
+			{{ __('BTM02 - BORANG PENDAFTARAN AKAUN DAN MODUL ICMS') }}
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('emailaccapp.update', $emailaccapp->id) }}" method="POST">
-		@method('PATCH')
+	<form action="{{ route('regaccicms.store') }}" method="POST" class="needs-validation" novalidate>
 		@csrf
-		<x-text-input type="hidden" id="id" name="nostaf" value="{{ $emailaccapp->nostaf }}" readonly />
-
 		<div class="container d-flex justify-content-between">
-			<!-- 1st column -->
-			<div class="col-sm-5 m-0 p-1">
+<!--
+			<div class="col-4-sm m-2 p-1">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Proposed Email ID</h3>
-						<small>Please do not use nickname or number in your email ID</small>
+						<h3 class="card-title">Pemohon</h3>
 					</div>
 					<div class="card-body">
-						<div class="col-sm-12 text-right mt-3">
-							<x-primary-button type="button" class="add_emails">
-								<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Emails
-							</x-primary-button>
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="id" class="col-sm-4" :value="__('No. Staf : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nostaf')" />
+							</div>
 						</div>
 
-						<div class="wrap_emails">
-							@if($emailaccapp->hasmanyemailsuggestion()->count())
-								<?php $i = 0; ?>
-								@foreach($emailaccapp->hasmanyemailsuggestion()->get() as $emailsugg)
-									<div class="col-sm-12 row mt-3">
-										<div class="col-sm-11 m-0 row">
-											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email ID : ')" />
-											<div class="col-sm-9">
-												<div class="input-group">
-													<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $emailsugg->id }}">
-													<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_{{ $i }}" value="{{ $emailsugg->email_suggestion }}">
-													<span class="input-group-text" id="emailID_{{ $i }}">@unishams.edu.my</span>
-												</div>
-											</div>
-										</div>
-
-										<!-- remove button -->
-										<div class="col-sm-1 m-0">
-											<x-danger-button type="button" class="delete_emails" data-id="{{ $emailsugg->id }}">
-												<i class="fa-regular fa-trash-can"></i>
-											</x-danger-button>
-										</div>
-									</div>
-									<?php $i++; ?>
-								@endforeach
-							@endif
+						<div class="col-sm-12 mt-2 row">
+							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
+							<div class="col-sm-8">
+								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
+								<x-input-error :messages="$errors->get('nama')" />
+							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
-
-			<!-- 2nd column -->
-			<div class="col-sm-5 m-0 p-1">
+			-->
+			<div class="col-sm-12 mt-2 p-1">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Group Email</h3>
-						<small>Turn on the switch if you are applying for group email, then fill up inputs below.</small>
+						<h3 class="card-title">Maklumat Pemohon</h3>
 					</div>
 					<div class="card-body">
-						<div class="form-check form-switch">
-							<input name="group_email" value="1" class="form-check-input" type="checkbox" role="switch" id="gemail" {{ ($emailaccapp->group_email)?'checked':NULL }}>
-							<label class="form-check-label" for="gemail">Group Email</label>
-						</div>
 
-						<div class="col-sm-12 m-0 p-1" id="wrap_group_email">
-							@if($emailaccapp->hasmanyemailgroupmember()->count())
-								<?php $o = 0; ?>
-								<small>Please choose personnels associate with the suggested email.</small>
+						<div id="applicants_wrap">
+							<div class="col-sm-12 row m-3" id="applicant_0">
+								<div class="col-sm-7 m-0 p-1">
 
-								<div class="col-sm-12 text-right mt-3">
-									<button class="btn btn-primary btn-sm add_personnels" type="button">
-										<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels
-									</button>
-								</div>
-
-								<div class="wrap_personnels">
-								@foreach($emailaccapp->hasmanyemailgroupmember()->get() as $emailmem)
-									<div class="col-sm-12 row mt-3">
-										<div class="col-sm-11 m-0 mt-2 row">
-											<label for="dept_{{ $o }}" class="col-sm-4">Department : </label>
-											<div class="col-sm-8">
-												<input type="hidden" name="emregmem[{{ $o }}][id]" value="{{ $emailmem->id }}">
-												<select name="emregmem[{{ $o }}][email_member_department]" id="dept_{{ $o }}" class="form-select form-select-sm {{ $errors->has('emregmem.*.email_member_department')?'is-invalid':NULL }}" placeholder="Department">
-													<option value="">Please choose department</option>
-												</select>
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="nama_0" class="col-sm-3" :value="__('Nama Staff : ')" />
+										<div class="col-sm-9">
+											<select id="nama_0" name="emreg[0][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
+											@error('emreg.*.nama')
+											<div class="invalid-feedback">
+												{{ $message }}
 											</div>
-										</div>
-										<div class="col-sm-11 m-0 mt-1 row">
-											<label for="staff_{{ $o }}" class="col-sm-4">Staff Email : </label>
-											<div class="col-sm-8">
-												<select name="emregmem[{{ $o }}][email_member]" id="staff_{{ $o }}" class="form-select form-select-sm {{ ($errors->has('emregmem.*.email_member')?'is-invalid':NULL) }}" placeholder="Staff Email">
-													<option value="">Please choose staff</option>
-												</select>
-											</div>
-											<small>if the person you are looking for is not in the list, that person maybe
-												<ul>
-													<li>been deactivated</li>
-													<li>his/her email was not set in the system</li>
-												</ul>
-											</small>
-										</div>
-										<div class="col-sm-1 m-0">
-											<button class="btn btn-danger btn-sm delete_personnels" type="button" data-id="{{ $emailmem->id }}">
-												<i class="fa-regular fa-trash-can"></i>
-											</button>
+											@enderror
 										</div>
 									</div>
-									<?php $o++; ?>
-								@endforeach
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="nostaf_0" class="col-sm-3" :value="__('No Staff : ')" />
+										<div class="col-sm-9">
+											<input id="nostaf_0" type="text" name="emreg[0][nostaf]" value="{{ old('emreg.*.nostaf') }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
+										</div>
+									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="email_0" class="col-sm-3" :value="__('Email : ')" />
+										<div class="col-sm-9">
+											<input id="email_0" type="text" name="emreg[0][email]" value="{{ old('emreg.*.email') }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+										</div>
+									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="jawatan_0" class="col-sm-3" :value="__('Jawatan : ')" />
+										<div class="col-sm-9">
+											<input id="jawatan_0" type="text" name="emreg[0][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
+											@error('emreg.*.position')
+											<div class="invalid-feedback">
+												{{ $message }}
+											</div>
+											@enderror
+										</div>
+									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="cadid_0" class="col-sm-3" :value="__('Cadangan ID : ')" />
+										<div class="col-sm-9">
+											<input id="cadid_0" type="text" name="emreg[0][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_0">
+											<div id="CadanganIDHelpBlock_0" class="form-text fs-6 fw-lighter">
+												Hanya untuk pemohon baru.
+											</div>
+											@error('emreg.*.proposed_id')
+											<div class="invalid-feedback">
+												{{ $message }}
+											</div>
+											@enderror
+										</div>
+									</div>
+
 								</div>
-							@endif
+
+								<div class="col-sm-5 m-0 p-1" id="checkbox_0">
+									<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+								</div>
+								<div class="col-sm-12 m-2">
+									<button type="button" class="btn btn-sm btn-danger applicant_remove" data-id="1"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+								</div>
+							</div>
 						</div>
+
+						<x-primary-button type="button" id="applicants_add">
+							<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Pemohon
+						</x-primary-button>
+
+
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- 3rd column -->
-		<div class="col-sm-6 mx-auto m-0 p-1">
+		<div class="col-sm-10 m-2 mx-auto">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="card-title">Department</h3>
-					<p>Department :
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
+						@php
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+						@endphp
 					</p>
 				</div>
 				<div class="card-body">
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Approval From Director/Dean/Head of Department</h3>
+							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 						</div>
 						<div class="card-body">
-							<p>Approver :
-							@php
-							$j = \App\Models\Jabatan::find($idj);
-							if($j->belongstomanyappr->count()){
-								echo $j->belongstomanyappr->first()->nama;
-							} else {
-								echo '<span class="text-danger fw-bold">Sila hubungi pihak BTM</span>';
-							}
-							@endphp
+							<p>Status :
+								@php
+								$j = \App\Models\Jabatan::find($idj);
+								if($j->belongstomanyappr->count()){
+									echo $j->belongstomanyappr->first()->nama;
+								} else {
+									echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+								}
+								@endphp
 							</p>
-							<p>Date : </p>
+							<p>Tarikh : </p>
 						</div>
-						<div class="card-footer">
-							<p class="text-sm fs-6 fw-bolder">I hereby confirm that the loaned equipment is intended for official purposes.</p>
+						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+									Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
+								</label>
+							</div>
+							@error('acknowledge')
+							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+							@enderror
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">
-				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Update') }}
+				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
 			</x-primary-button>
 		</div>
 	</form>
 
-@section('js')
-/////////////////////////////////////////////////////////////////////////////////////////
-function createPersonnelRow(index) {
-	return `
-		<div class="col-sm-12 row mt-3">
-			<div class="col-sm-11 m-0 mt-2 row">
-				<label for="dept_${index}" class="col-sm-4">Department : </label>
-				<div class="col-sm-8">
-					<input type="hidden" name="emregmem[${index}][id]" value="">
-					<select name="emregmem[${index}][email_member_department]" id="dept_${index}" class="form-select form-select-sm">
-						<option value="">Please choose department</option>
-					</select>
-				</div>
-			</div>
-			<div class="col-sm-11 m-0 mt-1 row">
-				<label for="staff_${index}" class="col-sm-4">Staff : </label>
-				<div class="col-sm-8">
-					<select name="emregmem[${index}][email_member]" id="staff_${index}" class="form-select form-select-sm">
-						<option value="">Please choose staff</option>
-					</select>
-				</div>
-				<small>if the person you are looking for is not in the list, that person maybe :
-					<ul>
-						<li>been deactivated</li>
-						<li>his/her email was not set in the system</li>
-					</ul>
-				</small>
-			</div>
-			<div class="col-sm-1 m-0">
-				<button class="btn btn-danger btn-sm remove_personnels" type="button">
-					<i class="fa-regular fa-trash-can"></i>
-				</button>
-			</div>
-		</div>`;
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// create personnels
-function createPersonnels(){
-	// Maximum input boxes allowed
-	var personnels_max_fields = 20;
-
-	// Buttons and wrapper
-	var personnels_btn = $(".add_personnels");
-	var personnels_wrapper = $(".wrap_personnels");
-
-	// Counter to track added dropdowns
-	var personnels_counter = {{ ($emailaccapp->hasmanyemailgroupmember()->count())?($emailaccapp->hasmanyemailgroupmember()->count() - 1):0 }};
-
-	// Add equipment fields dynamically
-	$(personnels_btn).click(function () {
-		console.log('button click');
-		if (personnels_counter < personnels_max_fields) {
-			personnels_counter++;
-			personnels_wrapper.append(createPersonnelRow(personnels_counter));
-			initializeChainedSelectsForPersonnels(personnels_counter);
-		}
-	});
-
-	// Remove equipment fields dynamically
-	$(personnels_wrapper).on("click", ".remove_personnels", function (e) {
-		e.preventDefault();
-		$(this).closest('.row').remove();
-		personnels_counter--;
-	});
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////
-@if($emailaccapp->hasmanyemailgroupmember()->count())
-	createPersonnels();
-	<?php $ke = 0; ?>
-	@foreach($emailaccapp->hasmanyemailgroupmember()->get() as $emailmem2)
-		initializeChainedSelectsForPersonnels({{ $ke }});
-
-		var newOption{{ $ke }} = new Option('{{ $emailmem2->belongstoemailpersondept->namajabatan }}', '{{ $emailmem2->department_id }}', true, true);
-		$('#dept_{{ $ke }}').append(newOption{{ $ke }}).trigger('change');
-		var newOption{{ $ke }}{{ $ke }} = new Option('{{ \App\Models\Login::where('email', $emailmem2->email_staff)->first()->name }}', '{{ $emailmem2->email_staff }}', true, true);
-		$('#staff_{{ $ke }}').append(newOption{{ $ke }}{{ $ke }}).trigger('change');
-		<?php $ke++; ?>
-	@endforeach
-@endif
-/////////////////////////////////////////////////////////////////////////////////////////
-// group email
-$(`#gemail`).change(function(){
-	if(this.checked) {
-		$(`#wrap_group_email`).append(
-				`<small>Please choose personnels associate with the suggested email.</small>` +
-				`<div class="col-sm-12 text-right mt-3">` +
-					`<button class="btn btn-primary btn-sm add_personnels" type="button">` +
-						`<i class="fa-solid fa-screwdriver-wrench fa-beat"></i></i>&nbsp;Add Personnels` +
-					`</button>` +
-				`</div>` +
-
-				`<div class="wrap_personnels">` +
-				@if($emailaccapp->hasmanyemailgroupmember()->count())
-					<?php $k = 0; ?>
-					@foreach($emailaccapp->hasmanyemailgroupmember()->get() as $emailmem1)
-						`<div class="col-sm-12 row mt-3">
-							<div class="col-sm-11 m-0 mt-2 row">
-								<label for="dept_{{ $k }}" class="col-sm-4">Department : </label>
-								<div class="col-sm-8">
-									<input type="hidden" name="emregmem[{{ $k }}][id]" value="{{ $emailmem1->id }}">
-									<select name="emregmem[{{ $k }}][email_member_department]" id="dept_{{ $k }}" class="form-select form-select-sm">
-										<option value="">Please choose department</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-sm-11 m-0 mt-1 row">
-								<label for="staff_{{ $k }}" class="col-sm-4">Staff : </label>
-								<div class="col-sm-8">
-									<select name="emregmem[{{ $k }}][email_member]" id="staff_{{ $k }}" class="form-select form-select-sm">
-										<option value="">Please choose staff</option>
-									</select>
-								</div>
-								<small>if the person you are looking for is not in the list, that person maybe :
-									<ul>
-										<li>been deactivated</li>
-										<li>his/her email was not set in the system</li>
-									</ul>
-								</small>
-							</div>
-							<div class="col-sm-1 m-0">
-								<button class="btn btn-danger btn-sm delete_personnels" type="button" data-id="{{ $emailmem1->id }}">
-									<i class="fa-regular fa-trash-can"></i>
-								</button>
-							</div>
-						</div>` +
-						<?php $k++; ?>
-					@endforeach
-				@else
-					createPersonnelRow(0) +
-				@endif
-				`</div>`
-		);
-
-		@if($emailaccapp->hasmanyemailgroupmember()->count())
-			createPersonnels();
-			<?php $kr = 0; ?>
-			@foreach($emailaccapp->hasmanyemailgroupmember()->get() as $emailmem2)
-				initializeChainedSelectsForPersonnels({{ $kr }});
-				var newOption{{ $kr }} = new Option('{{ $emailmem2->belongstoemailpersondept->namajabatan }}', '{{ $emailmem2->department_id }}', true, true);
-				$('#dept_{{ $kr }}').append(newOption{{ $kr }}).trigger('change');
-				var newOption{{ $kr }}{{ $kr }} = new Option('{{ \App\Models\Login::where('email', $emailmem2->email_staff)->first()->name }}', '{{ $emailmem2->email_staff }}', true, true);
-				$('#staff_{{ $kr }}').append(newOption{{ $kr }}{{ $kr }}).trigger('change');
-				<?php $kr++; ?>
-			@endforeach
-		@else
-			createPersonnels();
-			initializeChainedSelectsForPersonnels(0);
-		@endif
-
-	} else {
-		$(`#wrap_group_email`).children().remove();
-	}
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// Function to initialize Select2 and chain dropdowns with description update
-function initializeChainedSelectsForPersonnels(personnels_counter) {
-	const departmentSelector = `#dept_${personnels_counter}`;
-	const personnelsSelector = `#staff_${personnels_counter}`;
-
-	// Initialize Select2 for department dropdown
-	$(departmentSelector).select2({
-		placeholder: "Please choose department",
-		width: '100%',
-		allowClear: true,
-		closeOnSelect: true,
-		ajax: {
-			url: '{{ route('listjabatan') }}',
-			dataType: 'json',
-			data: function (params) {
-				var query = {
-					_token: '{!! csrf_token() !!}',
-					search: params.term,
-				}
-				return query;
-			},
-		}
-	});
-
-	// Initialize Select2 for equipment dropdown
-	$(personnelsSelector).select2({
-		placeholder: "Please choose staff",
-		width: '100%',
-		allowClear: true,
-		closeOnSelect: true,
-	});
-
-	// Chain the category dropdown to the equipment dropdown
-	$(departmentSelector).on('change', function () {
-		const selectedDepartmentId = $(this).val();
-
-		// Clear and reload the equipment dropdown
-		$(personnelsSelector).empty().trigger('change').append('<option value="">Please choose staff</option>'); // Clear existing options
-
-		if (selectedDepartmentId) {
-			$.ajax({
-				url: '{{ route('listemailjabatan') }}',
-				dataType: 'json',
-				data: {dept_id: selectedDepartmentId},
-				success: function (data) {
-					let options = ''; // Initialize an empty string to hold the options HTML
-
-					// Loop through the data and generate <option> elements
-					data.forEach(function (item) {
-							// Extract the first key and value from the object
-							const [name, email] = Object.entries(item)[0];
-							options += `<option value="${email}">${name}</option>`;
-					});
-
-					// console.log(options);
-
-					// Append the options to the select element
-					$(personnelsSelector).append(options);
-
-					$(personnelsSelector).select2({
-						placeholder: 'Please choose staff',
-						width: '100%',
-						allowClear: true,
-						closeOnSelect: true,
-					});
+	@section('js')
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// jquery plugin (addRemoveRow)
+	(function ($) {
+		$.fn.remAddRow = function (options) {
+			const settings = $.extend({
+				addBtn: null,                 // selector for add button (required)
+				maxFields: 10,                // maximum visible rows
+				removeSelector: ".row_remove",// selector used inside the rowTemplate for the remove button
+				fieldName: "rows",            // used to reindex input names like fieldName[index]
+				rowIdPrefix: "row",           // prefix used for each row id (row_0, row_1 ...)
+				reindexOnRemove: true,        // whether to reindex names/data-id after remove
+				// default template: uses removeSelector (converted to class) and fieldName
+				rowTemplate: (i, name) => {
+					const removeClass = (".row_remove".replace(/^\./, "")); // default removeSelector class
+					return `
+					<div class="row-box" id="row_${i}">
+						<span data-row-index>Row #${i+1}</span>
+						<input type="text" name="${name}[${i}]" />
+						<button type="button" class="${removeClass}" data-id="${i}">Remove</button>
+					</div>
+					`;
 				},
-				error: function (xhr, status, error) {
-						console.error('AJAX Error:', status, error);
-				}
-			});
-		}
-	});
-};
+				startCounter: 0,
+				onAdd: (i, $row) => {},
+				onRemove: (i) => {}
+			}, options);
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// add email
+			const $wrapper = this;
+			const $addBtn = $(settings.addBtn);
 
-// Maximum input boxes allowed
-var apprv_max_fields = 10;
-
-// Buttons and wrapper
-var appr_btn = $(".add_emails");
-var apprv_wrapper = $(".wrap_emails");
-
-// Counter to track added dropdowns
-var counter = 0;
-
-// Function to initialize Select2 and chain dropdowns with description update
-function initializeChainedSelects(counter) {
-	const categorySelector = `#catequip_${counter}`;
-	const equipmentSelector = `#equip_${counter}`;
-	const descriptionSelector = `#desc_wrap_${counter}`;
-
-	// Initialize Select2 for category dropdown
-	$(categorySelector).select2({
-		placeholder: "Please choose category",
-		width: '100%',
-		allowClear: true,
-		closeOnSelect: true,
-		ajax: {
-			url: CATEGORY_API,
-			dataType: 'json',
-			processResults: function (data) {
-				return {
-					results: data.map(cat => ({
-						id: cat.id,
-						text: cat.cat
-					}))
-				};
+			// escape a string for safe use in a RegExp
+			function escapeRegex(s) {
+				return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 			}
-		}
-	});
 
+			// regex to detect names beginning with `fieldName[<number>]`
+				const namePrefixRegex = new RegExp('^' + escapeRegex(settings.fieldName) + '\\[\\d+\\]');
 
-	// Chain the category dropdown to the equipment dropdown
-	$(categorySelector).on('change', function () {
-		const selectedCategoryId = $(this).val();
+				// reindex rows so indexes in names and data-id become 0..n-1
+				function reindexRows() {
+					$wrapper.children().each(function (i) {
+						const $row = $(this);
 
-		// Clear and reload the equipment dropdown
-		$(equipmentSelector).empty().trigger('change').append('<option value="">Please choose category</option>'); // Clear existing options
+						// set new id like prefix_i
+						$row.attr('id', `${settings.rowIdPrefix}_${i}`);
 
-		if (selectedCategoryId) {
-			$.ajax({
-				url: EQUIPMENT_API,
-				dataType: 'json',
-				success: function (data) {
-					const equipmentOptions = data.results[0].children
-						.filter(item => item.class == selectedCategoryId)
-						.map(item => ({
-							id: item.id,
-							text: item.text
-						}));
+						// update any visible "index" elements if present
+						$row.find('[data-row-index]').each(function () {
+							$(this).text($(this).data('row-index-offset') ? $(this).data('row-index-offset') + i : i + 1);
+						});
 
-					$(equipmentSelector).select2({
-						placeholder: 'Please choose equipments',
-						width: '100%',
-						allowClear: true,
-						closeOnSelect: true,
-						data: equipmentOptions
+						// rename inputs/selects/textareas that start with fieldName[...] => fieldName[i]...
+						$row.find('input[name], select[name], textarea[name]').each(function () {
+							const name = $(this).attr('name');
+							if (!name) return;
+							const newName = name.replace(namePrefixRegex, `${settings.fieldName}[${i}]`);
+							$(this).attr('name', newName);
+						});
+
+						// update remove button data-id(s)
+						$row.find(settings.removeSelector).attr('data-id', i);
 					});
 				}
-			});
-		}
-	});
-}
 
-// Add equipment fields dynamically
-$(appr_btn).click(function () {
-	if (counter < apprv_max_fields) {
-		counter++;
-		apprv_wrapper.append(
-			`<div class="col-sm-12 row mt-3">` +
-				`<div class="col-sm-11 m-0 row">` +
-					`<x-input-label for="email_${counter}" class="col-sm-3" :value="__('Email ID : ')" />` +
-					`<div class="col-sm-9">` +
-						`<div class="input-group">` +
-							`<input type="hidden" name="emreg[${counter}][id]" value="">` +
-							`<input id="email_${counter}" type="text" name="emreg[${counter}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${counter}">` +
-							`<span class="input-group-text" id="emailID_${counter}">@unishams.edu.my</span>` +
-						`</div>` +
-					`</div>` +
-				`</div>` +
-				`<div class="col-sm-1 m-0">` +
-					`<x-danger-button type="button" class="btn btn-sm remove_emails">` +
-						`<i class="fa-regular fa-trash-can"></i>` +
-					`</x-danger-button>` +
-				`</div>` +
-			`</div>`
-		);
+				// update add button enabled state using actual current count
+				function updateAddBtnState() {
+					if (!$addBtn.length) return;
+					const currentCount = $wrapper.children().length;
+					$addBtn.prop('disabled', currentCount >= settings.maxFields);
+				}
 
-	}
-});
+				// initialize: ensure pre-existing rows are reindexed (if any)
+				if (settings.reindexOnRemove) reindexRows();
+				updateAddBtnState();
 
-// Remove equipment fields dynamically
-$(apprv_wrapper).on("click", ".remove_emails", function (e) {
-	e.preventDefault();
-	$(this).closest('.row').remove();
-	counter--;
-});
+				// ADD handler: base next index on current number of children (keeps indices contiguous)
+				$addBtn.on('click', function () {
+					const currentCount = $wrapper.children().length;
+					if (currentCount >= settings.maxFields) return;
+					const index = currentCount; // next index
+					const $row = $(settings.rowTemplate(index, settings.fieldName));
+					$wrapper.append($row);
+					// If rowTemplate didn't embed the correct data-id or names, we reindex to be safe
+					if (settings.reindexOnRemove) reindexRows();
+					settings.onAdd(index, $row);
+					updateAddBtnState();
+				});
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// delete emails suggestions
-$(document).on('click', '.delete_emails', function(e){
-	var ackID = $(this).data('id');
-	SwalDeleteR(ackID);
-	e.preventDefault();
-});
+				// REMOVE (delegated). We find the nearest child-of-wrapper ancestor to remove.
+				$wrapper.on('click', settings.removeSelector, function (e) {
+					e.preventDefault();
+					const clicked = $(this);
+					const id = clicked.data('id');
 
-function SwalDeleteR(ackID){
-	swal.fire({
-		title: 'Delete Email Suggestion',
-		text: 'Are you sure to delete Email Suggestion?',
-		icon: 'info',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		cancelButtonText: 'Cancel',
-		confirmButtonText: 'Yes',
-		showLoaderOnConfirm: true,
+					// prefer closest ancestor whose id ends with _<id>
+						let $target = clicked.closest(`[id$="_${id}"]`);
 
-		preConfirm: function() {
-			return new Promise(function(resolve) {
-				$.ajax({
-					url: '{{ url('emailsuggestion') }}' + '/' + ackID,
-					type: 'DELETE',
-					dataType: 'json',
-					data: {
-							id: ackID,
-							_token : $('meta[name=csrf-token]').attr('content')
-					},
-				})
-				.done(function(response){
-					swal.fire('Accept', response.message, response.status)
-					.then(function(){
-						window.location.reload(true);
+						// fallback: find first ancestor whose parent is wrapper (i.e., direct child of wrapper)
+						if (!$target.length) {
+							$target = clicked.parents().filter(function () {
+								return $(this).parent().is($wrapper);
+							}).first();
+						}
+
+						// final fallback: closest .row-box
+						if (!$target.length) $target = clicked.closest('.row-box');
+
+						if ($target.length) {
+							$target.remove();
+							if (settings.reindexOnRemove) reindexRows();
+							settings.onRemove(id);
+							updateAddBtnState();
+						} else {
+							console.warn('remAddRow: could not locate row to remove for id=', id);
+						}
 					});
-					// $('#cancel_btn_' + ackID).parent().parent().remove();
-				})
-				.fail(function(){
-					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-					// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-				})
-			});
+
+					return this;
+				};
+			})(jQuery);
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// usage plugin
+	// Applicants (fieldName "skills")
+	$("#applicants_wrap").remAddRow({
+		addBtn: "#applicants_add",
+		maxFields: 5,
+		removeSelector: ".applicant_remove",
+		fieldName: "applicants",
+		rowIdPrefix: "applicant",
+		// rowTemplate must use the same removeSelector class so delegated handler fires:
+		rowTemplate: (i, name) => `
+			<div class="col-sm-12 row m-3" id="applicant_${i}">
+				<div class="col-sm-7 m-0 p-1">
+
+					<div class="col-sm-12 m-1 row">
+						<x-input-label for="nama_${i}" class="col-sm-3" :value="__('Nama : ')" />
+						<div class="col-sm-9">
+							<select id="nama_${i}" name="emreg[${i}][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
+							@error('emreg.*.nama')
+							<div class="invalid-feedback">
+								{{ $message }}
+							</div>
+							@enderror
+						</div>
+					</div>
+
+					<div class="col-sm-12 m-1 row">
+						<x-input-label for="nostaf_${i}" class="col-sm-3" :value="__('No Staff : ')" />
+						<div class="col-sm-9">
+							<input id="nostaf_${i}" type="text" name="emreg[${i}][nostaf]" value="{{ old('emreg.*.nostaf') }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
+						</div>
+					</div>
+
+					<div class="col-sm-12 m-1 row">
+						<x-input-label for="email_${i}" class="col-sm-3" :value="__('Email : ')" />
+						<div class="col-sm-9">
+							<input id="email_${i}" type="text" name="emreg[${i}][email]" value="{{ old('emreg.*.email') }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+						</div>
+					</div>
+
+					<div class="col-sm-12 m-1 row">
+						<x-input-label for="jawatan_${i}" class="col-sm-3" :value="__('Jawatan : ')" />
+						<div class="col-sm-9">
+							<input id="jawatan_${i}" type="text" name="emreg[${i}][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
+							@error('emreg.*.proposed_id')
+							<div class="invalid-feedback">
+								{{ $message }}
+							</div>
+							@enderror
+						</div>
+					</div>
+
+					<div class="col-sm-12 m-1 row">
+						<x-input-label for="cadid_${i}" class="col-sm-3" :value="__('Cadangan ID : ')" />
+						<div class="col-sm-9">
+							<input id="cadid_${i}" type="text" name="emreg[${i}][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_${i}">
+							<div id="CadanganIDHelpBlock_${i}" class="form-text fs-6 fw-lighter">
+								Hanya untuk pemohon baru.
+							</div>
+							@error('emreg.*.proposed_id')
+							<div class="invalid-feedback">
+								{{ $message }}
+							</div>
+							@enderror
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-sm-5 m-0 p-1" id="checkbox_${i}">
+					<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+				</div>
+				<div class="col-sm-12 m-2">
+					<button type="button" class=" btn btn-sm btn-danger applicant_remove" data-id="${i}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+				</div>
+			</div>
+		`,
+		onAdd: (i, $r) => {
+			// console.log('Skill added', i, $r)
+			selectname(i);
+			addingicmsmodule(i);
 		},
-		allowOutsideClick: false
-	})
-	.then((result) => {
-		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Email Suggestion is still active.', 'info')
-		}
+		onRemove: (i) => console.log('Skill removed', i)
 	});
-}
-//auto refresh right after clicking OK button
-$(document).on('click', '.swal2-confirm', function(e){
-	window.location.reload(true);
-});
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// delete group member emails
-$(document).on('click', '.delete_personnels', function(e){
-	var ackID = $(this).data('id');
-	DeletePersonnels(ackID);
-	e.preventDefault();
-});
 
-function DeletePersonnels(ackID){
-	swal.fire({
-		title: 'Delete Group Member Email',
-		text: 'Are you sure to delete Group Member Email?',
-		icon: 'info',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		cancelButtonText: 'Cancel',
-		confirmButtonText: 'Yes',
-		showLoaderOnConfirm: true,
+	/////////////////////////////////////////////////////////////////////////////////////////
+	function selectname(r = 0){
+		$('#nama_'+r).select2({
+			placeholder: 'Please Choose',
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('liststaff') }}',
+				type: 'GET',
+				dataType: 'json',
+				data: function (params) {
+					return {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+						type: 'public'
+					};
+				},
+				processResults: function (data) {
+					return {
+						results: $.map(data.results[0].children, function (item) {
+							return {
+								id: item.id,       // staff no
+								text: item.text,   // display in dropdown
+								email: item.element // email from JSON
+							};
+						})
+					};
+				}
+			},
+			templateResult: function (data) {
+				return data.text;
+			},
+			templateSelection: function (data) {
+				return data.text;
+			}
+		});
 
-		preConfirm: function() {
-			return new Promise(function(resolve) {
-				$.ajax({
-					url: '{{ url('emailgroupmember') }}' + '/' + ackID,
-					type: 'DELETE',
-					dataType: 'json',
-					data: {
-							id: ackID,
-							_token : $('meta[name=csrf-token]').attr('content')
-					},
-				})
-				.done(function(response){
-					swal.fire('Accept', response.message, response.status)
-					.then(function(){
-						window.location.reload(true);
-					});
-					// $('#cancel_btn_' + ackID).parent().parent().remove();
-				})
-				.fail(function(){
-					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-					// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-				})
-			});
-		},
-		allowOutsideClick: false
-	})
-	.then((result) => {
-		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Group Member Email is still active.', 'info')
+		// ✅ When staff selected, populate NoStaf + Email
+		$('#nama_'+r).on('select2:select', function (e) {
+			var data = e.params.data;
+
+			$('#nostaf_'+r).val(data.id);      // staff number
+			$('#email_'+r).val(data.email);    // staff email
+		});
+
+		// ✅ Optional: clear inputs if selection cleared
+		$('#nama_'+r).on('select2:clear', function () {
+			$('#nostaf_'+r).val('');
+			$('#email_'+r).val('');
+		});
+
+		// also check on page load (for F5 refresh case)
+		if (!$('#nama_'+r).val()) {
+			$('#nostaf_'+r).val('');
+			$('#email_'+r).val('');
 		}
-	});
-}
-//auto refresh right after clicking OK button
-$(document).on('click', '.swal2-confirm', function(e){
-	window.location.reload(true);
-});
+	};
+	// this will populate 1st select2
+	selectname()
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// checkbox
+	function addingicmsmodule(y=0){
+		$.ajax({
+			dataType: 'json',
+			url: "{{ route('listicmsmodule') }}",
+			type: "GET",
+			data: {
+				_token: '{{csrf_token()}}'
+			},
+			success: (function(response) {
+				const $checkicmsmodule = $("#checkbox_"+y);
 
-/////////////////////////////////////////////////////////////////////////////////////////
-@endsection
+				response.forEach(function(value, i) {
+					const checkboxId = `icms_${y}_${i}`;
+
+					const row = `
+						<div id="cb_${y}_${i}" class="m-1">
+							<div class="form-check">
+								<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}">
+								<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
+								@error('emreg.*.icms_module_id')
+								<div class="invalid-feedback">
+									{{ $message }}
+								</div>
+								@enderror
+							</div>
+						</div>
+					`;
+					$checkicmsmodule.append(row);
+
+					if (value.id == 9) {
+						const dll = `
+							<div id="dll_container_${y}_${i}" class="m-1 dll-container">
+							</div>
+						`;
+						$checkicmsmodule.append(dll);
+					}
+				});
+			}),
+			error: (function(jqXHR, textStatus, errorThrown) {
+				alert( "error" );
+				console.log(textStatus, errorThrown);
+			}),
+			complete: (function() {
+				// alert( "complete" );
+			})
+		});
+
+		// delegated handler
+		$(document).on('change', '.icms-checkbox', function() {
+			const $cb = $(this);
+			const dllSelector = $cb.data('dll');
+			const y = $cb.data('y');
+			const i = $cb.data('i');
+
+			if (!dllSelector) return;
+
+			let checkbicms = `
+				<div class="form-check dll-input">
+					<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
+					<input class="form-control form-control-sm" type="text" name="emreg[${y}][icms_module_id][dll]" id="icms_dll_${y}_${i}" value="{{ old('emreg.*.icms_module_id.dll') }}">
+					@error('emreg.*.icms_module_id.dll')
+					<div class="invalid-feedback">
+						{{ $message }}
+					</div>
+					@enderror
+				</div>
+			`;
+
+			const $dll = $(dllSelector);
+
+			if ($cb.is(':checked')) {
+				if ($dll.find('.dll-input').length === 0) {
+					$dll.append(checkbicms);
+				}
+			} else {
+				$dll.find('.dll-input').remove(); // remove only input part, keep container
+			}
+		});
+	};
+	addingicmsmodule()
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	@endsection
 </x-app-layout>

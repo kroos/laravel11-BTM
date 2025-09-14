@@ -128,21 +128,14 @@ class ICMSRequesterController extends Controller
 			$ra->belongstomanyicmsmodule()->attach($pivotData);
 		};
 
-
-
-
-
-
-
-
 		// need to create pdf and send email
-		// Pdf::loadView('loan.show', ['loanapp' => $r])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($r->created_at)->format('ym').str_pad( $r->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// Pdf::loadView('regaccicms.show', ['regaccicm' => $requester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($requester->created_at)->format('ym').str_pad( $requester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// // send to self
-		// Mail::to($r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $r->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
+		// // send to self, approver & btm
+		// Mail::to($requester->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $requester->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
 		// 	// ->cc($moreUsers)
 		// 	// ->bcc($evenMoreUsers)
-		// 	->send(new ToApplicant($r));
+		// 	->send(new ToApplicant($requester));
 
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully record data and send email');
 	}
@@ -153,9 +146,6 @@ class ICMSRequesterController extends Controller
 	public function show(ICMSRequester $regaccicm): Response
 	{
 		// return view('regaccicms.show', ['regaccicm' => $regaccicm]);
-		// $pdf = Pdf::loadView('transactions.show', ['transaction' => $transaction])->setOption(['dpi' => 120]);
-		// return $pdf->stream('DAT-'.Carbon::parse($transaction->created_at)->format('ym').str_pad( $transaction->id, 3, "0", STR_PAD_LEFT).'.pdf');
-
 		$pdf = Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccicm])->setOption(['dpi' => 120]);
 		return $pdf->stream('BTM-RAICMS-'.Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT).'.pdf')/*->save(storage_path('app/public/pdf/').)*/;
 	}
@@ -165,7 +155,7 @@ class ICMSRequesterController extends Controller
 	 */
 	public function edit(ICMSRequester $regaccicm): View
 	{
-		//
+		return view('regaccicms.edit', ['regaccicm' => $regaccicm]);
 	}
 
 	/**

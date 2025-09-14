@@ -132,6 +132,8 @@
 		.bold { font-weight: bold; }
 		.red { color: red; }
 		.center { text-align: center; }
+		.m-0 { margin: 0px; }
+		.p-0 { padding: 0px; }
 	</style>
 </head>
 <body>

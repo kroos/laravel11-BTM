@@ -38,8 +38,8 @@
 	</tbody>
 	<tbody>
 		<tr>
-			<td colspan="2" style="padding: 0px;">
-				<table style="margin: 0px;">
+			<td colspan="2" class="p-0">
+				<table class="m-0">
 					<thead>
 						<tr>
 							<th>Pemohon</th>
@@ -80,6 +80,37 @@
 				</table>
 			</td>
 		</tr>
+		<tr>
+			<th colspan="2" class="center"><span>Sokongan Pengarah/Dekan/Ketua Jabatan</span></th>
+		</tr>
+			<tr>
+			</tr>
+			<tr>
+				<td colspan="2"><span class="red bold">* Saya mengesahkan bahawa maklumat diatas adalah benar dan adalah untuk urusan rasmi.</span></td>
+			</tr>
+			<tr>
+				<td>Nama : <span class="bold">{{ ($regaccicm->belongstoappr?->nama) }}</span></td>
+				<td>Tarikh : <span class="bold">{{ (!is_null($regaccicm->approver_date))?\Carbon\Carbon::parse($regaccicm->approver_date)->format('D, j F Y'):NULL }}</span></td>
+			</tr>
+			<tr>
+				<td>Catatan : {{ $regaccicm->approver_remarks }}</td>
+				<td>Status : <span class="bold">{{ $regaccicm->belongstoapproverstatusloan?->status_approval }}</span></td>
+			</tr>
+			<tr>
+				<th colspan="2" class="center"><span>UNTUK KEGUNAAN PEJABAT</span></th>
+			</tr>
+			<tr>
+				<td colspan="2">
+					Status Permohonan : <span class="bold">{{ $regaccicm->belongstostatusapp?->status_loan }}</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Nama : <span class="bold">{{ $regaccicm->belongstobtmappr?->nama }}</span></td>
+				<td>Tarikh : <span class="bold">{{ (!is_null($regaccicm->btm_date))?\Carbon\Carbon::parse($regaccicm->btm_date)->format('D, j M Y'):NULL }}</span></td>
+			</tr>
+			<tr>
+				<td colspan="2">Catatan : {{ $regaccicm->btm_remarks }}</td>
+			</tr>
 	</tbody>
 
 </table>
