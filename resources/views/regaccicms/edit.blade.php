@@ -6,7 +6,8 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('regaccicms.store') }}" method="POST" class="needs-validation" novalidate>
+	<form action="{{ route('regaccicms.update', $regaccicm) }}" method="POST" class="needs-validation" novalidate>
+		@method('PATCH')
 		@csrf
 		<div class="container d-flex justify-content-between">
 <!--
@@ -23,7 +24,6 @@
 								<x-input-error :messages="$errors->get('nostaf')" />
 							</div>
 						</div>
-
 						<div class="col-sm-12 mt-2 row">
 							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
 							<div class="col-sm-8">
@@ -44,71 +44,81 @@
 					<div class="card-body">
 
 						<div id="applicants_wrap">
-							<div class="col-sm-12 row m-3" id="applicant_0">
-								<div class="col-sm-7 m-0 p-1">
+							<?php
+								$i = 0;
+							?>
+							@if($regaccicm->hasmanyapplicant()->count())
+								@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
+								<div class="col-sm-12 row m-3" id="applicant_{{ $i }}">
+									<div class="col-sm-7 m-0 p-1">
 
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="nama_0" class="col-sm-3" :value="__('Nama Staff : ')" />
-										<div class="col-sm-9">
-											<select id="nama_0" name="emreg[0][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
-											@error('emreg.*.nama')
-											<div class="invalid-feedback">
-												{{ $message }}
+										<div class="col-sm-12 m-1 row">
+											<x-input-label for="nama_{{ $i }}" class="col-sm-3" :value="__('Nama Staff : ')" />
+											<div class="col-sm-9">
+												<select id="nama_{{ $i }}" name="emreg[{{ $i }}][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
+												@error('emreg.*.nama')
+												<div class="invalid-feedback">
+													{{ $message }}
+												</div>
+												@enderror
 											</div>
-											@enderror
 										</div>
-									</div>
 
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="nostaf_0" class="col-sm-3" :value="__('No Staff : ')" />
-										<div class="col-sm-9">
-											<input id="nostaf_0" type="text" name="emreg[0][nostaf]" value="{{ old('emreg.*.nostaf') }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
-										</div>
-									</div>
-
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="email_0" class="col-sm-3" :value="__('Email : ')" />
-										<div class="col-sm-9">
-											<input id="email_0" type="text" name="emreg[0][email]" value="{{ old('emreg.*.email') }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
-										</div>
-									</div>
-
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="jawatan_0" class="col-sm-3" :value="__('Jawatan : ')" />
-										<div class="col-sm-9">
-											<input id="jawatan_0" type="text" name="emreg[0][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
-											@error('emreg.*.position')
-											<div class="invalid-feedback">
-												{{ $message }}
+										<div class="col-sm-12 m-1 row">
+											<x-input-label for="nostaf_{{ $i }}" class="col-sm-3" :value="__('No Staff : ')" />
+											<div class="col-sm-9">
+												<input id="nostaf_{{ $i }}" type="text" name="emreg[{{ $i }}][nostaf]" value="{{ old('emreg.*.nostaf', $v1->nostaf) }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
 											</div>
-											@enderror
 										</div>
+
+										<div class="col-sm-12 m-1 row">
+											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email : ')" />
+											<div class="col-sm-9">
+												<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email]" value="{{ old('emreg.*.email', $v1->belongstoicmsapplicant?->hasmanylogin()->first()->email) }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+											</div>
+										</div>
+
+										<div class="col-sm-12 m-1 row">
+											<x-input-label for="jawatan_{{ $i }}" class="col-sm-3" :value="__('Jawatan : ')" />
+											<div class="col-sm-9">
+												<input id="jawatan_{{ $i }}" type="text" name="emreg[{{ $i }}][position]" value="{{ old('emreg.*.position', $v1['position']) }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
+												@error('emreg.*.position')
+												<div class="invalid-feedback">
+													{{ $message }}
+												</div>
+												@enderror
+											</div>
+										</div>
+
+										<div class="col-sm-12 m-1 row">
+											<x-input-label for="cadid_{{ $i }}" class="col-sm-3" :value="__('Cadangan ID : ')" />
+											<div class="col-sm-9">
+												<input id="cadid_{{ $i }}" type="text" name="emreg[{{ $i }}][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" value="{{ old('emreg.*.proposed_id', $v1['username']) }}" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_{{ $i }}">
+												<div id="CadanganIDHelpBlock_{{ $i }}" class="form-text fs-6 fw-lighter">
+													Hanya untuk pemohon baru.
+												</div>
+												@error('emreg.*.proposed_id')
+												<div class="invalid-feedback">
+													{{ $message }}
+												</div>
+												@enderror
+											</div>
+										</div>
+
 									</div>
 
-									<div class="col-sm-12 m-1 row">
-										<x-input-label for="cadid_0" class="col-sm-3" :value="__('Cadangan ID : ')" />
-										<div class="col-sm-9">
-											<input id="cadid_0" type="text" name="emreg[0][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_0">
-											<div id="CadanganIDHelpBlock_0" class="form-text fs-6 fw-lighter">
-												Hanya untuk pemohon baru.
-											</div>
-											@error('emreg.*.proposed_id')
-											<div class="invalid-feedback">
-												{{ $message }}
-											</div>
-											@enderror
-										</div>
+									<div class="col-sm-5 m-0 p-1" id="checkbox_{{ $i }}">
+										<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
 									</div>
-
+									<div class="col-sm-12 m-2">
+										<button type="button" class="btn btn-sm btn-danger applicant_delete" data-id="{{ $v1->id }}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+									</div>
 								</div>
-
-								<div class="col-sm-5 m-0 p-1" id="checkbox_0">
-									<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
-								</div>
-								<div class="col-sm-12 m-2">
-									<button type="button" class="btn btn-sm btn-danger applicant_remove" data-id="1"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
-								</div>
-							</div>
+								<?php
+									$i++;
+								?>
+								@endforeach
+							@endif
 						</div>
 
 						<x-primary-button type="button" id="applicants_add">
@@ -295,11 +305,29 @@
 			})(jQuery);
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	<?php
+		$p = 0;
+	?>
+	@if($regaccicm->hasmanyapplicant()->count())
+		@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
+			console.log({!! $v1->belongstomanyicmsmodule()->get()->map(function ($item) { return collect($item->pivot->toArray())->only(['icms_module_id', 'remarks'])->toArray(); }) !!});
+			selectname({{ $p }});
+			addingicmsmodule({{ $p }}, {!! $v1->belongstomanyicmsmodule()->get()->map(fn($item) => ['icms_module_id' => $item->pivot->icms_module_id,'remarks' => $item->pivot->remarks,]) !!});
+			var newOption{{ $p }} = new Option({!! json_encode($v1->nostaf . ' => ' . $v1->belongstoicmsapplicant?->nama) !!}, {{ $v1->nostaf }}, true, true);
+			$('#nama_{{ $p }}').append(newOption{{ $p }}).trigger('change');
+			<?php
+				$p++;
+			?>
+		@endforeach
+	@endif
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// usage plugin
 	// Applicants (fieldName "skills")
 	$("#applicants_wrap").remAddRow({
 		addBtn: "#applicants_add",
 		maxFields: 5,
+		startCounter: {{ $regaccicm->hasmanyapplicant()->count() }},
 		removeSelector: ".applicant_remove",
 		fieldName: "applicants",
 		rowIdPrefix: "applicant",
@@ -399,6 +427,15 @@
 					};
 				},
 				processResults: function (data) {
+					console.log(data);
+					let selectedValues = $('select.form-select').map(function () {
+						return $(this).val();
+					}).get();
+					console.log(selectedValues);
+					data.results[0].children = $.grep(data.results[0].children, function(obj) {
+						return $.inArray(obj.id, selectedValues) === -1;
+					});
+					console.log(data);
 					return {
 						results: $.map(data.results[0].children, function (item) {
 							return {
@@ -439,10 +476,13 @@
 		}
 	};
 	// this will populate 1st select2
-	selectname()
+	@if(!$regaccicm->hasmanyapplicant()->count())
+		selectname();
+	@endif
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// checkbox
-	function addingicmsmodule(y=0){
+	function addingicmsmodule(y=0, icmsmodule = []){
 		$.ajax({
 			dataType: 'json',
 			url: "{{ route('listicmsmodule') }}",
@@ -450,36 +490,99 @@
 			data: {
 				_token: '{{csrf_token()}}'
 			},
-			success: (function(response) {
-				const $checkicmsmodule = $("#checkbox_"+y);
+			// success: (function(response) {
+			// 	const $checkicmsmodule = $("#checkbox_"+y);
 
-				response.forEach(function(value, i) {
-					const checkboxId = `icms_${y}_${i}`;
+			// 	// i need to find the array of icms_module and paste it overhere so that i can di ifelse logic
+			// 	let cicms = icmsmodule;
 
-					const row = `
-						<div id="cb_${y}_${i}" class="m-1">
-							<div class="form-check">
-								<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}">
-								<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
-								@error('emreg.*.icms_module_id')
-								<div class="invalid-feedback">
-									{{ $message }}
-								</div>
-								@enderror
-							</div>
-						</div>
-					`;
-					$checkicmsmodule.append(row);
+			// 	response.forEach(function(value, i) {
+			// 		const checkboxId = `icms_${y}_${i}`;
 
-					if (value.id == 9) {
-						const dll = `
-							<div id="dll_container_${y}_${i}" class="m-1 dll-container">
-							</div>
-						`;
-						$checkicmsmodule.append(dll);
-					}
-				});
-			}),
+			// 		const row = `
+			// 			<div id="cb_${y}_${i}" class="m-1">
+			// 				<div class="form-check">
+			// 					<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}" >
+			// 					<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
+			// 					@error('emreg.*.icms_module_id')
+			// 					<div class="invalid-feedback">
+			// 						{{ $message }}
+			// 					</div>
+			// 					@enderror
+			// 				</div>
+			// 			</div>
+			// 		`;
+			// 		// if(value.id == ) {
+
+			// 		// };
+			// 		$checkicmsmodule.append(row);
+
+			// 		if (value.id == 9) {
+			// 			const dll = `
+			// 				<div id="dll_container_${y}_${i}" class="m-1 dll-container">
+			// 				</div>
+			// 			`;
+			// 			$checkicmsmodule.append(dll);
+			// 		}
+			// 	});
+			// }),
+success: (function(response) {
+    const $checkicmsmodule = $("#checkbox_"+y);
+
+    // Pivot data from backend
+    let cicms = icmsmodule;
+
+    response.forEach(function(value, i) {
+        const checkboxId = `icms_${y}_${i}`;
+
+        // Check if this module_id exists in cicms
+        let found = cicms.find(m => m.icms_module_id == value.id);
+
+        // If found, mark checked
+        let isChecked = found ? 'checked' : '';
+
+        const row = `
+            <div id="cb_${y}_${i}" class="m-1">
+                <div class="form-check">
+                    <input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror"
+                           type="checkbox"
+                           id="${checkboxId}"
+                           name="emreg[${y}][icms_module_id][${i}]"
+                           value="${value.id}"
+                           data-dll="#dll_container_${y}_${i}"
+                           data-y="${y}" data-i="${i}" ${isChecked}>
+                    <label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
+                    @error('emreg.*.icms_module_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+        `;
+        $checkicmsmodule.append(row);
+
+        if (value.id == 9) {
+            const dll = `
+                <div id="dll_container_${y}_${i}" class="m-1 dll-container"></div>
+            `;
+            $checkicmsmodule.append(dll);
+
+            // If remarks exist, auto-insert input
+            if (found && found.remarks) {
+                const checkbicms = `
+                    <div class="form-check dll-input">
+                        <label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
+                        <input class="form-control form-control-sm"
+                               type="text"
+                               name="emreg[${y}][icms_module_id][dll]"
+                               id="icms_dll_${y}_${i}"
+                               value="${found.remarks}">
+                    </div>
+                `;
+                $("#dll_container_"+y+"_"+i).append(checkbicms);
+            }
+        }
+    });
+}),
 			error: (function(jqXHR, textStatus, errorThrown) {
 				alert( "error" );
 				console.log(textStatus, errorThrown);
@@ -521,7 +624,9 @@
 			}
 		});
 	};
-	addingicmsmodule()
+	@if(!$regaccicm->hasmanyapplicant()->count())
+	addingicmsmodule();
+	@endif
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@endsection

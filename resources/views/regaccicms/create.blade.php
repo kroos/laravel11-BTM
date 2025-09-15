@@ -399,6 +399,15 @@
 					};
 				},
 				processResults: function (data) {
+					console.log(data);
+					let selectedValues = $('select.form-select').map(function () {
+						return $(this).val();
+					}).get();
+					console.log(selectedValues);
+					data.results[0].children = $.grep(data.results[0].children, function(obj) {
+						return $.inArray(obj.id, selectedValues) === -1;
+					});
+					console.log(data);
 					return {
 						results: $.map(data.results[0].children, function (item) {
 							return {
@@ -408,14 +417,14 @@
 							};
 						})
 					};
-				}
+				},
 			},
-			templateResult: function (data) {
-				return data.text;
-			},
-			templateSelection: function (data) {
-				return data.text;
-			}
+			// templateResult: function (data) {
+			// 	return data.text;
+			// },
+			// templateSelection: function (data) {
+			// 	return data.text;
+			// }
 		});
 
 		// ✅ When staff selected, populate NoStaf + Email
@@ -439,7 +448,9 @@
 		}
 	};
 	// this will populate 1st select2
-	selectname()
+	selectname();
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// checkbox
 	function addingicmsmodule(y=0){
@@ -522,6 +533,8 @@
 		});
 	};
 	addingicmsmodule()
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@endsection

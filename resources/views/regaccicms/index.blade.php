@@ -50,7 +50,7 @@
 										</tbody>
 									</table>
 								</td>
-								<td>{{ $regaccicm->belongstostatusrequest->status_loan }}</td>
+								<td>{{ $regaccicm->belongstostatusrequest?->status_loan }}</td>
 								<td>
 									<x-link href="{{ route('regaccicms.show', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 										<i class="fa-regular fa-file-pdf"></i>
