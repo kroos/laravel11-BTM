@@ -10,6 +10,9 @@ use Illuminate\View\View;
 
 // models
 use App\Models\ICMSRequester;
+use App\Models\Jabatan;
+use App\Models\Settings\BTMApprover;
+use App\Models\Login;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +27,8 @@ use Illuminate\Support\Facades\Validator;
 // load email
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Regaccicms\Users\ToApplicant;
+use App\Mail\Regaccicms\Users\ToApprover;
+use App\Mail\Regaccicms\Users\ToBTM;
 
 
 // load batch and queue
@@ -138,11 +143,34 @@ class ICMSRequesterController extends Controller
 		// need to create pdf and send email
 		Pdf::loadView('regaccicms.show', ['regaccicm' => $requester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($requester->created_at)->format('ym').str_pad( $requester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// // send to self, approver & btm
+		// send to self
 		Mail::to($requester->belongstostaff->hasmanylogin()->first()->email, $requester->belongstostaff->hasmanylogin()->first()->nama)
 			// ->cc($moreUsers)
 			// ->bcc($evenMoreUsers)
 			->send(new ToApplicant($requester));
+
+		// send to approver (if available)
+		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
+		$apprv = Jabatan::find($dept)->belongstomanyappr;
+		// dd($apprv->belongstomanyappr()->first());
+		if($apprv->count()) {
+			// send to approver
+			Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApprover($requester, $apprv));
+		}
+
+		// finally send it to admin
+		// $user->notify(new ToBTM($requester));
+		if (BTMApprover::where('active', 1)->count()) {
+			// $requester will "dissolve" when lopp process
+			foreach(BTMApprover::where('active', 1)->get() as $ad) {
+				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+				Mail::to($adm->email, $adm->name)
+				->send(new ToBTM($adm, $requester));
+			}
+		}
 
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully record data and send email');
 	}
@@ -170,7 +198,47 @@ class ICMSRequesterController extends Controller
 	 */
 	public function update(Request $request, ICMSRequester $regaccicm): RedirectResponse
 	{
-		//
+		// dd($request->all());
+		$validator = Validator::make($request->all(), [
+				'emreg.*.nama' => 'required|string',
+				'emreg.*.position' => 'required|string',
+				'emreg.*.proposed_id' => 'required|alpha_num',
+				'emreg.*.icms_module_id' => 'required|array|min:1',
+				'emreg.*.icms_module_id.dll' => 'required_if:emreg.*.icms_module_id,9',
+				'acknowledge' => 'required',
+			], [
+				'emreg.*.nama' => 'Please insert :attribute at #:position',
+				'emreg.*.position' => 'Please insert :attribute at #:position',
+				// 'emreg.*.proposed_id' => 'Please insert :attribute at #:position',
+				'emreg.*.proposed_id.required'   => ':attribute wajib diisi.',
+				'emreg.*.proposed_id.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
+				'emreg.*.icms_module_id' => 'Please check on :attribute at #:position',
+				'emreg.*.icms_module_id.dll' => 'Please insert :attribute',
+				'acknowledge' => 'Please click on :attribute',
+			], [
+				'emreg.*.nama' => 'Nama Staff',
+				'emreg.*.position' => 'Jawatan',
+				'emreg.*.proposed_id' => 'Cadangan ID',
+				'emreg.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
+				'emreg.*.icms_module_id.dll' => 'Sila Nyatakan',
+				'acknowledge' => 'Acknowledgement',
+		]);
+		$validator->after(function ($validator) use ($request) {
+			foreach ($request->input('emreg', []) as $index => $emreg) {
+				if (isset($emreg['icms_module_id']) && in_array(9, $emreg['icms_module_id'])) {
+					if (empty($emreg['icms_module_id']['dll'] ?? null)) {
+						$validator->errors()->add(
+							"emreg.$index.icms_module_id.dll",
+							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
+						);
+					}
+				}
+			}
+		});
+
+		$validator->validate();
+		// $requester = $regaccicm->update(['status_request_id' => 3]);
+		return redirect()->route('regaccicms.index')->with('success', 'Successfully update record data and send email');
 	}
 
 	/**
@@ -178,6 +246,10 @@ class ICMSRequesterController extends Controller
 	 */
 	public function destroy(ICMSRequester $regaccicm): RedirectResponse
 	{
-		//
+		$regaccicm->delete();
+		return response()->json([
+			'message' => 'Success Cancel Request Application',
+			'status' => 'success'
+		]);
 	}
 }

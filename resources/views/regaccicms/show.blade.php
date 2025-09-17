@@ -58,8 +58,8 @@
 							<td>{{ $k->belongstoicmsapplicant?->hasmanylogin()?->first()?->email }}</td>
 							<td>{{ $k->position }}</td>
 							<td>{{ $k->username }}</td>
-							<td style="padding: 0px;">
-								<table style="margin: 0px;">
+							<td class="p-0">
+								<table class="m-0">
 									<tbody>
 										@foreach($k->belongstomanyicmsmodule()->get() as $k1)
 										<tr>
