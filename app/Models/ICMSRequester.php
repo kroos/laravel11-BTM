@@ -48,7 +48,7 @@ class ICMSRequester extends Model
 	// belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'nostaf');
+		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->where('status', 'A')->withDefault();
 	}
 
 	public function belongstostatusapp(): BelongsTo

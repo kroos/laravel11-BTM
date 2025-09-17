@@ -32,10 +32,20 @@ class ICMSRequesterApplicant extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// set column attribute
-	// public function setNameAttribute($value)
-	// {
-	//     $this->attributes['name'] = ucwords(Str::lower($value));
-	// }
+	public function setUsernameAttribute($value)
+	{
+		$this->attributes['username'] = Str::lower($value);
+	}
+
+	public function setPositionAttribute($value)
+	{
+		$this->attributes['position'] = ucwords(Str::lower($value));
+	}
+
+	public function setRemarksAttribute($value)
+	{
+		$this->attributes['remarks'] = ucwords(Str::lower($value));
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// relationship

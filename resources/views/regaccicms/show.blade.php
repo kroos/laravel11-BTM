@@ -11,7 +11,7 @@
 		</tr>
 	</thead>
 	<tbody>
-<!-- 		<tr>
+	<tr>
 			<td>No Rujukan : <span class="bold red">
 				BTM-RAICMS-{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT) }}
 			</span>
@@ -20,7 +20,7 @@
 			Tarikh Permohonan : <span class="bold">{{ \Carbon\Carbon::parse($regaccicm->created_at)->format('D, j F Y') }}</span>
 		</td>
 	</tr>
- -->	</tbody>
+	</tbody>
 	<thead>
 		<tr>
 			<th colspan="2" class="center"><span class="center">Pemohon</span></th>

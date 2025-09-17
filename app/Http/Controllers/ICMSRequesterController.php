@@ -21,6 +21,11 @@ use Illuminate\Http\Request;
 // load validation
 use Illuminate\Support\Facades\Validator;
 
+// load email
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Regaccicms\Users\ToApplicant;
+
+
 // load batch and queue
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
@@ -72,23 +77,25 @@ class ICMSRequesterController extends Controller
 		$validator = Validator::make($request->all(), [
 				'emreg.*.nama' => 'required|string',
 				'emreg.*.position' => 'required|string',
-				'emreg.*.proposed_id' => 'required|string',
+				'emreg.*.proposed_id' => 'required|alpha_num',
 				'emreg.*.icms_module_id' => 'required|array|min:1',
-				// 'emreg.*.icms_module_id.dll' => 'required_if:emreg.*.icms_module_id.*,9',
+				'emreg.*.icms_module_id.dll' => 'required_if:emreg.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
 				'emreg.*.nama' => 'Please insert :attribute at #:position',
 				'emreg.*.position' => 'Please insert :attribute at #:position',
-				'emreg.*.proposed_id' => 'Please insert :attribute at #:position',
+				// 'emreg.*.proposed_id' => 'Please insert :attribute at #:position',
+				'emreg.*.proposed_id.required'   => ':attribute wajib diisi.',
+				'emreg.*.proposed_id.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
 				'emreg.*.icms_module_id' => 'Please check on :attribute at #:position',
-				// 'emreg.*.icms_module_id.dll' => 'Please insert :attribute',
+				'emreg.*.icms_module_id.dll' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
 				'emreg.*.nama' => 'Nama Staff',
 				'emreg.*.position' => 'Jawatan',
 				'emreg.*.proposed_id' => 'Cadangan ID',
 				'emreg.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				// 'emreg.*.icms_module_id.dll' => 'Sila Nyatakan',
+				'emreg.*.icms_module_id.dll' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
 		$validator->after(function ($validator) use ($request) {
@@ -129,13 +136,13 @@ class ICMSRequesterController extends Controller
 		};
 
 		// need to create pdf and send email
-		// Pdf::loadView('regaccicms.show', ['regaccicm' => $requester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($requester->created_at)->format('ym').str_pad( $requester->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('regaccicms.show', ['regaccicm' => $requester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($requester->created_at)->format('ym').str_pad( $requester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
 		// // send to self, approver & btm
-		// Mail::to($requester->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $requester->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
-		// 	// ->cc($moreUsers)
-		// 	// ->bcc($evenMoreUsers)
-		// 	->send(new ToApplicant($requester));
+		Mail::to($requester->belongstostaff->hasmanylogin()->first()->email, $requester->belongstostaff->hasmanylogin()->first()->nama)
+			// ->cc($moreUsers)
+			// ->bcc($evenMoreUsers)
+			->send(new ToApplicant($requester));
 
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully record data and send email');
 	}
