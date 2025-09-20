@@ -20,7 +20,8 @@ use Illuminate\Support\Str;
 
 class ICMSApplicantModule extends Pivot
 {
-    use SoftDeletes;
+    // Pivot table shouldnt have soft delete otherwise the sync will just fill up the "deleted_at" but when u query, its there in ur result.
+    // use SoftDeletes;
     protected $connection = 'mysql3';
     protected $table = 'icms_applicant_modules';
     // protected $primaryKey = '';

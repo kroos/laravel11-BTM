@@ -254,8 +254,8 @@ $(document).on('click', '.delete_email', function(e){
 
 function SwalDeleteR(ackID){
 	swal.fire({
-		title: 'Delete Loan Application',
-		text: 'Are you sure to delete Email Registration Application?',
+		title: 'Delete Registeration Account ICMS Application',
+		text: 'Are you sure to delete Registeration Account ICMS Application?',
 		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',
@@ -292,7 +292,7 @@ function SwalDeleteR(ackID){
 	})
 	.then((result) => {
 		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Email Registration Application is still active.', 'info')
+			swal.fire('Cancel Action', 'Registeration Account ICMS Application is still active.', 'info')
 		}
 	});
 }

@@ -50,6 +50,7 @@
 							@if($regaccicm->hasmanyapplicant()->count())
 								@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
 								<div class="col-sm-12 row m-3" id="applicant_{{ $i }}">
+									<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $v1->id }}">
 									<div class="col-sm-7 m-0 p-1">
 
 										<div class="col-sm-12 m-1 row">
@@ -74,7 +75,7 @@
 										<div class="col-sm-12 m-1 row">
 											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email : ')" />
 											<div class="col-sm-9">
-												<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email]" value="{{ old('emreg.*.email', $v1->belongstoicmsapplicant?->hasmanylogin()->first()->email) }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+												<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email]" value="{{ old('emreg.*.email', $v1->belongstoicmsapplicant?->hasmanylogin()?->first()?->email) }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
 											</div>
 										</div>
 
@@ -313,7 +314,7 @@
 			console.log({!! $v1->belongstomanyicmsmodule()->get()->map(function ($item) { return collect($item->pivot->toArray())->only(['icms_module_id', 'remarks'])->toArray(); }) !!});
 			selectname({{ $p }});
 			addingicmsmodule({{ $p }}, {!! $v1->belongstomanyicmsmodule()->get()->map(fn($item) => ['icms_module_id' => $item->pivot->icms_module_id,'remarks' => $item->pivot->remarks,]) !!});
-			var newOption{{ $p }} = new Option({!! json_encode($v1->nostaf . ' => ' . $v1->belongstoicmsapplicant?->nama) !!}, {{ $v1->nostaf }}, true, true);
+			var newOption{{ $p }} = new Option({!! json_encode($v1->nostaf . ' => ' . $v1->belongstoicmsapplicant?->nama) !!}, '{{ $v1->nostaf }}', true, true);
 			$('#nama_{{ $p }}').append(newOption{{ $p }}).trigger('change');
 			<?php
 				$p++;
@@ -334,6 +335,7 @@
 		// rowTemplate must use the same removeSelector class so delegated handler fires:
 		rowTemplate: (i, name) => `
 			<div class="col-sm-12 row m-3" id="applicant_${i}">
+				<input type="hidden" name="emreg[${i}][id]" value="">
 				<div class="col-sm-7 m-0 p-1">
 
 					<div class="col-sm-12 m-1 row">
@@ -573,7 +575,7 @@ success: (function(response) {
                         <label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
                         <input class="form-control form-control-sm"
                                type="text"
-                               name="emreg[${y}][icms_module_id][dll]"
+                               name="emreg[${y}][icms_module_id][remarks]"
                                id="icms_dll_${y}_${i}"
                                value="${found.remarks}">
                     </div>
@@ -604,7 +606,7 @@ success: (function(response) {
 			let checkbicms = `
 				<div class="form-check dll-input">
 					<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
-					<input class="form-control form-control-sm" type="text" name="emreg[${y}][icms_module_id][dll]" id="icms_dll_${y}_${i}" value="{{ old('emreg.*.icms_module_id.dll') }}">
+					<input class="form-control form-control-sm" type="text" name="emreg[${y}][icms_module_id][remarks]" id="icms_dll_${y}_${i}" value="{{ old('emreg.*.icms_module_id.remarks') }}">
 					@error('emreg.*.icms_module_id.dll')
 					<div class="invalid-feedback">
 						{{ $message }}
@@ -627,6 +629,63 @@ success: (function(response) {
 	@if(!$regaccicm->hasmanyapplicant()->count())
 	addingicmsmodule();
 	@endif
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+$(document).on('click', '.applicant_delete', function(e){
+	var ackID = $(this).data('id');
+	SwalDeleteR(ackID);
+	e.preventDefault();
+});
+
+function SwalDeleteR(ackID){
+	swal.fire({
+		title: 'Delete Registeration Account ICMS Applicant',
+		text: 'Are you sure to delete Loan Equipment?',
+		icon: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancel',
+		confirmButtonText: 'Yes',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('regaccicmsapplicant') }}' + '/' + ackID,
+					type: 'DELETE',
+					dataType: 'json',
+					data: {
+							id: ackID,
+							_token : $('meta[name=csrf-token]').attr('content')
+					},
+				})
+				.done(function(response){
+					swal.fire('Accept', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					// $('#cancel_btn_' + ackID).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+					// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancel Action', 'Registeration Account ICMS Applicant is still active.', 'info')
+		}
+	});
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+	window.location.reload(true);
+});
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@endsection

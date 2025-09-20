@@ -204,7 +204,7 @@ class ICMSRequesterController extends Controller
 				'emreg.*.position' => 'required|string',
 				'emreg.*.proposed_id' => 'required|alpha_num',
 				'emreg.*.icms_module_id' => 'required|array|min:1',
-				'emreg.*.icms_module_id.dll' => 'required_if:emreg.*.icms_module_id,9',
+				'emreg.*.icms_module_id.remarks' => 'required_if:emreg.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
 				'emreg.*.nama' => 'Please insert :attribute at #:position',
@@ -213,22 +213,22 @@ class ICMSRequesterController extends Controller
 				'emreg.*.proposed_id.required'   => ':attribute wajib diisi.',
 				'emreg.*.proposed_id.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
 				'emreg.*.icms_module_id' => 'Please check on :attribute at #:position',
-				'emreg.*.icms_module_id.dll' => 'Please insert :attribute',
+				'emreg.*.icms_module_id.remarks' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
 				'emreg.*.nama' => 'Nama Staff',
 				'emreg.*.position' => 'Jawatan',
 				'emreg.*.proposed_id' => 'Cadangan ID',
 				'emreg.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				'emreg.*.icms_module_id.dll' => 'Sila Nyatakan',
+				'emreg.*.icms_module_id.remarks' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
 		$validator->after(function ($validator) use ($request) {
 			foreach ($request->input('emreg', []) as $index => $emreg) {
 				if (isset($emreg['icms_module_id']) && in_array(9, $emreg['icms_module_id'])) {
-					if (empty($emreg['icms_module_id']['dll'] ?? null)) {
+					if (empty($emreg['icms_module_id']['remarks'] ?? null)) {
 						$validator->errors()->add(
-							"emreg.$index.icms_module_id.dll",
+							"emreg.$index.icms_module_id.remarks",
 							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
 						);
 					}
@@ -237,19 +237,146 @@ class ICMSRequesterController extends Controller
 		});
 
 		$validator->validate();
-		// $requester = $regaccicm->update(['status_request_id' => 3]);
+
+		foreach($request->emreg as $k => $v) {
+			// populate icms_requester_applicants
+
+			// can use this method but i made a mistake on frontend
+			// $g[] = Arr::except($v, ['icms_module_id']);
+
+			$ra = $regaccicm->hasmanyapplicant()->updateOrCreate([
+				'id' => $v['id'],
+				],[
+				'nostaf' => $v['nama'],
+				'position' => $v['position'],
+				'username' => $v['proposed_id'],
+			]);
+
+$d[$k] = $v['icms_module_id'];
+
+			foreach ($v['icms_module_id'] as $va) {
+				// $f[$k][$ke] = $va;
+				// if (Arr::exists($array, 'name')) {
+				// 	// Key 'name' exists in the array
+				// }
+
+				$f[$k][$va] = [
+					'remarks' => ($va == 9) ? ($v['icms_module_id']['remarks']) : null,
+				];
+
+			}
+
+			$modules = $v['icms_module_id'] ?? [];
+			$syncData = prepareModulesForSync($modules);
+			$syncData1[] = prepareModulesForSync($modules);
+
+			// this will produce:
+			// [2 => [], 4 => []]
+			// [2 => [], 4 => [], 6 => [], 9 => ['remarks' => 'Vcbvcb Vcb Vcb']]
+			// [2 => []]
+			// [1 => []]
+
+			// sync with pivot
+			$ra->belongstomanyicmsmodule()->sync($syncData);
+		};
+		// dd($d, $f, $syncData1);
+
+		// need to create pdf and send email
+		Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccicm])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+		// send to self
+		Mail::to($regaccicm->belongstostaff->hasmanylogin()->first()->email, $regaccicm->belongstostaff->hasmanylogin()->first()->nama)
+			// ->cc($moreUsers)
+			// ->bcc($evenMoreUsers)
+			->send(new ToApplicant($regaccicm));
+
+		// send to approver (if available)
+		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
+		$apprv = Jabatan::find($dept)->belongstomanyappr;
+		// dd($apprv->belongstomanyappr()->first());
+		if($apprv->count()) {
+			// send to approver
+			Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApprover($regaccicm, $apprv));
+		}
+
+		// finally send it to admin
+		// $user->notify(new ToBTM($regaccicm));
+		if (BTMApprover::where('active', 1)->count()) {
+			// $regaccicm will "dissolve" when lopp process
+			foreach(BTMApprover::where('active', 1)->get() as $ad) {
+				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+				Mail::to($adm->email, $adm->name)
+				->send(new ToBTM($adm, $regaccicm));
+			}
+		}
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully update record data and send email');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(ICMSRequester $regaccicm): RedirectResponse
+	public function destroy(ICMSRequester $regaccicm): JsonResponse
 	{
+		// $regaccicm->hasmanyapplicant()->belongstomanyicmsmodule()->detach();
+		$regaccicm->hasmanyapplicant()
+			->with('belongstomanyicmsmodule') // eager load to avoid N+1
+			->get()
+			->each(function ($applicant) {
+				$applicant->belongstomanyicmsmodule()->detach();
+			});
+		$regaccicm->hasmanyapplicant()->delete();
 		$regaccicm->delete();
 		return response()->json([
 			'message' => 'Success Cancel Request Application',
 			'status' => 'success'
 		]);
 	}
+}
+
+function prepareModulesForSync(array $modules): array
+{
+	$ids = [];
+	$lastNumericId = null;
+
+	foreach ($modules as $key => $val) {
+		// skip the remarks remark here; we'll handle it after collecting numeric ids
+		if (is_string($key) && strtolower($key) === 'remarks') {
+			continue;
+		}
+
+		// if the value itself is an array, flatten it
+		if (is_array($val)) {
+			foreach ($val as $sub) {
+				if ($sub === '' || $sub === null) continue;
+				if (is_numeric($sub) || ctype_digit((string)$sub)) {
+					$ids[] = (int) $sub;
+					$lastNumericId = (int) $sub;
+				}
+			}
+			continue;
+		}
+
+		// scalar value: treat numeric strings as module ids
+		if ($val === '' || $val === null) continue;
+		if (is_numeric($val) || ctype_digit((string)$val)) {
+			$ids[] = (int) $val;
+			$lastNumericId = (int) $val;
+		}
+	}
+
+	// build associative sync array (id => pivot-array). empty array means no pivot data.
+	$sync = [];
+	foreach ($ids as $id) {
+		$sync[$id] = [];
+	}
+
+	// if a remarks remark exists, attach it to the last numeric id encountered
+	if (array_key_exists('remarks', $modules) && $lastNumericId !== null) {
+		$sync[$lastNumericId] = ['remarks' => $modules['remarks']];
+	}
+
+	return $sync;
 }

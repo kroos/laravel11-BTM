@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
 				StatusEquipmentsSeeder::class,
 				StatusLoanSeeder::class,
 				StatusApprovalSeeder::class,
+				ICMSModules::class,
 		]);
 
 	}

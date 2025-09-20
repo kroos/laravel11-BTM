@@ -1,16 +1,19 @@
 // Default Laravel bootstrapper, installs axios, jQuery
-import './bootstrap';
-
-// Added: Popper.js dependency for popover support in Bootstrap
-// import '@popperjs/core';
+import './jquery';
 
 // jquery-ui
-// import '../../node_modules/jquery-ui/dist/jquery-ui';
 import './jquery-ui-prefix';
 
 // careful between these 2 (bootstrap and jquery-ui), cause it conflicts on "tooltips". this way, we override all components from jquery-ui which results we always use the bootstrap components.
 // Added: Actual Bootstrap JavaScript dependency
-import '../../node_modules/bootstrap/dist/js/bootstrap.bundle';
+import * as bootstrap from '../../node_modules/bootstrap/dist/js/bootstrap.bundle';
+
+// Then load Alpine
+import Alpine from 'alpinejs';
+document.addEventListener("DOMContentLoaded", () => {
+	window.Alpine = Alpine;
+	Alpine.start();
+});
 
 // select2
 import select2 from 'select2';
@@ -25,37 +28,31 @@ import moment from 'moment';
 window.moment = moment;
 
 // datatables
-import DataTable from 'datatables.net';
-import 'datatables.net-bs5';
+// import DataTable from 'datatables.net';
+import DataTable from 'datatables.net-bs5';
 import 'datatables.net-responsive-bs5';
 import 'datatables.net-fixedheader-bs5';
 import 'datatables.net-colreorder-bs5';
-import 'datatables.net-autofill-bs5'
+import 'datatables.net-autofill-bs5';
+import jszip from 'jszip';
+import pdfmake from 'pdfmake';
+import 'pdfmake/build/vfs_fonts';
+import 'datatables.net-buttons-bs5';
+import 'datatables.net-buttons/js/buttons.html5.mjs';
+import 'datatables.net-buttons/js/buttons.print.mjs';
+DataTable.use(bootstrap);
+DataTable.Buttons.jszip(jszip);
+DataTable.Buttons.pdfMake(pdfmake);
 window.DataTable = DataTable;
 
 // minicolors
 import '@claviska/jquery-minicolors';
 
 // Chart.js
-import Chart from 'chart.js/auto';
-window.Chart = Chart;
+import  './chart';
 
-// @fullcalendar
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import multiMonthPlugin from "@fullcalendar/multimonth";
-import listPlugin from '@fullcalendar/list';
-import momentPlugin from '@fullcalendar/moment';
-import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-window.Calendar = Calendar;
-window.multiMonthPlugin = multiMonthPlugin;
-window.dayGridPlugin = dayGridPlugin;
-window.timeGridPlugin = timeGridPlugin;
-window.listPlugin = listPlugin;
-window.momentPlugin = momentPlugin;
-window.bootstrap5Plugin = bootstrap5Plugin;
+// fullcalendar
+import './fullcalendar';
 
-import Alpine from 'alpinejs';
-window.Alpine = Alpine;
-Alpine.start();
+// addRemoveRow
+import	'./addRemoveRowjQueryPlugins';
