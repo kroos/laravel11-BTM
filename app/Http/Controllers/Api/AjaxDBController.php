@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicantUnApproved;
 use App\Mail\ToApplicantUpdate;
 
+use App\Mail\Regaccicms\Approver\Approved\ToApplicantApprove;
+use App\Mail\Regaccicms\Approver\Approved\ToApproverApprove;
+use App\Mail\Regaccicms\Approver\Approved\ToBTMApprove;
+
 // for controller output
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -50,6 +54,7 @@ use App\Models\EmailRegistrationApplication;
 use App\Models\ICMSModule;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
+use App\Models\ICMSRequester;
 
 class AjaxDBController extends Controller
 {
@@ -281,6 +286,79 @@ class AjaxDBController extends Controller
 		}
 		return response()->json([
 			'message' => 'Success granted approval for the email registration',
+			'status' => 'success'
+		]);
+	}
+
+	public function regaccappsapprv(Request $request, ICMSRequester $regaccappsapprv): JsonResponse
+	{
+		// dd($request->all(), \Auth::user());
+		// return response()->json([]);
+		$request->validate([
+				'acknowledge' => 'required|accepted',
+				'status' => 'required',
+				'remarks_approver' => 'required_if:status,2',
+				'approver_staff' => 'required',
+			], [
+				'acknowledge' => 'Please checked on :attribute',
+				'status' => 'Please choose your :attribute',
+				'remarks_approver' => 'Please fill up :attribute',
+				'approver_staff' => 'Missing :attribute'
+			], [
+				'acknowledge' => 'Acknowledgement',
+				'status' => 'Approval',
+				'remarks_approver' => 'Remarks',
+				'approver_staff' => 'Staff ID',
+		]);
+
+		$regaccappsapprv->update([
+			'approver_status_id' => $request->status,
+			'approver_staff' => $request->approver_staff,
+			'approver_date' => now(),
+			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+		]);
+
+		Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccappsapprv])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($regaccappsapprv->created_at)->format('ym').str_pad( $regaccappsapprv->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+
+		if ($request->status == 2) {
+			// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
+			// mail to loan owner of unapproved loan
+			Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApplicantUnApproved($regaccappsapprv));
+		} else {
+			// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
+			// mail to loan owner of unapproved loan
+			Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
+				// ->cc($moreUsers)
+				// ->bcc($evenMoreUsers)
+				->send(new ToApplicantApprove($regaccappsapprv));
+
+			// send to approver (if available)
+			$dept = \Auth::user()->belongstostaff?->hasmanylogin()?->first();
+			if($dept) {
+				// send to approver
+				Mail::to($dept?->email, $dept?->nama)
+					// ->cc($moreUsers)
+					// ->bcc($evenMoreUsers)
+					->send(new ToApproverApprove($requester, $apprv));
+			}
+
+			// finally send it to admin
+			// $user->notify(new ToBTM($requester));
+			if (BTMApprover::where('active', 1)->count()) {
+				foreach(BTMApprover::where('active', 1)->get() as $ad) {
+					$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
+					Mail::to($adm->email, $adm->name)
+					->send(new ToBTMApprove($adm, $requester));
+				}
+			}
+		}
+
+		return response()->json([
+			'message' => 'Success granted approval for the ICMS Registeration Account',
 			'status' => 'success'
 		]);
 	}

@@ -1,39 +1,29 @@
 <?php
-namespace {{ namespace }};
-use {{ rootNamespace }}Http\Controllers\Controller;
+namespace App\Http\Controllers\Settings\RegAccICMS;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 
 // for controller output
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 // models
-use {{ namespacedParentModel }};
-use {{ namespacedModel }};
+use App\Models\ICMSRequester;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-
 // load validation
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use {{ namespacedRequests }}
 
 // load batch and queue
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
-
-// load email
-use Illuminate\Support\Facades\Mail;
-// more email
-
-// load pdf
-// use Barryvdh\DomPDF\Facade\Pdf;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -51,14 +41,17 @@ use Throwable;
 use Exception;
 use Log;
 
-
-
-class {{ class }} extends Controller
+class AdminICMSRequesterController extends Controller
 {
+    function __construct()
+    {
+        // $this->middleware(['auth']);
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index({{ parentModel }} ${{ parentModelVariable }})
+    public function index(): View
     {
         //
     }
@@ -66,7 +59,7 @@ class {{ class }} extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create({{ parentModel }} ${{ parentModelVariable }})
+    public function create(): View
     {
         //
     }
@@ -74,7 +67,7 @@ class {{ class }} extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, {{ parentModel }} ${{ parentModelVariable }})
+    public function store(Request $request): RedirectResponse
     {
         //
     }
@@ -82,7 +75,7 @@ class {{ class }} extends Controller
     /**
      * Display the specified resource.
      */
-    public function show({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    public function show(ICMSRequester $iCMSRequester): View
     {
         //
     }
@@ -90,7 +83,7 @@ class {{ class }} extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    public function edit(ICMSRequester $iCMSRequester): View
     {
         //
     }
@@ -98,7 +91,7 @@ class {{ class }} extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, {{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    public function update(Request $request, ICMSRequester $iCMSRequester): RedirectResponse
     {
         //
     }
@@ -106,7 +99,7 @@ class {{ class }} extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    public function destroy(ICMSRequester $iCMSRequester): RedirectResponse
     {
         //
     }

@@ -9,6 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+// mailer
+use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Mail\Mailables\Address;
+
+// load model
+
+
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
+
 class {{ class }} extends Mailable
 {
     use Queueable, SerializesModels;

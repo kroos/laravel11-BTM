@@ -53,7 +53,7 @@
 					<tbody>
 						@foreach($regaccicm->hasmanyapplicant()->get() as $k)
 						<tr>
-							<td>{{ $k->belongstoicmsapplicant->nama }}</td>
+							<td>{{ $k->belongstoicmsapplicant?->nama }}</td>
 							<td>{{ $k->nostaf }}</td>
 							<td>{{ $k->belongstoicmsapplicant?->hasmanylogin()?->first()?->email }}</td>
 							<td>{{ $k->position }}</td>
@@ -61,7 +61,7 @@
 							<td class="p-0">
 								<table class="m-0">
 									<tbody>
-										@foreach($k->belongstomanyicmsmodule()->get() as $k1)
+										@foreach($k->belongstomanyicmsmodule()?->get() as $k1)
 										<tr>
 											<td>
 												{{ $k1->icms_module }}<br />

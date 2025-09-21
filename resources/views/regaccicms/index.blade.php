@@ -77,6 +77,7 @@
 
 								// find the same between session and url
 								$stafdeptapprv = in_array($stafdepts, $m);
+								// dd(request()->user()->isDeptApprover(), $stafdepts, $m);
 							?>
 							@if($stafdeptapprv)
 								<tr>
@@ -102,7 +103,7 @@
 											</tbody>
 										</table>
 									</td>
-									<td>{{ $regaccicm->belongstostatusrequest->status_loan }}</td>
+									<td>{{ $regaccicm->belongstostatusapp->status_loan }}</td>
 									<td>
 										<x-link href="{{ route('regaccicms.show', $regaccicm->id) }}" class="btn btn-primary btn-sm" title="PDF" target="_blank">
 											<i class="fa-regular fa-file-pdf"></i>
@@ -117,7 +118,7 @@
 											<!-- Modal -->
 											<div class="modal fade" id="apprv{{ $regaccicm->id }}" tabindex="-1" aria-labelledby="label_{{ $regaccicm->id }}" aria-hidden="true">
 												<div class="modal-dialog modal-lg">
-													<form action="{{ route('emailappsapprv', $regaccicm->id) }}" method="PATCH" class="form" data-id="{{ $regaccicm->id }}">
+													<form action="{{ route('regaccappsapprv', $regaccicm->id) }}" method="PATCH" class="form" data-id="{{ $regaccicm->id }}">
 														@csrf
 													<div class="modal-content">
 														<div class="modal-header">
@@ -203,7 +204,7 @@ $(".form").on('submit', function(e){
 	var ids = $(this).data('id');
 	e.preventDefault();
 	$.ajax({
-		url: '{{ url('api/emailappapprv') }}' + '/' + ids,
+		url: '{{ url('api/regaccappsapprv') }}' + '/' + ids,
 		type: 'PATCH',
 		headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
 		data: {
