@@ -9,6 +9,7 @@ use App\Http\Controllers\Settings\BTMLoanApplicationController;
 use App\Http\Controllers\Settings\BTMEmailApplicationController;
 use App\Http\Controllers\LoanApplicationController;
 use App\Http\Controllers\LoanEquipmentController;
+use App\Http\Controllers\Settings\RegAccICMS\AdminICMSRequesterController;
 
 Route::middleware('auth')->group(function () {
 
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
 		'btmapprover' => AddBTMApproverController::class,
 		'btmloanapplications' => BTMLoanApplicationController::class,
 		'btmemailapplications' => BTMEmailApplicationController::class,
+		'btmicmsrequester' => AdminICMSRequesterController::class,
 	]);
 
 

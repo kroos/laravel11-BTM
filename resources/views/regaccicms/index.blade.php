@@ -147,7 +147,7 @@
 																<div class="form-check">
 																	<input name="acknowledge" class="form-check-input {{ ($errors->has('acknowledge')?'is-invalid':NULL) }}" type="checkbox" value="true" id="cb_{{ $regaccicm->id }}">
 																	<label class="form-check-label text-sm fs-6 fw-bolder" for="cb_{{ $regaccicm->id }}">
-																		I hereby confirm that the loaned equipment is intended for official purposes.
+																		I hereby confirm that the info been given is for official purposes.
 																	</label>
 																	<x-input-error :messages="$errors->get('acknowledge')" />
 																</div>

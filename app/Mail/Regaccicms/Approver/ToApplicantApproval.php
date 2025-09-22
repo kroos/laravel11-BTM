@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\Regaccicms\Approver\Approved;
+namespace App\Mail\Regaccicms\Approver;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +22,7 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
-class ToApplicantApprove extends Mailable
+class ToApplicantApproval extends Mailable
 {
 	use Queueable, SerializesModels;
 
@@ -55,7 +55,7 @@ class ToApplicantApprove extends Mailable
 	public function content(): Content
 	{
 		return new Content(
-			markdown: 'mail.regaccicms.approver.approved.createform',
+			markdown: 'mail.regaccicms.approver.approvalform',
 			with: [
 				'name' => Staff::find($this->data->nostaf)->nama,
 				'link' => route('regaccicms.show', $this->data->id),

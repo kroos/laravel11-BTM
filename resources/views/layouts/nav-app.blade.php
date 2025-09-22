@@ -21,11 +21,12 @@
 		<i class="fa-solid fa-gear fa-beat"></i>&nbsp;Setting
 	</a>
 	<div class="dropdown-menu">
-		<a class="dropdown-item" href="{{ route('additem.index') }}">Add Equipment</a>
-		<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Department Approver</a>
-		<a class="dropdown-item" href="{{ route('btmapprover.create') }}">Add BTM Approver</a>
+			<a class="dropdown-item" href="{{ route('btmemailapplications.index') }}">(BTM01) BTM Email Registration Approval</a>
+			<a class="dropdown-item" href="{{ route('btmicmsrequester.index') }}">(BTM02) BTM ICMS Registration Account Approval</a>
+			<a class="dropdown-item" href="{{ route('btmloanapplications.index') }}">(BTM03) BTM Loan Approval</a>
 		<div class="dropdown-divider"></div>
-		<a class="dropdown-item" href="{{ route('btmloanapplications.index') }}">BTM Loan Approval</a>
-		<a class="dropdown-item" href="{{ route('btmemailapplications.index') }}">BTM Email Registration Approval</a>
+			<a class="dropdown-item" href="{{ route('additem.index') }}">Add Equipment</a>
+			<a class="dropdown-item" href="{{ route('addapprover.index') }}">Add Department Approver</a>
+			<a class="dropdown-item" href="{{ route('btmapprover.create') }}">Add BTM Approver</a>
 	</div>
 </li>

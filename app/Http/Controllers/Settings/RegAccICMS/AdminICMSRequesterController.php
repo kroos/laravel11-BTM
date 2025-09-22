@@ -43,64 +43,64 @@ use Log;
 
 class AdminICMSRequesterController extends Controller
 {
-    function __construct()
-    {
-        // $this->middleware(['auth']);
-    }
+	function __construct()
+	{
+		$this->middleware('BTMAdmin');
+	}
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
-    {
-        //
-    }
+	/**
+	 * Display a listing of the resource.
+	 */
+	public function index(): View
+	{
+		//
+	}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        //
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 */
+	public function create(): View
+	{
+		//
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request): RedirectResponse
+	{
+		//
+	}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ICMSRequester $iCMSRequester): View
-    {
-        //
-    }
+	/**
+	 * Display the specified resource.
+	 */
+	public function show(ICMSRequester $iCMSRequester): View
+	{
+		//
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ICMSRequester $iCMSRequester): View
-    {
-        //
-    }
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(ICMSRequester $iCMSRequester): View
+	{
+		//
+	}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ICMSRequester $iCMSRequester): RedirectResponse
-    {
-        //
-    }
+	/**
+	 * Update the specified resource in storage.
+	 */
+	public function update(Request $request, ICMSRequester $iCMSRequester): RedirectResponse
+	{
+		//
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ICMSRequester $iCMSRequester): RedirectResponse
-    {
-        //
-    }
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy(ICMSRequester $iCMSRequester): RedirectResponse
+	{
+		//
+	}
 }

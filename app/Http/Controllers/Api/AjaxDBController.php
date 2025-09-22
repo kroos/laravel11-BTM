@@ -23,9 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ToApplicantUnApproved;
 use App\Mail\ToApplicantUpdate;
 
-use App\Mail\Regaccicms\Approver\Approved\ToApplicantApprove;
-use App\Mail\Regaccicms\Approver\Approved\ToApproverApprove;
-use App\Mail\Regaccicms\Approver\Approved\ToBTMApprove;
+use App\Mail\Regaccicms\Approver\ToApplicantApproval;
 
 // for controller output
 use Illuminate\View\View;
@@ -183,6 +181,53 @@ class AjaxDBController extends Controller
 		return response()->json($equipmentsdesc);
 	}
 
+	public function loancalendar()
+	{
+		$outstation = LoanApplication::where('active', 1)->orWhereIn('status_loan_id', [1,3])->get();
+		if ($outstation->count()) {
+			foreach ($outstation as $v) {
+				$loanDetails = [
+							'title' => 'Loan by '.$v->belongstostaff->nama,
+							'start' => $v->date_loan_from,
+							'end' => Carbon::parse($v->date_loan_to)->addDay(),
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							'extendedProps' => [
+													'status' => 'Status: '.$v->belongstostatusloan->status_loan
+												],
+							// 'description' => 'Loan by '.$v->belongstostaff->nama,
+							'color' => 'blue',
+							'textColor' => 'white',
+							'borderColor' => 'blue',
+					];
+				// Get all equipment descriptions and join them as a single string
+				$descriptions = 'Loan by '.$v->belongstostaff->nama.' => '.$v->hasmanyequipments()->get()->pluck('belongstoequipment.item')->join(', ');
+
+				// Add the descriptions to the loan details
+				$loanDetails['description'] = $descriptions;
+
+				// Add the loan details to the output array
+				$out[] = $loanDetails;
+			}
+		} else {
+			$out[] = [];
+		}
+		return response()->json( $out );
+	}
+
+	public function listemailjabatan(Request $request)
+	{
+		$je = Jabatan::find($request->dept_id)->belongstomanystaff()->get();
+		$p = [];
+		foreach ($je as $e) {
+			$activeLogin = $e->hasmanylogin()->where('is_active', 1)->first();
+			if ($activeLogin !== null && $activeLogin->email !== null) {
+					$p[] = $e->hasmanylogin()->where('is_active', 1)->pluck('email', 'name');
+			}
+		}
+		return response()->json($p);
+	}
+
 	public function loanappsapprv(Request $request, LoanApplication $loanapp): JsonResponse
 	{
 		// dd($request->all(), \Auth::user());
@@ -204,33 +249,24 @@ class AjaxDBController extends Controller
 				'approver_staff' => 'Staff ID',
 		]);
 
-		if ($request->status == 2) {
-			$loanapp->update([
-				'status_loan_id' => 2,
-				'approver_status_id' => $request->status,
-				'approver_staff' => $request->approver_staff,
-				'approver_date' => now(),
-				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-				'status_loan_id' => 2,
-			]);
+		$loanapp->update([
+			'status_loan_id' => 2,
+			'approver_status_id' => $request->status,
+			'approver_staff' => $request->approver_staff,
+			'approver_date' => now(),
+			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+			'status_loan_id' => 2,
+		]);
 
-			Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-			// dd($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama);
-			// mail to loan owner of unapproved loan
-			Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApplicantUnApproved($loanapp));
+		// dd($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama);
+		// mail to loan owner of unapproved loan
+		Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama)
+			// ->cc($moreUsers)
+			// ->bcc($evenMoreUsers)
+			->send(new ToApplicantUnApproved($loanapp));
 
-		} elseif ($request->status == 1) {
-			$loanapp->update([
-				'approver_status_id' => $request->status,
-				'approver_staff' => $request->approver_staff,
-				'approver_date' => now(),
-				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-			]);
-		}
 		return response()->json([
 			'message' => 'Success granted approval for the loan',
 			'status' => 'success'
@@ -258,32 +294,23 @@ class AjaxDBController extends Controller
 				'approver_staff' => 'Staff ID',
 		]);
 
-		if ($request->status == 2) {
-			$emailapp->update([
-				'status_email_id' => 2,
-				'approver_status_id' => $request->status,
-				'approver_staff' => $request->approver_staff,
-				'approver_date' => now(),
-				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-			]);
+		$emailapp->update([
+			'status_email_id' => 2,
+			'approver_status_id' => $request->status,
+			'approver_staff' => $request->approver_staff,
+			'approver_date' => now(),
+			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
+		]);
 
-			Pdf::loadView('email.show', ['email' => $emailapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailapp->created_at)->format('ym').str_pad( $emailapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('email.show', ['email' => $emailapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailapp->created_at)->format('ym').str_pad( $emailapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-			// dd($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama);
-			// mail to loan owner of unapproved loan
-			Mail::to($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApplicantUnApproved($emailapp));
+		// dd($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama);
+		// mail to loan owner of unapproved loan
+		Mail::to($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama)
+			// ->cc($moreUsers)
+			// ->bcc($evenMoreUsers)
+			->send(new ToApplicantUnApproved($emailapp));
 
-		} elseif ($request->status == 1) {
-			$emailapp->update([
-				'approver_status_id' => $request->status,
-				'approver_staff' => $request->approver_staff,
-				'approver_date' => now(),
-				'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-			]);
-		}
 		return response()->json([
 			'message' => 'Success granted approval for the email registration',
 			'status' => 'success'
@@ -320,42 +347,12 @@ class AjaxDBController extends Controller
 
 		Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccappsapprv])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($regaccappsapprv->created_at)->format('ym').str_pad( $regaccappsapprv->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-
-		if ($request->status == 2) {
-			// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
-			// mail to loan owner of unapproved loan
-			Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApplicantUnApproved($regaccappsapprv));
-		} else {
-			// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
-			// mail to loan owner of unapproved loan
-			Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApplicantApprove($regaccappsapprv));
-
-			// send to approver (if available)
-			$dept = \Auth::user()->belongstostaff?->hasmanylogin()?->first();
-			if($dept) {
-				// send to approver
-				Mail::to($dept?->email, $dept?->nama)
-					// ->cc($moreUsers)
-					// ->bcc($evenMoreUsers)
-					->send(new ToApproverApprove($requester, $apprv));
-			}
-
-			// finally send it to admin
-			// $user->notify(new ToBTM($requester));
-			if (BTMApprover::where('active', 1)->count()) {
-				foreach(BTMApprover::where('active', 1)->get() as $ad) {
-					$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-					Mail::to($adm->email, $adm->name)
-					->send(new ToBTMApprove($adm, $requester));
-				}
-			}
-		}
+		// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
+		// mail to loan owner of unapproved loan
+		Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
+			// ->cc($moreUsers)
+			// ->bcc($evenMoreUsers)
+			->send(new ToApplicantApproval($regaccappsapprv));
 
 		return response()->json([
 			'message' => 'Success granted approval for the ICMS Registeration Account',
@@ -363,56 +360,9 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function loancalendar()
-	{
-		$outstation = LoanApplication::where('active', 1)->orWhereIn('status_loan_id', [1,3])->get();
-		if ($outstation->count()) {
-			foreach ($outstation as $v) {
-				$loanDetails = [
-							'title' => 'Loan by '.$v->belongstostaff->nama,
-							'start' => $v->date_loan_from,
-							'end' => Carbon::parse($v->date_loan_to)->addDay(),
-							// 'url' => route('hrleave.show', $v->id),
-							'allDay' => true,
-							'extendedProps' => [
-													'status' => 'Status: '.$v->belongstostatusloan->status_loan
-												],
-							// 'description' => 'Loan by '.$v->belongstostaff->nama,
-							'color' => 'blue',
-							'textColor' => 'white',
-							'borderColor' => 'blue',
-					];
-					// Get all equipment descriptions and join them as a single string
-					$descriptions = 'Loan by '.$v->belongstostaff->nama.' => '.$v->hasmanyequipments()->get()->pluck('belongstoequipment.item')->join(', ');
-
-					// Add the descriptions to the loan details
-					$loanDetails['description'] = $descriptions;
-
-					// Add the loan details to the output array
-					$out[] = $loanDetails;
-			}
-		} else {
-			$out[] = [];
-		}
-		return response()->json( $out );
-	}
-
-	public function listemailjabatan(Request $request)
-	{
-		$je = Jabatan::find($request->dept_id)->belongstomanystaff()->get();
-		$p = [];
-		foreach ($je as $e) {
-			$activeLogin = $e->hasmanylogin()->where('is_active', 1)->first();
-			if ($activeLogin !== null && $activeLogin->email !== null) {
-					$p[] = $e->hasmanylogin()->where('is_active', 1)->pluck('email', 'name');
-			}
-		}
-		return response()->json($p);
-	}
-
-
 
 
 
 
 }
+

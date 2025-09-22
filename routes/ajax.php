@@ -34,10 +34,11 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('/listcategory', [AjaxDBController::class, 'listcategory'])->name('listcategory');
 	Route::get('/equipmentdescription', [AjaxDBController::class, 'equipmentdescription'])->name('equipmentdescription');
 	Route::get('/status', [AjaxDBController::class, 'status'])->name('status');
+	Route::get('/loancalendar', [AjaxDBController::class, 'loancalendar'])->name('loancalendar');
+	Route::get('/listemailjabatan', [AjaxDBController::class, 'listemailjabatan'])->name('listemailjabatan');
+
 	Route::patch('/loanappapprv/{loanapp}', [AjaxDBController::class, 'loanappsapprv'])->name('loanappsapprv');
 	Route::patch('/emailappapprv/{emailapp}', [AjaxDBController::class, 'emailappsapprv'])->name('emailappsapprv');
 	Route::patch('/regaccappsapprv/{regaccappsapprv}', [AjaxDBController::class, 'regaccappsapprv'])->name('regaccappsapprv');
-	Route::get('/loancalendar', [AjaxDBController::class, 'loancalendar'])->name('loancalendar');
-	Route::get('/listemailjabatan', [AjaxDBController::class, 'listemailjabatan'])->name('listemailjabatan');
 });
 

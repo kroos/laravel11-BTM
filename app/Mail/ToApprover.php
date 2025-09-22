@@ -25,8 +25,8 @@ class ToApprover extends Mailable
 {
 	use Queueable, SerializesModels;
 
-		public $data1;
-		public $data2;
+	public $data1;
+	public $data2;
 
 	/**
 	 * Create a new message instance.

@@ -5,7 +5,7 @@ Dear {{$name}},
 
 We hope this email finds you well.
 
-We would like to inform that your application is currently being processed.
+We would like to inform that your application is currently been given approval by your Superior.
 
 For your reference, please find the attached copy of your application form.
 
