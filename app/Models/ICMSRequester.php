@@ -51,10 +51,30 @@ class ICMSRequester extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'nostaf')->where('status', 'A')->withDefault();
 	}
 
+	public function belongstoappr(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'approver_staff')->where('status', 'A')->withDefault();
+	}
+
+	public function belongstobtmappr(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'btm_approver')->where('status', 'A')->withDefault();
+	}
+
 	public function belongstostatusapp(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\StatusApplication::class, 'status_request_id')->withDefault();
 	}
+
+	public function belongstoapproverstatus(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\StatusApproval::class, 'approver_status_id')->withDefault();
+	}
+
+	// public function belongstobtmappr(): BelongsTo
+	// {
+	// 	return $this->belongsTo(\App\Models\StatusApproval::class, 'approver_status_id')->withDefault();
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship

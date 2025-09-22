@@ -46,7 +46,8 @@
 							<th>No Staff</th>
 							<th>Email</th>
 							<th>Jawatan</th>
-							<th>Cadangan ID Pengguna</th>
+							<th>ID Pengguna</th>
+							<th>Kata Laluan</th>
 							<th>Capaian ICMS</th>
 						</tr>
 					</thead>
@@ -58,6 +59,7 @@
 							<td>{{ $k->belongstoicmsapplicant?->hasmanylogin()?->first()?->email }}</td>
 							<td>{{ $k->position }}</td>
 							<td>{{ $k->username }}</td>
+							<td>{{ $k->password }}</td>
 							<td class="p-0">
 								<table class="m-0">
 									<tbody>
@@ -76,6 +78,11 @@
 							</td>
 						</tr>
 						@endforeach
+					</tbody>
+					<tbody>
+						<tr>
+							<td class="bold red center" colspan="6"><span class="">* Semua Pemohon Dikehendaki Untuk Menukar Kata Laluan Dengan Seberapa Segera *</span></td>
+						</tr>
 					</tbody>
 				</table>
 			</td>

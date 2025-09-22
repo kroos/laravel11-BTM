@@ -31,6 +31,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
+// load pdf
+use Barryvdh\DomPDF\Facade\Pdf;
+
 // load Carbon library
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
@@ -70,29 +73,29 @@ class AdminICMSRequesterController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		//
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(ICMSRequester $iCMSRequester): View
+	public function show(ICMSRequester $btmicmsrequester): Response
 	{
-		//
+		$pdf = Pdf::loadView('settings.regaccicms.show', ['regaccicm' => $btmicmsrequester])->setOption(['dpi' => 120]);
+		return $pdf->stream('BTM-RAICMS-'.Carbon::parse($btmicmsrequester->created_at)->format('ym').str_pad( $btmicmsrequester->id, 3, "0", STR_PAD_LEFT).'.pdf')/*->save(storage_path('app/public/pdf/').)*/;
 	}
 
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(ICMSRequester $iCMSRequester): View
+	public function edit(ICMSRequester $btmicmsrequester): View
 	{
-		//
+		return view('settings.regaccicms.edit', ['regaccicm' => $btmicmsrequester]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, ICMSRequester $iCMSRequester): RedirectResponse
+	public function update(Request $request, ICMSRequester $btmicmsrequester): RedirectResponse
 	{
 		//
 	}
@@ -100,8 +103,20 @@ class AdminICMSRequesterController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(ICMSRequester $iCMSRequester): RedirectResponse
+	public function destroy(ICMSRequester $btmicmsrequester): RedirectResponse
 	{
-		//
+		// $regaccicm->hasmanyapplicant()->belongstomanyicmsmodule()->detach();
+		$btmicmsrequester->hasmanyapplicant()
+			->with('belongstomanyicmsmodule') // eager load to avoid N+1
+			->get()
+			->each(function ($applicant) {
+				$applicant->belongstomanyicmsmodule()->detach();
+			});
+		$btmicmsrequester->hasmanyapplicant()->delete();
+		$btmicmsrequester->delete();
+		return response()->json([
+			'message' => 'Success Cancel Request Application',
+			'status' => 'success'
+		]);
 	}
 }
