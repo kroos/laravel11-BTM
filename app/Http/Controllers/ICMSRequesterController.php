@@ -40,6 +40,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\HelperArray;
 
 // load Carbon library
 use \Carbon\Carbon;
@@ -134,9 +135,18 @@ class ICMSRequesterController extends Controller
 					continue;
 				}
 
-				$pivotData[$va] = [
-					'remarks' => ($va == 9) ? ($v['icms_module_id']['dll'] ?? null) : null,
-				];
+				// reset for each applicant
+				$pivotData = [];
+
+				foreach ($v['icms_module_id'] as $ke => $va) {
+					if ($ke === 'dll') {
+						continue;
+					}
+
+					$pivotData[$va] = [
+						'remarks' => ($va == 9) ? ($v['icms_module_id']['dll'] ?? null) : null,
+					];
+				}
 			};
 			$ra->belongstomanyicmsmodule()->attach($pivotData);
 		};
@@ -268,8 +278,8 @@ $d[$k] = $v['icms_module_id'];
 			}
 
 			$modules = $v['icms_module_id'] ?? [];
-			$syncData = prepareModulesForSync($modules);
-			$syncData1[] = prepareModulesForSync($modules);
+			$syncData = HelperArray::prepareModulesForSync($modules);
+			$syncData1[] = HelperArray::prepareModulesForSync($modules);
 
 			// this will produce:
 			// [2 => [], 4 => []]
@@ -335,49 +345,4 @@ $d[$k] = $v['icms_module_id'];
 			'status' => 'success'
 		]);
 	}
-}
-
-function prepareModulesForSync(array $modules): array
-{
-	$ids = [];
-	$lastNumericId = null;
-
-	foreach ($modules as $key => $val) {
-		// skip the remarks remark here; we'll handle it after collecting numeric ids
-		if (is_string($key) && strtolower($key) === 'remarks') {
-			continue;
-		}
-
-		// if the value itself is an array, flatten it
-		if (is_array($val)) {
-			foreach ($val as $sub) {
-				if ($sub === '' || $sub === null) continue;
-				if (is_numeric($sub) || ctype_digit((string)$sub)) {
-					$ids[] = (int) $sub;
-					$lastNumericId = (int) $sub;
-				}
-			}
-			continue;
-		}
-
-		// scalar value: treat numeric strings as module ids
-		if ($val === '' || $val === null) continue;
-		if (is_numeric($val) || ctype_digit((string)$val)) {
-			$ids[] = (int) $val;
-			$lastNumericId = (int) $val;
-		}
-	}
-
-	// build associative sync array (id => pivot-array). empty array means no pivot data.
-	$sync = [];
-	foreach ($ids as $id) {
-		$sync[$id] = [];
-	}
-
-	// if a remarks remark exists, attach it to the last numeric id encountered
-	if (array_key_exists('remarks', $modules) && $lastNumericId !== null) {
-		$sync[$lastNumericId] = ['remarks' => $modules['remarks']];
-	}
-
-	return $sync;
 }

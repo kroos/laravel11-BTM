@@ -53,7 +53,8 @@ class AdminICMSRequesterController extends Controller
 	 */
 	public function index(): View
 	{
-		//
+		$regaccicms = ICMSRequester::all();
+		return view('settings.regaccicms.index', ['regaccicms' => $regaccicms]);
 	}
 
 	/**
