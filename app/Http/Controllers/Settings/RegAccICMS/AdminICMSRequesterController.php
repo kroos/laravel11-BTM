@@ -13,6 +13,15 @@ use Illuminate\View\View;
 
 // models
 use App\Models\ICMSRequester;
+use App\Models\Jabatan;
+use App\Models\Settings\BTMApprover;
+use App\Models\Login;
+
+// load email
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Regaccicms\BTM\ToApplicantBTM;
+use App\Mail\Regaccicms\BTM\ToApproverBTM;
+use App\Mail\Regaccicms\BTM\ToAdminBTM;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +40,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\HelperArray;
 
 // load pdf
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -153,7 +163,7 @@ class AdminICMSRequesterController extends Controller
 		$btmicmsrequester->update([
 			'btm_approver' => \Auth::user()->nostaf,
 			'btm_date' => now(),
-			'btm_date' => $request->btm_remarks,
+			'btm_remarks' => $request->btm_remarks,
 			'status_request_id' => $request->status_request_id,
 		]);
 
@@ -163,14 +173,14 @@ class AdminICMSRequesterController extends Controller
 			// can use this method but i made a mistake on frontend
 			// $g[] = Arr::except($v, ['icms_module_id']);
 
-			$ra = $regaccicm->hasmanyapplicant()->updateOrCreate([
+			$ra = $btmicmsrequester->hasmanyapplicant()->updateOrCreate([
 				'id' => $v['id'],
 				],[
 				'nostaf' => $v['nama'],
 				'position' => $v['position'],
 				'username' => $v['proposed_id'],
 				'password' => $v['password'],
-				'menu_setting_only' => $v['menu_setting_only'],
+				'menu_setting_only' => $v['menu_setting_only'] ?? 0, // 👈 fallback to 0 if unchecked,
 			]);
 
 $d[$k] = $v['icms_module_id'];
@@ -203,37 +213,37 @@ $d[$k] = $v['icms_module_id'];
 		// dd($d, $f, $syncData1);
 
 		// need to create pdf and send email
-		Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccicm])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($regaccicm->created_at)->format('ym').str_pad( $regaccicm->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('settings.regaccicms.show', ['regaccicm' => $btmicmsrequester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($btmicmsrequester->created_at)->format('ym').str_pad( $btmicmsrequester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// send to self
-		Mail::to($regaccicm->belongstostaff->hasmanylogin()->first()->email, $regaccicm->belongstostaff->hasmanylogin()->first()->nama)
+		// send to applicant
+		Mail::to($btmicmsrequester->belongstostaff->hasmanylogin()->first()->email, $btmicmsrequester->belongstostaff->hasmanylogin()->first()->nama)
 			// ->cc($moreUsers)
 			// ->bcc($evenMoreUsers)
-			->send(new ToApplicant($regaccicm));
+			->send(new ToApplicantBTM($btmicmsrequester));
 
 		// send to approver (if available)
-		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
-		$apprv = Jabatan::find($dept)->belongstomanyappr;
+		$dept = $btmicmsrequester?->belongstostaff?->belongstomanydepartment?->first()?->kodjabatan;
+		$apprv = Jabatan::find($dept)?->belongstomanyappr;
 		// dd($apprv->belongstomanyappr()->first());
 		if($apprv->count()) {
 			// send to approver
-			Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
+			Mail::to(Login::find($apprv?->first()?->nostaf)?->email, $apprv?->first()?->nama)
 				// ->cc($moreUsers)
 				// ->bcc($evenMoreUsers)
-				->send(new ToApprover($regaccicm, $apprv));
+				->send(new ToApproverBTM($btmicmsrequester, $apprv));
 		}
 
 		// finally send it to admin
-		// $user->notify(new ToBTM($regaccicm));
+		// $user->notify(new ToBTM($btmicmsrequester));
 		if (BTMApprover::where('active', 1)->count()) {
-			// $regaccicm will "dissolve" when lopp process
+			// $btmicmsrequester will "dissolve" when lopp process
 			foreach(BTMApprover::where('active', 1)->get() as $ad) {
 				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
 				Mail::to($adm->email, $adm->name)
-				->send(new ToBTM($adm, $regaccicm));
+				->send(new ToAdminBTM($adm, $btmicmsrequester));
 			}
 		}
-		return redirect()->route('regaccicms.index')->with('success', 'Successfully update record data and send email');
+		return redirect()->route('btmicmsrequester.index')->with('success', 'Successfully update record data and send email');
 	}
 
 	/**
@@ -241,7 +251,7 @@ $d[$k] = $v['icms_module_id'];
 	 */
 	public function destroy(ICMSRequester $btmicmsrequester): RedirectResponse
 	{
-		// $regaccicm->hasmanyapplicant()->belongstomanyicmsmodule()->detach();
+		// $btmicmsrequester->hasmanyapplicant()->belongstomanyicmsmodule()->detach();
 		$btmicmsrequester->hasmanyapplicant()
 			->with('belongstomanyicmsmodule') // eager load to avoid N+1
 			->get()

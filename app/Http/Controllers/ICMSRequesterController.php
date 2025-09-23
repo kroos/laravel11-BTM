@@ -30,7 +30,6 @@ use App\Mail\Regaccicms\Users\ToApplicant;
 use App\Mail\Regaccicms\Users\ToApprover;
 use App\Mail\Regaccicms\Users\ToBTM;
 
-
 // load batch and queue
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
