@@ -6,7 +6,8 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('btmicmsrequester.update', $regaccicm) }}" method="PATCH" class="needs-validation" novalidate>
+	<form action="{{ route('btmicmsrequester.update', $btmicmsrequester) }}" method="POST" class="needs-validation" novalidate>
+		@method('PATCH')
 		@csrf
 		<div class="container d-flex justify-content-between">
 
@@ -21,8 +22,8 @@
 							<?php
 								$i = 0;
 							?>
-							@if($regaccicm->hasmanyapplicant()->count())
-								@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
+							@if($btmicmsrequester->hasmanyapplicant()->count())
+								@foreach($btmicmsrequester->hasmanyapplicant()->get() as $k1 => $v1)
 								<div class="col-sm-12 row m-3" id="applicant_{{ $i }}">
 									<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $v1->id }}">
 									<div class="col-sm-7 m-0 p-1">
@@ -133,11 +134,12 @@
 		</div>
 		<div class="col-sm-10 m-2 mx-auto">
 			<div class="card">
+
 				<div class="card-header">
 					<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 					<p>
 						@php
-						$r = \App\Models\Staff::find($regaccicm->nostaf);
+						$r = \App\Models\Staff::find($btmicmsrequester->nostaf);
 						echo $r->belongstomanydepartment()->first()->namajabatan;
 
 						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
@@ -145,45 +147,39 @@
 					</p>
 				</div>
 				<div class="card-body">
-					<p>Nama :
-						@php
-						$j = \App\Models\Jabatan::find($idj);
-						if($j->belongstomanyappr->count()){
-							echo $j->belongstomanyappr->first()->nama;
-						}
-						@endphp
-					</p>
-					<p>Tarikh : {{ ($regaccicm->approver_date)?\Carbon\Carbon::parse($regaccicm->approver_date)->format('j M Y'):NULL }}</p>
-					<p>Sokongan : {{ $regaccicm->belongstoapproverstatus?->status_approval }}</p>
-					<p>Catatan : {{ $regaccicm->approver_remarks }}</p>
+					<p>Nama : {{ $btmicmsrequester?->belongstoappr->nama }}</p>
+					<p>Tarikh : {{ ($btmicmsrequester->approver_date)?\Carbon\Carbon::parse($btmicmsrequester->approver_date)->format('j M Y'):NULL }}</p>
+					<p>Sokongan : {{ $btmicmsrequester->belongstoapproverstatus?->status_approval }}</p>
+					<p>Catatan : {{ $btmicmsrequester->approver_remarks }}</p>
 					<div class="card">
 						<div class="card-header">
 							<h3 class="card-title">Bahagian Teknologi Maklumat</h3>
 						</div>
 						<div class="card-body">
-
-						<div class="row">
-							<div class="btn-group {{ ($errors->has('status_request_id')?'is-invalid':NULL) }}" role="group" aria-label="Loan Equipment Approval">
-								<?php
-									$p = 0;
-								?>
-								@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
-									<input type="radio" class="btn-check {{ ($errors->has('status_request_id')?'is-invalid':NULL) }}" name="status_request_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ ($regaccicm->status_request_id == $v->id)?'checked="checked"':NULL }} autocomplete="off">
-									<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+							<div class="col-sm-4 offset-sm-4">
+							<div class="row">
+								<div class="btn-group {{ ($errors->has('status_request_id')?'is-invalid':NULL) }}" role="group" aria-label="Account Registration And ICMS Module Approval">
 									<?php
-										$p++;
+										$p = 0;
 									?>
-								@endforeach
+									@foreach(\App\Models\StatusApplication::whereIn('id', [1,2])->get() as $v)
+										<input type="radio" class="btn-check {{ ($errors->has('status_request_id')?'is-invalid':NULL) }}" name="status_request_id" id="status_loan{{ $p }}" value="{{ $v->id }}" {{ old('status_request_id', $btmicmsrequester->status_request_id) == $v->id ? 'checked' : '' }}>
+										<label class="btn btn-sm btn-outline-primary" for="status_loan{{ $p }}">{{ $v->status_loan }}</label>
+										<?php
+											$p++;
+										?>
+									@endforeach
+								</div>
+								<x-input-error :messages="$errors->get('status_request_id')" />
 							</div>
-							<x-input-error :messages="$errors->get('status_request_id')" />
-						</div>
-						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
-							<div class="col-sm-8">
-								<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $regaccicm->btm_remarks }}</textarea>
-								<x-input-error :messages="$errors->get('btm_remarks')" />
 							</div>
-						</div>
+							<div class="col-sm-12 mt-2 row">
+								<x-input-label for="rem" class="col-sm-4" :value="__('BTM Remarks : ')" />
+								<div class="col-sm-8">
+									<textarea name="btm_remarks" class="form-control form-control-sm {{ ($errors->has('btm_remarks')?'is-invalid':NULL) }}" id="rem">{{ $btmicmsrequester->btm_remarks }}</textarea>
+									<x-input-error :messages="$errors->get('btm_remarks')" />
+								</div>
+							</div>
 
 
 						</div>
@@ -200,6 +196,8 @@
 						</div>
 					</div>
 				</div>
+
+
 			</div>
 		</div>
 		<div class="col-sm-12 text-center">
@@ -335,8 +333,8 @@
 	<?php
 		$p = 0;
 	?>
-	@if($regaccicm->hasmanyapplicant()->count())
-		@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
+	@if($btmicmsrequester->hasmanyapplicant()->count())
+		@foreach($btmicmsrequester->hasmanyapplicant()->get() as $k1 => $v1)
 			console.log({!! $v1->belongstomanyicmsmodule()->get()->map(function ($item) { return collect($item->pivot->toArray())->only(['icms_module_id', 'remarks'])->toArray(); }) !!});
 			selectname({{ $p }});
 			addingicmsmodule({{ $p }}, {!! $v1->belongstomanyicmsmodule()->get()->map(fn($item) => ['icms_module_id' => $item->pivot->icms_module_id,'remarks' => $item->pivot->remarks,]) !!});
@@ -354,7 +352,7 @@
 	$("#applicants_wrap").remAddRow({
 		addBtn: "#applicants_add",
 		maxFields: 5,
-		startCounter: {{ $regaccicm->hasmanyapplicant()->count() }},
+		startCounter: {{ $btmicmsrequester->hasmanyapplicant()->count() }},
 		removeSelector: ".applicant_remove",
 		fieldName: "applicants",
 		rowIdPrefix: "applicant",
@@ -442,12 +440,7 @@
 							@enderror
 						</div>
 					</div>
-
-
-
-
 				</div>
-
 				<div class="col-sm-5 m-0 p-1" id="checkbox_${i}">
 					<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
 				</div>
@@ -533,7 +526,7 @@
 		}
 	};
 	// this will populate 1st select2
-	@if(!$regaccicm->hasmanyapplicant()->count())
+	@if(!$btmicmsrequester->hasmanyapplicant()->count())
 		selectname();
 	@endif
 
@@ -547,99 +540,63 @@
 			data: {
 				_token: '{{csrf_token()}}'
 			},
-			// success: (function(response) {
-			// 	const $checkicmsmodule = $("#checkbox_"+y);
+			success: (function(response) {
+				const $checkicmsmodule = $("#checkbox_"+y);
 
-			// 	// i need to find the array of icms_module and paste it overhere so that i can di ifelse logic
-			// 	let cicms = icmsmodule;
+				// Pivot data from backend
+				let cicms = icmsmodule;
 
-			// 	response.forEach(function(value, i) {
-			// 		const checkboxId = `icms_${y}_${i}`;
+				response.forEach(function(value, i) {
+					const checkboxId = `icms_${y}_${i}`;
 
-			// 		const row = `
-			// 			<div id="cb_${y}_${i}" class="m-1">
-			// 				<div class="form-check">
-			// 					<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}" >
-			// 					<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
-			// 					@error('emreg.*.icms_module_id')
-			// 					<div class="invalid-feedback">
-			// 						{{ $message }}
-			// 					</div>
-			// 					@enderror
-			// 				</div>
-			// 			</div>
-			// 		`;
-			// 		// if(value.id == ) {
+					// Check if this module_id exists in cicms
+					let found = cicms.find(m => m.icms_module_id == value.id);
 
-			// 		// };
-			// 		$checkicmsmodule.append(row);
+					// If found, mark checked
+					let isChecked = found ? 'checked' : '';
 
-			// 		if (value.id == 9) {
-			// 			const dll = `
-			// 				<div id="dll_container_${y}_${i}" class="m-1 dll-container">
-			// 				</div>
-			// 			`;
-			// 			$checkicmsmodule.append(dll);
-			// 		}
-			// 	});
-			// }),
-success: (function(response) {
-    const $checkicmsmodule = $("#checkbox_"+y);
+					const row = `
+					<div id="cb_${y}_${i}" class="m-1">
+						<div class="form-check">
+							<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror"
+							type="checkbox"
+							id="${checkboxId}"
+							name="emreg[${y}][icms_module_id][${i}]"
+							value="${value.id}"
+							data-dll="#dll_container_${y}_${i}"
+							data-y="${y}" data-i="${i}" ${isChecked}>
+							<label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
+							@error('emreg.*.icms_module_id')
+							<div class="invalid-feedback">{{ $message }}</div>
+							@enderror
+						</div>
+					</div>
+					`;
+					$checkicmsmodule.append(row);
 
-    // Pivot data from backend
-    let cicms = icmsmodule;
+					if (value.id == 9) {
+						const dll = `
+						<div id="dll_container_${y}_${i}" class="m-1 dll-container"></div>
+						`;
+						$checkicmsmodule.append(dll);
 
-    response.forEach(function(value, i) {
-        const checkboxId = `icms_${y}_${i}`;
-
-        // Check if this module_id exists in cicms
-        let found = cicms.find(m => m.icms_module_id == value.id);
-
-        // If found, mark checked
-        let isChecked = found ? 'checked' : '';
-
-        const row = `
-            <div id="cb_${y}_${i}" class="m-1">
-                <div class="form-check">
-                    <input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror"
-                           type="checkbox"
-                           id="${checkboxId}"
-                           name="emreg[${y}][icms_module_id][${i}]"
-                           value="${value.id}"
-                           data-dll="#dll_container_${y}_${i}"
-                           data-y="${y}" data-i="${i}" ${isChecked}>
-                    <label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
-                    @error('emreg.*.icms_module_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-        `;
-        $checkicmsmodule.append(row);
-
-        if (value.id == 9) {
-            const dll = `
-                <div id="dll_container_${y}_${i}" class="m-1 dll-container"></div>
-            `;
-            $checkicmsmodule.append(dll);
-
-            // If remarks exist, auto-insert input
-            if (found && found.remarks) {
-                const checkbicms = `
-                    <div class="form-check dll-input">
-                        <label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
-                        <input class="form-control form-control-sm"
-                               type="text"
-                               name="emreg[${y}][icms_module_id][remarks]"
-                               id="icms_dll_${y}_${i}"
-                               value="${found.remarks}">
-                    </div>
-                `;
-                $("#dll_container_"+y+"_"+i).append(checkbicms);
-            }
-        }
-    });
-}),
+						// If remarks exist, auto-insert input
+						if (found && found.remarks) {
+							const checkbicms = `
+							<div class="form-check dll-input">
+								<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
+								<input class="form-control form-control-sm"
+								type="text"
+								name="emreg[${y}][icms_module_id][remarks]"
+								id="icms_dll_${y}_${i}"
+								value="${found.remarks}">
+							</div>
+							`;
+							$("#dll_container_"+y+"_"+i).append(checkbicms);
+						}
+					}
+				});
+			}),
 			error: (function(jqXHR, textStatus, errorThrown) {
 				alert( "error" );
 				console.log(textStatus, errorThrown);
@@ -681,7 +638,7 @@ success: (function(response) {
 			}
 		});
 	};
-	@if(!$regaccicm->hasmanyapplicant()->count())
+	@if(!$btmicmsrequester->hasmanyapplicant()->count())
 	addingicmsmodule();
 	@endif
 

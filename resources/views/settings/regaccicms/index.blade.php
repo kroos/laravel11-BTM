@@ -16,6 +16,7 @@
 					<th>No. Ruj</th>
 					<th>Tarikh Pohon</th>
 					<th>Pemohon</th>
+					<th>Sokongan</th>
 					<th>Status</th>
 					<th>#</th>
 				</tr>
@@ -46,6 +47,24 @@
 												<td>{{ $v1->position }}</td>
 											</tr>
 											@endforeach
+										</tbody>
+									</table>
+								</td>
+								<td>
+									<table>
+										<thead>
+											<tr>
+												<th>KPB</th>
+												<th>Sokongan</th>
+												<th>Tarikh</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{{ $regaccicm?->belongstoappr->nama }}</td>
+												<td>{{ $regaccicm->belongstoapproverstatus?->status_approval }}</td>
+												<td>{{ ($regaccicm->approver_date)?\Carbon\Carbon::parse($regaccicm->approver_date)->format('j M Y'):NULL }}</td>
+											</tr>
 										</tbody>
 									</table>
 								</td>

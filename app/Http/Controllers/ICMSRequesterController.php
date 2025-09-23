@@ -80,7 +80,7 @@ class ICMSRequesterController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		// dd($request->all());
+		dd($request->all());
 		$validator = Validator::make($request->all(), [
 				'emreg.*.nama' => 'required|string',
 				'emreg.*.position' => 'required|string',
