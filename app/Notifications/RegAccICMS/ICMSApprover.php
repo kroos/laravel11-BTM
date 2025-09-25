@@ -1,17 +1,27 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\RegAccICMS;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+
+// load database and mail notifications
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ApplicantEmailAlert extends Notification
+// load model
+use App\Models\Staff;
+
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
+
+class ICMSApprover extends Notification
 {
 	use Queueable;
 
-	public $data;
+	protected $data;
 
 	/**
 	 * Create a new notification instance.
@@ -28,8 +38,7 @@ class ApplicantEmailAlert extends Notification
 	 */
 	public function via(object $notifiable): array
 	{
-		// return ['mail'];
-		return ['database'];
+		return ['database', 'mail'];
 	}
 
 	/**
@@ -38,9 +47,16 @@ class ApplicantEmailAlert extends Notification
 	public function toMail(object $notifiable): MailMessage
 	{
 		return (new MailMessage)
-					->line('The introduction to the notification.')
-					->action('Notification Action', url('/'))
-					->line('Thank you for using our application!');
+					->subject('BTM : Pendaftaran Akaun & Modul ICMS (Sokongan)')
+					// ->line('The introduction to the notification.')
+					// ->action('Notification Action', url('/'))
+					// ->line('Thank you for using our application!');
+					->markdown('mail.regaccicms.users.createtoapproveform', [
+							'apprv' => $notifiable->name,
+							'name' => Staff::find($this->data->nostaf)->nama,
+							'link' => route('regaccicms.show', $this->data->id),
+					])
+					->attach(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($this->data->created_at)->format('ym').str_pad( $this->data->id, 3, "0", STR_PAD_LEFT).'.pdf');
 	}
 
 	/**
@@ -63,8 +79,8 @@ class ApplicantEmailAlert extends Notification
 	public function toDatabase(object $notifiable): array
 	{
 		return [
-			'data' => 'New email registration',
-			'link' => route('emailaccapp.show', $this->data),
+			'data' => 'New ICMS Account And Module Registration For Approval',
+			'link' => route('regaccicms.show', $this->data->id),
 		];
 	}
 

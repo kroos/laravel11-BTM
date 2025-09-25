@@ -1,10 +1,6 @@
 <?php
-
 namespace {{ namespace }};
-
 use {{ rootNamespace }}Http\Controllers\Controller;
-
-use Illuminate\Support\Facades\Http;
 
 // for controller output
 use Illuminate\Http\JsonResponse;
@@ -14,12 +10,11 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 // models
-use {{ namespacedModel }};
+// use {{ namespacedModel }};
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-
 
 // load validation
 use Illuminate\Http\Request;
@@ -30,9 +25,9 @@ use {{ namespacedRequests }}
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 
-// load email
+// load email & notification
 use Illuminate\Support\Facades\Mail;
-// more email
+use Illuminate\Support\Facades\Notification;// more email
 
 // load pdf
 // use Barryvdh\DomPDF\Facade\Pdf;
@@ -52,7 +47,6 @@ use Session;
 use Throwable;
 use Exception;
 use Log;
-
 
 class {{ class }} extends Controller
 {

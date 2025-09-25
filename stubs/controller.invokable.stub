@@ -1,18 +1,17 @@
 <?php
-
 namespace {{ namespace }};
 
 use {{ rootNamespace }}Http\Controllers\Controller;
 
 // for controller output
-// use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
-// use Illuminate\Http\Response;
-// use Illuminate\Support\Facades\Redirect;
-// use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 // models
-use {{ namespacedModel }};
+// use {{ namespacedModel }};
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +26,13 @@ use {{ namespacedRequests }}
 // load batch and queue
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+
+// load email & notification
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;// more email
+
+// load pdf
+// use Barryvdh\DomPDF\Facade\Pdf;
 
 // load helper
 use Illuminate\Support\Arr;

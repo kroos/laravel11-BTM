@@ -153,11 +153,11 @@ class Login extends Authenticatable
 	}
 
 	// Method to send email verification
-	public function sendEmailVerificationNotification()
-	{
-		// We override the default notification and will use our own
-		$this->notify(new EmailVerificationNotification());
-	}
+	// public function sendEmailVerificationNotification()
+	// {
+	// 	// We override the default notification and will use our own
+	// 	$this->notify(new EmailVerificationNotification());
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here

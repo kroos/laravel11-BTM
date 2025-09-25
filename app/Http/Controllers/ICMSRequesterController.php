@@ -18,17 +18,20 @@ use App\Models\Login;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
-
 // load validation
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
-// load email
+// load email & notifications
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Regaccicms\Users\ToApplicant;
-use App\Mail\Regaccicms\Users\ToApprover;
-use App\Mail\Regaccicms\Users\ToBTM;
+use Illuminate\Support\Facades\Notification;
+
+use App\Notifications\RegAccICMS\ICMSApplicant;
+use App\Notifications\RegAccICMS\ICMSApprover;
+use App\Notifications\RegAccICMS\ICMSBTMApprover;
+// use App\Mail\Regaccicms\Users\ToApplicant;
+// use App\Mail\Regaccicms\Users\ToApprover;
+// use App\Mail\Regaccicms\Users\ToBTM;
 
 // load batch and queue
 use Illuminate\Bus\Batch;
@@ -56,6 +59,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ICMSRequesterController extends Controller
 {
+	function __construct()
+	{
+		// $this->middleware(['auth']);
+		$this->middleware('ICMSAccountOwner', ['only' => ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']]);
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
@@ -79,7 +88,7 @@ class ICMSRequesterController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		dd($request->all());
+		// dd($request->all());
 		$validator = Validator::make($request->all(), [
 				'emreg.*.nama' => 'required|string',
 				'emreg.*.position' => 'required|string',
@@ -153,35 +162,65 @@ class ICMSRequesterController extends Controller
 		// need to create pdf and send email
 		Pdf::loadView('regaccicms.show', ['regaccicm' => $requester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($requester->created_at)->format('ym').str_pad( $requester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// send to self
-		Mail::to($requester->belongstostaff->hasmanylogin()->first()->email, $requester->belongstostaff->hasmanylogin()->first()->nama)
+		// mail to self
+		// Mail::to($requester->belongstostaff->hasmanylogin()->first()->email, $requester->belongstostaff->hasmanylogin()->first()->nama)
 			// ->cc($moreUsers)
 			// ->bcc($evenMoreUsers)
-			->send(new ToApplicant($requester));
+			// ->send(new ToApplicant($requester));
+
+		// notifications to self by mail and db
+		\Auth::user()->setConnection('mysql3');
+		\Auth::user()->notify(new ICMSApplicant($requester));
 
 		// send to approver (if available)
-		$dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
-		$apprv = Jabatan::find($dept)->belongstomanyappr;
+		// $dept = \Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan;
+		// $apprv = Jabatan::find($dept)->belongstomanyappr();
 		// dd($apprv->belongstomanyappr()->first());
-		if($apprv->count()) {
-			// send to approver
-			Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApprover($requester, $apprv));
-		}
+		// if($apprv->count()) {
+		// 	// send to approver
+		// 	Mail::to(Login::find($apprv->first()->nostaf)->email, $apprv->first()->nama)
+		// 		// ->cc($moreUsers)
+		// 		// ->bcc($evenMoreUsers)
+		// 		->send(new ToApprover($requester, $apprv));
+		// }
+
+		// dd($apprv);
+		// if ($apprv->count()) {
+		// 	foreach ($apprv->get() as $v1) {
+		// 		// dd($v1->hasmanylogin()->get());
+		// 		if ($v1->hasmanylogin()->count()) {
+		// 			foreach ($v1->hasmanylogin()->get() as $v2) {
+		// 				// dd($v2);
+		// 				$v2->setConnection('mysql3');
+		// 				$approval[] = $v2->notify(new ICMSApprover($requester));
+		// 			}
+		// 		}
+		// 	}
+		// };
+		Jabatan::find(
+			\Auth::user()->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($requester) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ICMSApprover($requester));
+		});
+		// dd($approval);
 
 		// finally send it to admin
-		// $user->notify(new ToBTM($requester));
 		if (BTMApprover::where('active', 1)->count()) {
 			// $requester will "dissolve" when lopp process
 			foreach(BTMApprover::where('active', 1)->get() as $ad) {
 				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				Mail::to($adm->email, $adm->name)
-				->send(new ToBTM($adm, $requester));
+				// Mail::to($adm->email, $adm->name)->send(new ToBTM($adm, $requester));
+				$adm->setConnection('mysql3');
+				$btm[] = $adm->notify(new ICMSBTMApprover($requester));
 			}
 		}
-
+		// dd($btm);
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully record data and send email');
 	}
 
