@@ -211,15 +211,18 @@ class ICMSRequesterController extends Controller
 		// dd($approval);
 
 		// finally send it to admin
-		if (BTMApprover::where('active', 1)->count()) {
-			// $requester will "dissolve" when lopp process
-			foreach(BTMApprover::where('active', 1)->get() as $ad) {
-				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				// Mail::to($adm->email, $adm->name)->send(new ToBTM($adm, $requester));
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($requester) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
 				$adm->setConnection('mysql3');
-				$btm[] = $adm->notify(new ICMSBTMApprover($requester));
+				$adm->notify(new ICMSBTMApprover($requester));
 			}
-		}
+		});
 		// dd($btm);
 		return redirect()->route('regaccicms.index')->with('success', 'Successfully record data and send email');
 	}
