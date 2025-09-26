@@ -212,9 +212,9 @@ $(".form").on('submit', function(e){
 				id: ids,
 				approver_staff: '{{ \Auth::user()->nostaf }}',
 				// acknowledge: $(':input[name="leave_status_id"]:checked').val(),
-				acknowledge: $(':input[name="acknowledge"]:checked').val(),
-				status: $(':input[name="status"]:checked').val(),
-				remarks_approver: $(':input[name="remarks_approver"]').val()
+				acknowledge: $this.find(':input[name="acknowledge"]:checked').val(),
+				status: $this.find(':input[name="status"]:checked').val(),
+				remarks_approver: $this.find('textarea[name="remarks_approver"]').val()
 		},
 		dataType: 'json',
 		global: false,

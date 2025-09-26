@@ -20,26 +20,24 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // send email
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ToApplicantUnApproved;
-use App\Mail\ToApplicantUpdate;
 
-use App\Mail\Regaccicms\Approver\ToApplicantApproval;
+// load notification
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\LoanEquipment\Approver\ApplicantLoanUpdate;
+use App\Notifications\LoanEquipment\Approver\ApplicantLoanApproverUpdate;
+use App\Notifications\LoanEquipment\Approver\ApplicantLoanBTMUpdate;
+use App\Notifications\EmailApplication\Approver\ApplicantEmailUpdate;
+use App\Notifications\EmailApplication\Approver\ApplicantEmailApproverUpdate;
+use App\Notifications\EmailApplication\Approver\ApplicantEmailBTMUpdate;
+use App\Notifications\RegisterAccountICMS\Approver\ApplicantICMSUpdate;
+use App\Notifications\RegisterAccountICMS\Approver\ApplicantICMSApproverUpdate;
+use App\Notifications\RegisterAccountICMS\Approver\ApplicantICMSBTMUpdate;
 
 // for controller output
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-
-// load helper
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-
-use Log;
-use Session;
-use Exception;
-use Throwable;
 
 // load model
 use App\Models\Jabatan;
@@ -50,9 +48,20 @@ use App\Models\StatusEquipment;
 use App\Models\StaffJabatan;
 use App\Models\EmailRegistrationApplication;
 use App\Models\ICMSModule;
+use App\Models\ICMSRequester;
 use App\Models\Settings\Category;
 use App\Models\Settings\Item;
-use App\Models\ICMSRequester;
+use App\Models\Settings\BTMApprover;
+
+// load helper
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+
+use Log;
+use Session;
+use Exception;
+use Throwable;
 
 class AjaxDBController extends Controller
 {
@@ -230,8 +239,6 @@ class AjaxDBController extends Controller
 
 	public function loanappsapprv(Request $request, LoanApplication $loanapp): JsonResponse
 	{
-		// dd($request->all(), \Auth::user());
-		// return response()->json([]);
 		$request->validate([
 				'acknowledge' => 'required|accepted',
 				'status' => 'required',
@@ -249,23 +256,54 @@ class AjaxDBController extends Controller
 				'approver_staff' => 'Staff ID',
 		]);
 
-		$loanapp->update([
-			'status_loan_id' => 2,
-			'approver_status_id' => $request->status,
-			'approver_staff' => $request->approver_staff,
-			'approver_date' => now(),
-			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-			'status_loan_id' => 2,
-		]);
+		$dle = ['approver_status_id' => $request->status];
+		$dle += ['approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver)))];
+		$dle += ['approver_staff' => \Auth::user()->nostaf];
+		$dle += ['approver_date' => now()];
+		if ($request->status == 2) {
+			$dle += ['status_loan_id' => 2];
+		}
 
+		$loanapp->update($dle);
+
+		// pdf user & approval
 		Pdf::loadView('loan.show', ['loanapp' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// pdf admin
+		Pdf::loadView('settings.btm.show', ['btmloanapplication' => $loanapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-ADM-'.Carbon::parse($loanapp->created_at)->format('ym').str_pad( $loanapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// dd($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama);
-		// mail to loan owner of unapproved loan
-		Mail::to($loanapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $loanapp->belongstostaff->nama)
-			// ->cc($moreUsers)
-			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantUnApproved($loanapp));
+
+		// notifications to user by mail and db
+		// used with multiple db connection
+		$login = $loanapp->belongstostaff->hasmanylogin()->first();
+		$login->setConnection('mysql3');
+		$login->notify(new ApplicantLoanUpdate($loanapp));
+
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$loanapp->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($loanapp) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantLoanApproverUpdate($loanapp));
+		});
+
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($loanapp) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantLoanBTMUpdate($loanapp));
+			}
+		});
 
 		return response()->json([
 			'message' => 'Success granted approval for the loan',
@@ -275,8 +313,7 @@ class AjaxDBController extends Controller
 
 	public function emailappsapprv(Request $request, EmailRegistrationApplication $emailapp): JsonResponse
 	{
-		// dd($request->all(), \Auth::user());
-		// return response()->json([]);
+		// dd($request->all());
 		$request->validate([
 				'acknowledge' => 'required|accepted',
 				'status' => 'required',
@@ -294,22 +331,52 @@ class AjaxDBController extends Controller
 				'approver_staff' => 'Staff ID',
 		]);
 
-		$emailapp->update([
-			'status_email_id' => 2,
-			'approver_status_id' => $request->status,
-			'approver_staff' => $request->approver_staff,
-			'approver_date' => now(),
-			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-		]);
+		$dle = ['approver_status_id' => $request->status];
+		$dle += ['approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver)))];
+		$dle += ['approver_staff' => \Auth::user()->nostaf];
+		$dle += ['approver_date' => now()];
+		if ($request->status == 2) {
+			$dle += ['status_email_id' => 2];
+		}
+
+		$emailapp->update($dle);
 
 		Pdf::loadView('email.show', ['email' => $emailapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailapp->created_at)->format('ym').str_pad( $emailapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// pdf admin
+		Pdf::loadView('settings.btmemail.show', ['email' => $emailapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-ADM-'.Carbon::parse($emailapp->created_at)->format('ym').str_pad( $emailapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// dd($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama);
-		// mail to loan owner of unapproved loan
-		Mail::to($emailapp->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $emailapp->belongstostaff->nama)
-			// ->cc($moreUsers)
-			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantUnApproved($emailapp));
+		// notifications to self by mail and db
+		// used with multiple db connection
+		$loginUser = $emailapp->belongstostaff->hasmanylogin()->first();
+		$loginUser->setConnection('mysql3');
+		$loginUser->notify(new ApplicantEmailUpdate($emailapp));
+
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$emailapp->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($emailapp) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantEmailApproverUpdate($emailapp));
+		});
+
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($emailapp) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantEmailBTMUpdate($emailapp));
+			}
+		});
 
 		return response()->json([
 			'message' => 'Success granted approval for the email registration',
@@ -338,21 +405,54 @@ class AjaxDBController extends Controller
 				'approver_staff' => 'Staff ID',
 		]);
 
-		$regaccappsapprv->update([
-			'approver_status_id' => $request->status,
-			'approver_staff' => $request->approver_staff,
-			'approver_date' => now(),
-			'approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver))),
-		]);
+		$dle = ['approver_status_id' => $request->status];
+		$dle += ['approver_remarks' => ucwords(Str::lower(trim($request->remarks_approver)))];
+		$dle += ['approver_staff' => \Auth::user()->nostaf];
+		$dle += ['approver_date' => now()];
+		if ($request->status == 2) {
+			$dle += ['status_request_id' => 2];
+		}
 
+		$regaccappsapprv->update($dle);
+
+		// need to create pdf and send email
+		// pdf user & approval
 		Pdf::loadView('regaccicms.show', ['regaccicm' => $regaccappsapprv])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($regaccappsapprv->created_at)->format('ym').str_pad( $regaccappsapprv->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		// pdf admin
+		Pdf::loadView('settings.regaccicms.show', ['regaccicm' => $regaccappsapprv])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-ADM-'.Carbon::parse($regaccappsapprv->created_at)->format('ym').str_pad( $regaccappsapprv->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// dd($regaccappsapprv->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $regaccappsapprv->belongstostaff->nama);
-		// mail to loan owner of unapproved loan
-		Mail::to($regaccappsapprv->belongstostaff->hasmanylogin()->first()->email, $regaccappsapprv->belongstostaff->nama)
-			// ->cc($moreUsers)
-			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantApproval($regaccappsapprv));
+		// notifications to self by mail and db
+		// used with multiple db connection
+		$login = $regaccappsapprv->belongstostaff->hasmanylogin()->first();
+		$login->setConnection('mysql3');
+		$login->notify(new ApplicantICMSUpdate($regaccappsapprv));
+
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$regaccappsapprv->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($regaccappsapprv) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantICMSApproverUpdate($regaccappsapprv));
+		});
+
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($regaccappsapprv) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantICMSBTMUpdate($regaccappsapprv));
+			}
+		});
 
 		return response()->json([
 			'message' => 'Success granted approval for the ICMS Registeration Account',

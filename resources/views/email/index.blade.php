@@ -82,7 +82,8 @@
 											<!-- Modal -->
 											<div class="modal fade" id="apprv{{ $email->id }}" tabindex="-1" aria-labelledby="label_{{ $email->id }}" aria-hidden="true">
 												<div class="modal-dialog modal-lg">
-													<form action="{{ route('emailappsapprv', $email->id) }}" method="PATCH" class="form" data-id="{{ $email->id }}">
+													<form action="{{ route('emailappsapprv', $email->id) }}" method="POST" class="form" data-id="{{ $email->id }}">
+														@method('PATCH')
 														@csrf
 													<div class="modal-content">
 														<div class="modal-header">
@@ -104,8 +105,8 @@
 																<div class="col-sm-12 m-2 row">
 																	<x-input-label for="txtareaid{{ $email->id }}" class="col-sm-4" :value="__('Remarks : ')" />
 																	<div class="col-sm-8">
-																		<x-textarea-input id="txtareaid{{ $email->id }}" name="remarks_approver" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" />
-																		<x-input-error :messages="$errors->get('nostaf')" />
+																		<textarea id="txtareaid{{ $email->id }}" name="remarks_approver" class="form-control form-control-sm {{ ($errors->has('remarks_approver')?'is-invalid':NULL) }}">{{ old('remarks_approver', $email->approver_remarks) }}</textarea>
+																		<x-input-error :messages="$errors->get('remarks_approver')" />
 																	</div>
 																</div>
 																<div class="form-check">
@@ -129,25 +130,6 @@
 												<i class="fa-regular fa-trash-can"></i>
 											</x-danger-button>
 										@endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 									</td>
 								</tr>
 							@endif
@@ -167,7 +149,7 @@ DataTable.datetime( 'h:mm a' );
 $('#loanapp').DataTable({
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
 	"columnDefs": [
-		{ type: 'date', 'targets': [2,3] },
+		{ type: 'date', 'targets': [2] },
 	],
 	"order": [[ 2, 'desc' ]],
 	"responsive": true,
@@ -194,10 +176,9 @@ $(".form").on('submit', function(e){
 				_token: '{!! csrf_token() !!}',
 				id: ids,
 				approver_staff: '{{ \Auth::user()->nostaf }}',
-				// acknowledge: $(':input[name="leave_status_id"]:checked').val(),
-				acknowledge: $(':input[name="acknowledge"]:checked').val(),
-				status: $(':input[name="status"]:checked').val(),
-				remarks_approver: $(':input[name="remarks_approver"]').val()
+				acknowledge: $(this).find(':input[name="acknowledge"]:checked').val(),
+				status: $(this).find(':input[name="status"]:checked').val(),
+				remarks_approver: $(this).find('textarea[name="remarks_approver"]').val(),
 		},
 		dataType: 'json',
 		global: false,

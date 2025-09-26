@@ -9,7 +9,7 @@ use App\Http\Controllers\Settings\BTMLoanApplicationController;
 use App\Http\Controllers\Settings\BTMEmailApplicationController;
 use App\Http\Controllers\LoanApplicationController;
 use App\Http\Controllers\LoanEquipmentController;
-use App\Http\Controllers\Settings\RegAccICMS\AdminICMSRequesterController;
+use App\Http\Controllers\Settings\AdminICMSRequesterController;
 
 Route::middleware('auth')->group(function () {
 
