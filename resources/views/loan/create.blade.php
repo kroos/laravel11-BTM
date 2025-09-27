@@ -8,7 +8,7 @@
 
 	<form action="{{ route('loanapp.store') }}" method="POST">
 			@csrf
-		<div class="container d-flex justify-content-between">
+		<div class="container row mx-auto">
 			<!-- 1st column -->
 			<div class="col-sm-6 m-0 p-1">
 				<div class="card">
@@ -140,45 +140,47 @@
 				</div>
 			</div>
 			<!-- 3rd column bawah -->
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
-				</div>
-				<div class="card-body">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-						</div>
-						<div class="card-body">
-							<p>Status :
-								@php
-								$j = \App\Models\Jabatan::find($idj);
-								if($j->belongstomanyappr->count()){
-									echo $j->belongstomanyappr->first()->nama;
-								} else {
-									echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Sokong</span>';
-								}
-								@endphp
-							</p>
-							<p>Tarikh : </p>
-						</div>
-						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
-							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
-								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
-									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
-									Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.
-								</label>
+			<div class="col-sm-12 d-flex justify-content-center">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+						<p>
+							@php
+							$r = \App\Models\Staff::find(Auth::user()->nostaf);
+							echo $r->belongstomanydepartment()->first()->namajabatan;
+							$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+							@endphp
+						</p>
+					</div>
+					<div class="card-body">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 							</div>
-							@error('acknowledge')
-							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
-							@enderror
+							<div class="card-body">
+								<p>Status :
+									@php
+									$j = \App\Models\Jabatan::find($idj);
+									if($j->belongstomanyappr->count()){
+										echo $j->belongstomanyappr->first()->nama;
+									} else {
+										echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Sokong</span>';
+									}
+									@endphp
+								</p>
+								<p>Tarikh : </p>
+							</div>
+							<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+								<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+									<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+										<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+										Saya akan bertanggungjawab ke atas barang pinjaman dan mengaku bahawa pinjaman ini dibuat untuk kegunaan urusan rasmi.
+									</label>
+								</div>
+								@error('acknowledge')
+								<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+								@enderror
+							</div>
 						</div>
 					</div>
 				</div>

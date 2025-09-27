@@ -9,10 +9,10 @@
 	<form action="{{ route('emailaccapp.store') }}" method="POST">
 		@csrf
 		<x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
-		<div class="container d-flex justify-content-between">
+		<div class="container row mx-auto border">
 			<div class="col-sm-6 m-0 p-1">
 
-				<div class="card mb-2">
+				<div class="card ">
 					<div class="card-header">
 						<h3 class="card-title">Pemohon</h3>
 					</div>
@@ -34,10 +34,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="card">
+				<div class="card mt-2">
 					<div class="card-header">
 						<h3 class="card-title">Cadangan Alamat Emel</h3>
-						<small>1) Tidak dibenarkan meletak nombor atau nama timangan selain nama asal</small> <br>
+						<small>1) Tidak dibenarkan meletak nombor atau nama timangan selain nama asal</small> <br />
 						<small>2) Masukkan sekurang-kurangnya dua (2) cadangan alamat emel</small>
 					</div>
 					<div class="card-body">
@@ -52,7 +52,6 @@
 										</div>
 									</div>
 								</div>
-								<!-- remove button -->
 								<div class="col-sm-1 m-0">
 									<x-danger-button type="button" class="remove_emails">
 										<i class="fa-regular fa-trash-can"></i>
@@ -61,15 +60,11 @@
 
 							</div>
 						</div>
-						<!-- add email button -->
 						<x-primary-button type="button" class="add_emails">
 							<i class="fa-solid fa-screwdriver-wrench fa-beat"></i> </i>&nbsp;Tambah Emel
 						</x-primary-button>
 					</div>
 				</div>
-
-
-
 			</div>
 			<div class="col-sm-6 m-0 p-1">
 
@@ -93,50 +88,50 @@
 
 			</div>
 		</div>
-		<div class="card">
-			<div class="card-header">
-				<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-				<p>
-					@php
-					$r = \App\Models\Staff::find(Auth::user()->nostaf);
-					echo $r->belongstomanydepartment()->first()->namajabatan;
-					$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-					@endphp
-				</p>
-			</div>
-			<div class="card-body">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-					</div>
-					<div class="card-body">
-						<p>Status :
+		<div class="col-sm-12 d-flex justify-content-center">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+					<p>
 						@php
-						$j = \App\Models\Jabatan::find($idj);
-						if($j->belongstomanyappr->count()){
-							echo $j->belongstomanyappr->first()->nama;
-						} else {
-							echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
-						}
+						$r = \App\Models\Staff::find(Auth::user()->nostaf);
+						echo $r->belongstomanydepartment()->first()->namajabatan;
+						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
 						@endphp
-						</p>
-						<p>Tarikh : </p>
-					</div>
-					<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
-						<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
-							<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
-								<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
-								Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.
-							</label>
+					</p>
+				</div>
+				<div class="card-body">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 						</div>
-						@error('acknowledge')
-						<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
-						@enderror
+						<div class="card-body">
+							<p>Status :
+							@php
+							$j = \App\Models\Jabatan::find($idj);
+							if($j->belongstomanyappr->count()){
+								echo $j->belongstomanyappr->first()->nama;
+							} else {
+								echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+							}
+							@endphp
+							</p>
+							<p>Tarikh : </p>
+						</div>
+						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+									Saya mengaku bahawa semakan telah dibuat dan emel ini adalah untuk kegunaan urusan rasmi.
+								</label>
+							</div>
+							@error('acknowledge')
+							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+							@enderror
+						</div>
 					</div>
 				</div>
 			</div>
-
-
 		</div>
 		<div class="col-sm-12 text-center">
 			<x-primary-button type="submit" class="m-2">

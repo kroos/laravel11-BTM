@@ -120,7 +120,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-10 m-2 mx-auto">
+		<div class="col-sm-12 d-flex justify-content-center">
 			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
