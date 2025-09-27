@@ -78,7 +78,7 @@ class ApplicantLoanBTMUpdate extends Notification
 	{
 		return [
 			'data' => '(BTM03) Approval loan equipment',
-			'link' => route('btmemailapplications.edit', $this->data->id),
+			'link' => route('btmemailapplications.show', $this->data->id),
 		];
 	}
 

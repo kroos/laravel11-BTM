@@ -79,7 +79,7 @@ class ApplicantEmailBTMDelete extends Notification
 	{
 		return [
 			'data' => '(BTM01) Deleted email registration',
-			'link' => route('btmemailapplications.edit', $this->data->id),
+			'link' => route('btmemailapplications.show', $this->data->id),
 		];
 	}
 

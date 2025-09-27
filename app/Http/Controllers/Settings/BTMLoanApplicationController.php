@@ -23,8 +23,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // send email
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ToApplicant;
-use App\Mail\ToApplicantBTMApproval;
+
+// load notification
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\LoanEquipment\BTM\ApplicantLoanUpdate;
+use App\Notifications\LoanEquipment\BTM\ApplicantLoanApproverUpdate;
+use App\Notifications\LoanEquipment\BTM\ApplicantLoanBTMUpdate;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -158,17 +162,43 @@ class BTMLoanApplicationController extends Controller
 					]
 				);
 			}
-
-			Pdf::loadView('settings.btm.show', ['btmloanapplication' => $btmloanapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($btmloanapplication->created_at)->format('ym').str_pad( $btmloanapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
-
-			// mail to self
-			Mail::to($btmloanapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $btmloanapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApplicantBTMApproval($btmloanapplication));
-		} else {
-			return redirect()->back()->with('danger', 'There are some error. Please try again later.');
 		}
+
+		Pdf::loadView('settings.btm.show', ['btmloanapplication' => $btmloanapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($btmloanapplication->created_at)->format('ym').str_pad( $btmloanapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
+
+		// notifications to self by mail and db
+		// used with multiple db connection
+		$loginUser = $btmloanapplication->belongstostaff->hasmanylogin()->first();
+		$loginUser->setConnection('mysql3');
+		$loginUser->notify(new ApplicantEmailUpdate($btmloanapplication));
+
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$btmloanapplication->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($btmloanapplication) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantEmailApproverUpdate($btmloanapplication));
+		});
+
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($btmloanapplication) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantEmailBTMUpdate($btmloanapplication));
+			}
+		});
+
 		return redirect()->route('btmloanapplications.index')->with('success', 'Successfully Update Loan Equipment');
 	}
 

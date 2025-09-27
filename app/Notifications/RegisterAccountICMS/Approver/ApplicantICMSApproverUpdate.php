@@ -48,7 +48,7 @@ class ApplicantICMSApproverUpdate extends Notification
 			->subject('BTM : (BTM02) Approval Application of Account & ICMS Modules For Approval')
 			->greeting('BTMgo')
 			->line('Dear ' . $notifiable->nama . ',')
-			->line('This is to inform you that '.{{ Staff::find($this->data->nostaf)->nama }}.' application, has been given an approval on a request for an account & ICMS modules. The details of the application are available in the system for your review.')
+			->line('This is to inform you that '.Staff::find($this->data->nostaf)->nama.' application, has been given an approval on a request for an account & ICMS modules. The details of the application are available in the system for your review.')
 			->line('Please find the attached PDF form for your reference. Kindly log into the system to access the request and provide your approval or rejection based on your discretion. You have the authority to approve or decline this application as you see fit.')
 			->line('If you have any questions or require further information regarding the request, feel free to reach out.')
 			->action('View Form', route('regaccicms.show', $this->data->id))
@@ -78,7 +78,7 @@ class ApplicantICMSApproverUpdate extends Notification
 	{
 		return [
 			'data' => '(BTM02) Approval account & ICMS modules',
-			'link' => route('regaccicms.edit', $this->data->id),
+			'link' => route('regaccicms.show', $this->data->id),
 		];
 	}
 

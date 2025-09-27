@@ -49,7 +49,7 @@ class ApplicantICMSApproverDelete extends Notification
 			->subject('BTM : (BTM02) Deleted Application of Account & ICMS Modules For Approval')
 			->greeting('BTMgo')
 			->line('Dear ' . $notifiable->nama . ',')
-			->line('This is to inform you that '.{{ Staff::find($this->data->nostaf)->nama }}.', has deleted a request for an account & ICMS modules application. The details of the application are not available in the system anymore.')
+			->line('This is to inform you that '.Staff::find($this->data->nostaf)->nama.', has deleted a request for an account & ICMS modules application. The details of the application are not available in the system anymore.')
 			->line('Please find the attached PDF form for your reference.')
 			->line('If you have any questions or require further information regarding the request, feel free to reach out.')
 			// ->action('View Form', route('emailaccapp.show', $this->data->id))
@@ -79,7 +79,7 @@ class ApplicantICMSApproverDelete extends Notification
 	{
 		return [
 			'data' => '(BTM01) Deleted email registration',
-			'link' => route('btmemailapplications.edit', $this->data->id),
+			'link' => route('btmemailapplications.show', $this->data->id),
 		];
 	}
 

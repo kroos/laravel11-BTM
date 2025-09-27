@@ -79,7 +79,7 @@ class ApplicantLoanBTMDelete extends Notification
 	{
 		return [
 			'data' => '(BTM01) Deleted email registration',
-			'link' => route('btmloanapplications.edit', $this->data->id),
+			'link' => route('btmloanapplications.show', $this->data->id),
 		];
 	}
 

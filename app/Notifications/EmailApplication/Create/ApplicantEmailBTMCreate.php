@@ -78,7 +78,7 @@ class ApplicantEmailBTMCreate extends Notification
 	{
 		return [
 			'data' => '(BTM01) New email registration',
-			'link' => route('btmemailapplications.edit', $this->data->id),
+			'link' => route('btmemailapplications.show', $this->data->id),
 		];
 	}
 

@@ -19,9 +19,12 @@ use App\Models\Login;
 
 // load email
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Regaccicms\BTM\ToApplicantBTM;
-use App\Mail\Regaccicms\BTM\ToApproverBTM;
-use App\Mail\Regaccicms\BTM\ToAdminBTM;
+
+// load notification
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RegisterAccountICMS\BTM\ApplicantICMSUpdate;
+use App\Notifications\RegisterAccountICMS\BTM\ApplicantICMSApproverUpdate;
+use App\Notifications\RegisterAccountICMS\BTM\ApplicantICMSBTMUpdate;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -213,36 +216,41 @@ $d[$k] = $v['icms_module_id'];
 		// dd($d, $f, $syncData1);
 
 		// need to create pdf and send email
-		Pdf::loadView('settings.regaccicms.show', ['regaccicm' => $btmicmsrequester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-'.Carbon::parse($btmicmsrequester->created_at)->format('ym').str_pad( $btmicmsrequester->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('settings.regaccicms.show', ['regaccicm' => $btmicmsrequester])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-RAICMS-ADM-'.Carbon::parse($btmicmsrequester->created_at)->format('ym').str_pad( $btmicmsrequester->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// send to applicant
-		Mail::to($btmicmsrequester->belongstostaff->hasmanylogin()->first()->email, $btmicmsrequester->belongstostaff->hasmanylogin()->first()->nama)
-			// ->cc($moreUsers)
-			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantBTM($btmicmsrequester));
+		// notifications to self by mail and db
+		// used with multiple db connection
+		$loginUser = $btmicmsrequester->belongstostaff->hasmanylogin()->first();
+		$loginUser->setConnection('mysql3');
+		$loginUser->notify(new ApplicantEmailUpdate($btmicmsrequester));
 
-		// send to approver (if available)
-		$dept = $btmicmsrequester?->belongstostaff?->belongstomanydepartment?->first()?->kodjabatan;
-		$apprv = Jabatan::find($dept)?->belongstomanyappr;
-		// dd($apprv->belongstomanyappr()->first());
-		if($apprv->count()) {
-			// send to approver
-			Mail::to(Login::find($apprv?->first()?->nostaf)?->email, $apprv?->first()?->nama)
-				// ->cc($moreUsers)
-				// ->bcc($evenMoreUsers)
-				->send(new ToApproverBTM($btmicmsrequester, $apprv));
-		}
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$btmicmsrequester->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($btmicmsrequester) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantEmailApproverUpdate($btmicmsrequester));
+		});
 
-		// finally send it to admin
-		// $user->notify(new ToBTM($btmicmsrequester));
-		if (BTMApprover::where('active', 1)->count()) {
-			// $btmicmsrequester will "dissolve" when lopp process
-			foreach(BTMApprover::where('active', 1)->get() as $ad) {
-				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				Mail::to($adm->email, $adm->name)
-				->send(new ToAdminBTM($adm, $btmicmsrequester));
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($btmicmsrequester) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantEmailBTMUpdate($btmicmsrequester));
 			}
-		}
+		});
+
 		return redirect()->route('btmicmsrequester.index')->with('success', 'Successfully update record data and send email');
 	}
 

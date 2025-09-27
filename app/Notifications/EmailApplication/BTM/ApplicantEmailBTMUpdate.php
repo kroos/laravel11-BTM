@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\LoanEquipment\Update;
+namespace App\Notifications\EmailApplication\BTM;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +15,7 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
-class ApplicantLoanApproverUpdate extends Notification
+class ApplicantEmailBTMUpdate extends Notification
 {
 	use Queueable;
 
@@ -45,16 +45,17 @@ class ApplicantLoanApproverUpdate extends Notification
 	public function toMail(object $notifiable): MailMessage
 	{
 		return (new MailMessage)
-			->subject('BTM : (BTM03) Updated Application of Loan Equipment For Approval')
+			->subject('BTM : (BTM01) BTM Approval Application of Email Account For Approval')
 			->greeting('BTMgo')
 			->line('Dear ' . $notifiable->name . ',')
-			->line('This is to inform you that '.Staff::find($this->data->nostaf)->nama.', has updated a request for a loan equipment. The details of the application are available in the system for your review.')
-			->line('Please find the attached PDF form for your reference. Kindly log into the system to access the request and provide your approval or rejection based on your discretion. You have the authority to approve or decline this application as you see fit.')
+			->line('This is to inform you that '.Staff::find($this->data->nostaf)->nama.' application, has been given an approval on a request for an email registration by '.Staff::find($this->data->btm_approver)->nama.'.')
+			->line('The details of the application are available in the system for your review.')
+			->line('Please find the attached PDF form for your reference.')
 			->line('If you have any questions or require further information regarding the request, feel free to reach out.')
-			->action('View Form', route('loanapp.show', $this->data->id))
+			->action('View Form', route('btmemailapplications.show', $this->data->id))
 			->line('Thank you for your attention to this matter.')
 			->line(config('app.name'))
-			->attach(storage_path('app/public/pdf/').'BTM-LE-'.Carbon::parse($this->data->created_at)->format('ym').str_pad( $this->data->id, 3, "0", STR_PAD_LEFT).'.pdf');
+			->attach(storage_path('app/public/pdf/').'BTM-ER-ADM-'.Carbon::parse($this->data->created_at)->format('ym').str_pad( $this->data->id, 3, "0", STR_PAD_LEFT).'.pdf');
 	}
 
 	/**
@@ -77,8 +78,8 @@ class ApplicantLoanApproverUpdate extends Notification
 	public function toDatabase(object $notifiable): array
 	{
 		return [
-			'data' => '(BTM03) Updated loan equipment',
-			'link' => route('loanapp.show', $this->data->id),
+			'data' => '(BTM01) BTM Approval email registration',
+			'link' => route('btmemailapplications.show', $this->data->id),
 		];
 	}
 

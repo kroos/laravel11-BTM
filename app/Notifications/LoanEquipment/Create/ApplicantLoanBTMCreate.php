@@ -78,7 +78,7 @@ class ApplicantLoanBTMCreate extends Notification
 	{
 		return [
 			'data' => '(BTM03) New loan equipment application',
-			'link' => route('btmloanapplications.edit', $this->data->id),
+			'link' => route('btmloanapplications.show', $this->data->id),
 		];
 	}
 

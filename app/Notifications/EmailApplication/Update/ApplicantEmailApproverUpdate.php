@@ -78,7 +78,7 @@ class ApplicantEmailApproverUpdate extends Notification
 	{
 		return [
 			'data' => '(BTM01) Updated email registration',
-			'link' => route('emailaccapp.edit', $this->data->id),
+			'link' => route('emailaccapp.show', $this->data->id),
 		];
 	}
 

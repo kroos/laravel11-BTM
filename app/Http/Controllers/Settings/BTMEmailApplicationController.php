@@ -30,8 +30,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // send email
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ToBTMEmailApproval;
-use App\Mail\ToApplicantEmailApproval;
+
+// load notification
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\EmailApplication\BTM\ApplicantEmailUpdate;
+use App\Notifications\EmailApplication\BTM\ApplicantEmailApproverUpdate;
+use App\Notifications\EmailApplication\BTM\ApplicantEmailBTMUpdate;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -170,24 +174,40 @@ class BTMEmailApplicationController extends Controller
 			};
 		};
 
-		Pdf::loadView('settings.btmemail.show', ['email' => $btmemailapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($btmemailapplication->created_at)->format('ym').str_pad( $btmemailapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
+		Pdf::loadView('settings.btmemail.show', ['email' => $btmemailapplication])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-ADM-'.Carbon::parse($btmemailapplication->created_at)->format('ym').str_pad( $btmemailapplication->id, 3, "0", STR_PAD_LEFT).'.pdf');
 
-		// mail to applicant
-		Mail::to($btmemailapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->email, $btmemailapplication->belongstostaff->hasmanylogin()->where('is_active', 1)->first()->name)
-			// ->cc($moreUsers)
-			// ->bcc($evenMoreUsers)
-			->send(new ToApplicantEmailApproval($btmemailapplication));
+		// notifications to self by mail and db
+		// used with multiple db connection
+		$loginUser = $btmemailapplication->belongstostaff->hasmanylogin()->first();
+		$loginUser->setConnection('mysql3');
+		$loginUser->notify(new ApplicantEmailUpdate($btmemailapplication));
 
-		// finally send it to admin
-		if (BTMApprover::where('active', 1)->count()) {
-			foreach(BTMApprover::where('active', 1)->get() as $ad) {
-				$adm = Login::where('nostaf', $ad->nostaf)->where('is_active', 1)->first();
-				Mail::to($adm->email, $adm->name)
-					// ->cc($moreUsers)
-					// ->bcc($evenMoreUsers)
-					->send(new ToBTMEmailApproval($adm, $btmemailapplication));
-			};
-		};
+		// notifications to approver (if any) by mail and db
+		Jabatan::find(
+			$btmemailapplication->belongstostaff->belongstomanydepartment->first()->kodjabatan
+		)
+		->belongstomanyappr()
+		->with('hasmanylogin')
+		->get()
+		->flatMap->hasmanylogin
+		->map(function ($login) use ($btmemailapplication) {
+			$login->setConnection('mysql3');
+			return $login->notify(new ApplicantEmailApproverUpdate($btmemailapplication));
+		});
+
+		// finally // notifications to admin by mail and db
+		BTMApprover::where('active', 1)
+		->get()
+		->each(function ($approver) use ($btmemailapplication) {
+			$adm = Login::where('nostaf', $approver->nostaf)
+			->where('is_active', 1)
+			->first();
+
+			if ($adm) {
+				$adm->setConnection('mysql3');
+				$adm->notify(new ApplicantEmailBTMUpdate($btmemailapplication));
+			}
+		});
 
 		return redirect()->route('btmemailapplications.index')->with('success', 'Successfully Updated Registered Email Application & Informing The Applicant');
 	}
