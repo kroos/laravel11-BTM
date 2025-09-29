@@ -15,6 +15,7 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
+// class ApplicantEmailCreate extends Notification implements ShouldQueue
 class ApplicantEmailCreate extends Notification
 {
 	use Queueable;

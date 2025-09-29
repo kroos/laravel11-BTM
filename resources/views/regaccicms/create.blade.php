@@ -8,35 +8,9 @@
 
 	<form action="{{ route('regaccicms.store') }}" method="POST" class="needs-validation" novalidate>
 		@csrf
-		<div class="container d-flex justify-content-between">
-<!--
-			<div class="col-4-sm m-2 p-1">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Pemohon</h3>
-					</div>
-					<div class="card-body">
-						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="id" class="col-sm-4" :value="__('No. Staf : ')" />
-							<div class="col-sm-8">
-								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
-								<x-input-error :messages="$errors->get('nostaf')" />
-							</div>
-						</div>
+		<div class="col-sm-12 d-flex flex-column align-items-center">
 
-						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
-							<div class="col-sm-8">
-								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
-								<x-input-error :messages="$errors->get('nama')" />
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-			-->
-			<div class="col-sm-12 mt-2 p-1">
+			<div class="col-sm-8 mt-2 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Maklumat Pemohon</h3>
@@ -44,7 +18,7 @@
 					<div class="card-body">
 
 						<div id="applicants_wrap">
-							<div class="col-sm-12 row m-3" id="applicant_0">
+							<div class="col-sm-12 row m-0" id="applicant_0">
 								<div class="col-sm-7 m-0 p-1">
 
 									<div class="col-sm-12 m-1 row">
@@ -119,56 +93,58 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-12 d-flex justify-content-center">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
-				</div>
-				<div class="card-body">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-						</div>
-						<div class="card-body">
-							<p>Status :
-								@php
-								$j = \App\Models\Jabatan::find($idj);
-								if($j->belongstomanyappr->count()){
-									echo $j->belongstomanyappr->first()->nama;
-								} else {
-									echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
-								}
-								@endphp
-							</p>
-							<p>Tarikh : </p>
-						</div>
-						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
-							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
-								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
-									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
-									Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
-								</label>
+
+			<div class="col-sm-8">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+						<p>
+							@php
+							$r = \App\Models\Staff::find(Auth::user()->nostaf);
+							echo $r->belongstomanydepartment()->first()->namajabatan;
+							$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+							@endphp
+						</p>
+					</div>
+					<div class="card-body">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 							</div>
-							@error('acknowledge')
-							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
-							@enderror
+							<div class="card-body">
+								<p>
+									@php
+									$j = \App\Models\Jabatan::find($idj);
+									if($j->belongstomanyappr->count()){
+										echo $j->belongstomanyappr->first()->nama;
+									} else {
+										echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+									}
+									@endphp
+								</p>
+								<p>Tarikh : </p>
+							</div>
+							<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+								<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+									<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+										<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+										Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
+									</label>
+								</div>
+								@error('acknowledge')
+								<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+								@enderror
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-12 text-center">
-			<x-primary-button type="submit" class="m-2">
-				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
-			</x-primary-button>
+			<div class="col-sm-4 text-center">
+				<x-primary-button type="submit" class="m-2">
+					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
+				</x-primary-button>
+			</div>
+
 		</div>
 	</form>
 

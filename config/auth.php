@@ -16,6 +16,7 @@ return [
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
+        'connection' => 'mysql1'
     ],
 
     /*
@@ -39,6 +40,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+            'connection' => 'mysql1'
         ],
     ],
 
@@ -62,7 +64,7 @@ return [
     'providers' => [
         'users' => [
             // 'driver' => 'eloquent',
-        //     'model' => App\Models\User::class,
+            // 'model' => App\Models\User::class,
             'driver' => 'loginuserprovider',
             'model' => App\Models\Login::class,
             'table' => 'users',

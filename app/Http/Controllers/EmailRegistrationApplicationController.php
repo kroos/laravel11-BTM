@@ -144,8 +144,9 @@ class EmailRegistrationApplicationController extends Controller
 
 		// notifications to self by mail and db
 		// used with multiple db connection
-		\Auth::user()->setConnection('mysql3');
-		\Auth::user()->notify(new ApplicantEmailCreate($r));
+		// \Auth::user()->setConnection('mysql3');
+		$user = \App\Models\Login::on('mysql1')->find(\Auth::id());
+		$user->notify(new ApplicantEmailCreate($r));
 
 		// notifications to approver (if any) by mail and db
 		Jabatan::find(
@@ -156,7 +157,7 @@ class EmailRegistrationApplicationController extends Controller
 		->get()
 		->flatMap->hasmanylogin
 		->map(function ($login) use ($r) {
-			$login->setConnection('mysql3');
+			// $login->setConnection('mysql3');
 			return $login->notify(new ApplicantEmailApproverCreate($r));
 		});
 
@@ -169,7 +170,7 @@ class EmailRegistrationApplicationController extends Controller
 			->first();
 
 			if ($adm) {
-				$adm->setConnection('mysql3');
+				// $adm->setConnection('mysql3');
 				$adm->notify(new ApplicantEmailBTMCreate($r));
 			}
 		});

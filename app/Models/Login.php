@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Notifications\DatabaseNotification;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -42,6 +44,18 @@ class Login extends Authenticatable
 		'email',
 		'password',
 	];
+
+	// use this for queue tables in another db than db logins/users
+	public function notifications()
+	{
+		// Build the morphMany relation
+		$relation = $this->morphMany(DatabaseNotification::class, 'notifiable');
+
+		// Force it to use mysql3
+		$relation->getQuery()->getModel()->setConnection('mysql3');
+
+		return $relation;
+	}
 
 	/**
 	 * The attributes that should be hidden for serialization.

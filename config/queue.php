@@ -40,6 +40,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
+            'connection' => 'mysql3', // 👈 This is valid here // 👈 tell Laravel to use mysql3
         ],
 
         'beanstalkd' => [
@@ -85,8 +86,10 @@ return [
     */
 
     'batching' => [
-        'database' => env('DB_CONNECTION', 'mysql'),
+        'database' => env('DB_CONNECTION_3', 'mysql3'),
         'table' => 'job_batches',
+        'database' => 'mysql3', // 👈 tell Laravel to use mysql3
+
     ],
 
     /*
@@ -102,7 +105,8 @@ return [
 
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'mysql'),
+        // 'database' => env('DB_CONNECTION', 'mysql'),
+        'database' => env('DB_CONNECTION_3', 'mysql3'), // 👈 tell Laravel to use mysql3
         'table' => 'failed_jobs',
     ],
 
