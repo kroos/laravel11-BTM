@@ -170,8 +170,8 @@ class ICMSRequesterController extends Controller
 
 		// notifications to self by mail and db
 		// used with multiple db connection
-		\Auth::user()->setConnection('mysql3');
-		\Auth::user()->notify(new ApplicantICMSCreate($requester));
+		$user = \App\Models\Login::on('mysql1')->find(\Auth::id());
+		$user->notify(new ApplicantICMSCreate($requester));
 
 		// notifications to approver (if any) by mail and db
 		Jabatan::find(
