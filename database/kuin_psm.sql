@@ -3,15 +3,15 @@
 
  Source Server         : Localhost MySQL
  Source Server Type    : MySQL
- Source Server Version : 80034 (8.0.34)
+ Source Server Version : 80043 (8.0.43)
  Source Host           : localhost:3306
  Source Schema         : kuin_psm
 
  Target Server Type    : MySQL
- Target Server Version : 80034 (8.0.34)
+ Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 19/08/2025 07:47:20
+ Date: 09/10/2025 23:12:27
 */
 
 SET NAMES utf8mb4;

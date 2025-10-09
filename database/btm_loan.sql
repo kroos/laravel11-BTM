@@ -3,15 +3,15 @@
 
  Source Server         : Localhost MySQL
  Source Server Type    : MySQL
- Source Server Version : 80034 (8.0.34)
+ Source Server Version : 80043 (8.0.43)
  Source Host           : localhost:3306
  Source Schema         : btm_loan
 
  Target Server Type    : MySQL
- Target Server Version : 80034 (8.0.34)
+ Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 19/08/2025 07:47:07
+ Date: 09/10/2025 23:12:14
 */
 
 SET NAMES utf8mb4;
@@ -29,14 +29,16 @@ CREATE TABLE `btm_approval`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of btm_approval
 -- ----------------------------
-INSERT INTO `btm_approval` VALUES (1, '2262007', 1, NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `btm_approval` VALUES (2, '10432014', 1, NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `btm_approval` VALUES (3, '11802017', 1, NULL, '2024-12-21 09:58:37', '2024-12-21 09:58:37');
+INSERT INTO `btm_approval` VALUES (1, '10432014', 1, NULL, '2025-08-19 12:58:41', '2025-08-19 12:58:41');
+INSERT INTO `btm_approval` VALUES (2, '2262007', 1, NULL, '2025-08-19 16:00:39', '2025-08-19 16:00:39');
+INSERT INTO `btm_approval` VALUES (3, '25I2OO7', 0, NULL, '2025-08-20 15:09:01', '2025-08-20 15:09:05');
+INSERT INTO `btm_approval` VALUES (4, '2262007', 1, NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `btm_approval` VALUES (5, '10432014', 1, NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
 
 -- ----------------------------
 -- Table structure for cache
@@ -52,10 +54,8 @@ CREATE TABLE `cache`  (
 -- ----------------------------
 -- Records of cache
 -- ----------------------------
-INSERT INTO `cache` VALUES ('btm_request_system_cache_a75f3f172bfb296f2e10cbfc6dfc1883', 'i:1;', 1755519301);
-INSERT INTO `cache` VALUES ('btm_request_system_cache_a75f3f172bfb296f2e10cbfc6dfc1883:timer', 'i:1755519301;', 1755519301);
-INSERT INTO `cache` VALUES ('btm_request_system_cache_f1f70ec40aaa556905d4a030501c0ba4', 'i:5;', 1755520912);
-INSERT INTO `cache` VALUES ('btm_request_system_cache_f1f70ec40aaa556905d4a030501c0ba4:timer', 'i:1755520912;', 1755520912);
+INSERT INTO `cache` VALUES ('btmgo_cache_c59f007c61fb41d0582e9e2645e263a1', 'i:1;', 1759822767);
+INSERT INTO `cache` VALUES ('btmgo_cache_c59f007c61fb41d0582e9e2645e263a1:timer', 'i:1759822767;', 1759822767);
 
 -- ----------------------------
 -- Table structure for cache_locks
@@ -82,14 +82,17 @@ CREATE TABLE `categories`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of categories
 -- ----------------------------
-INSERT INTO `categories` VALUES (1, 'Network Peripheral', '2024-12-19 17:40:42', '2024-12-19 17:40:42');
-INSERT INTO `categories` VALUES (2, 'Audio Visual Apparatus', '2024-12-19 17:40:42', '2024-12-19 17:40:42');
-INSERT INTO `categories` VALUES (3, 'Computers And Notebooks', '2024-12-19 17:40:43', '2024-12-19 17:40:43');
+INSERT INTO `categories` VALUES (1, 'Network', '2025-08-20 12:05:19', '2025-08-20 12:05:19');
+INSERT INTO `categories` VALUES (2, 'Computer', '2025-08-20 12:05:27', '2025-08-20 12:05:27');
+INSERT INTO `categories` VALUES (3, 'Audio Visual Devices', '2025-08-20 12:05:51', '2025-08-20 12:05:51');
+INSERT INTO `categories` VALUES (4, 'WiFi', '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `categories` VALUES (5, 'Audio Visual Apparatus', '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `categories` VALUES (6, 'Computers And Notebooks', '2025-08-25 12:09:10', '2025-08-25 12:09:10');
 
 -- ----------------------------
 -- Table structure for dept_approval
@@ -109,7 +112,7 @@ CREATE TABLE `dept_approval`  (
 -- ----------------------------
 -- Records of dept_approval
 -- ----------------------------
-INSERT INTO `dept_approval` VALUES (1, '0021995', 'PUSH', 1, NULL, '2024-12-19 18:14:19', '2024-12-19 18:14:19');
+INSERT INTO `dept_approval` VALUES (1, '0021995', 'PUSH', 1, NULL, '2025-09-22 16:21:35', '2025-09-22 16:21:35');
 
 -- ----------------------------
 -- Table structure for email_group_members
@@ -124,12 +127,11 @@ CREATE TABLE `email_group_members`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of email_group_members
 -- ----------------------------
-INSERT INTO `email_group_members` VALUES (1, 2, 'B2P', 'hilmichehalim@unishams.edu.my', NULL, '2025-01-24 15:48:31', '2025-01-24 15:48:31');
 
 -- ----------------------------
 -- Table structure for email_registration_applications
@@ -152,13 +154,11 @@ CREATE TABLE `email_registration_applications`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of email_registration_applications
 -- ----------------------------
-INSERT INTO `email_registration_applications` VALUES (1, '12362020', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, 1, NULL, '2024-12-19 18:49:07', '2024-12-19 18:49:07');
-INSERT INTO `email_registration_applications` VALUES (2, '12362020', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, 1, NULL, '2025-01-24 15:48:31', '2025-01-24 15:48:31');
 
 -- ----------------------------
 -- Table structure for email_suggestions
@@ -174,14 +174,11 @@ CREATE TABLE `email_suggestions`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of email_suggestions
 -- ----------------------------
-INSERT INTO `email_suggestions` VALUES (1, 1, 'sdfsdfsdf', NULL, NULL, NULL, '2024-12-19 18:49:07', '2024-12-19 18:49:07');
-INSERT INTO `email_suggestions` VALUES (2, 1, 'zxczxc', NULL, NULL, NULL, '2024-12-19 18:49:07', '2024-12-19 18:49:07');
-INSERT INTO `email_suggestions` VALUES (3, 2, 'xcvxcvxcv', NULL, NULL, NULL, '2025-01-24 15:48:31', '2025-01-24 15:48:31');
 
 -- ----------------------------
 -- Table structure for equipments
@@ -201,12 +198,222 @@ CREATE TABLE `equipments`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `equipments_category_id_foreign`(`category_id` ASC) USING BTREE,
   CONSTRAINT `equipments_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of equipments
 -- ----------------------------
-INSERT INTO `equipments` VALUES (1, 1, 'WiFi Router', 'asdasd', 'asdasd', 'asdasdasd', 'asdasdasdasd\nasdasd', 1, '2025-01-24 01:59:05', '2025-01-24 01:59:05');
+INSERT INTO `equipments` VALUES (1, 1, 'WiFi Router', 'Aztech', 'AZWF123', '123123123', 'none', 1, '2025-08-20 12:06:27', '2025-08-20 12:06:27');
+INSERT INTO `equipments` VALUES (2, 1, 'WiFi Router', 'TP Link', 'TPLWF123', NULL, 'none', 1, '2025-08-20 12:07:18', '2025-08-20 12:07:18');
+INSERT INTO `equipments` VALUES (3, 2, 'Desktop Computer', 'HP', 'HPDC123', '234234234', 'none', 1, '2025-08-20 12:07:56', '2025-08-20 12:07:56');
+INSERT INTO `equipments` VALUES (5, 2, 'Desktop Computer', 'HP', 'HPDC123456', '234234234456', 'none', 1, '2025-08-20 12:09:20', '2025-08-20 12:09:20');
+INSERT INTO `equipments` VALUES (6, 3, 'Microphone', 'None', 'None', 'None', 'none', 1, '2025-08-20 12:10:05', '2025-08-20 12:10:05');
+
+-- ----------------------------
+-- Table structure for failed_jobs
+-- ----------------------------
+DROP TABLE IF EXISTS `failed_jobs`;
+CREATE TABLE `failed_jobs`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `failed_jobs_uuid_unique`(`uuid` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of failed_jobs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for icms_applicant_modules
+-- ----------------------------
+DROP TABLE IF EXISTS `icms_applicant_modules`;
+CREATE TABLE `icms_applicant_modules`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `icms_applicant_module_id` int NOT NULL,
+  `icms_module_id` bigint UNSIGNED NOT NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `icms_applicant_modules_icms_module_id_foreign`(`icms_module_id` ASC) USING BTREE,
+  CONSTRAINT `icms_applicant_modules_icms_module_id_foreign` FOREIGN KEY (`icms_module_id`) REFERENCES `icms_modules` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of icms_applicant_modules
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for icms_modules
+-- ----------------------------
+DROP TABLE IF EXISTS `icms_modules`;
+CREATE TABLE `icms_modules`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `icms_module` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of icms_modules
+-- ----------------------------
+INSERT INTO `icms_modules` VALUES (1, 'Ketua Di Jabatan/Pusat (Head Of Department/Center)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (2, 'Setiausaha Jabatan/Pusat (Secretary Department/Center)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (3, 'Pengurusan Pentadbiran Jabatan/Pusat (Administrative Management)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (4, 'Pengurusan Akademik Kulliyyah (Admin Academic)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (5, 'Dekan (Dean)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (6, 'Ketua Program (Head Of Programme)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (7, 'Pensyarah (Lecturer)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (8, 'Jurulatih Ko-Kurikulum (Co-Qurriculum Trainer)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+INSERT INTO `icms_modules` VALUES (9, 'Lain-lain, Sila Nyatakan. (Others, Please Specify)', NULL, NULL, '2025-09-09 12:41:16', '2025-09-09 12:41:16', NULL);
+
+-- ----------------------------
+-- Table structure for icms_requester_applicants
+-- ----------------------------
+DROP TABLE IF EXISTS `icms_requester_applicants`;
+CREATE TABLE `icms_requester_applicants`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `icms_requester_id` bigint UNSIGNED NOT NULL,
+  `nostaf` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `position` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `menu_setting_only` tinyint(1) NULL DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of icms_requester_applicants
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for icms_requesters
+-- ----------------------------
+DROP TABLE IF EXISTS `icms_requesters`;
+CREATE TABLE `icms_requesters`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nostaf` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `approver_staff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `approver_date` datetime NULL DEFAULT NULL,
+  `approver_remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `approver_status_id` tinyint NULL DEFAULT NULL,
+  `btm_approver` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `btm_date` datetime NULL DEFAULT NULL,
+  `btm_remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `status_request_id` tinyint NULL DEFAULT NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of icms_requesters
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for item_status_history
+-- ----------------------------
+DROP TABLE IF EXISTS `item_status_history`;
+CREATE TABLE `item_status_history`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `item_id` bigint UNSIGNED NOT NULL,
+  `status` enum('available','reserved','borrowed','damaged','maintenance','lost') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `changed_by` bigint UNSIGNED NOT NULL,
+  `changed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `item_status_history_item_id_foreign`(`item_id` ASC) USING BTREE,
+  CONSTRAINT `item_status_history_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of item_status_history
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for items
+-- ----------------------------
+DROP TABLE IF EXISTS `items`;
+CREATE TABLE `items`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_id` bigint UNSIGNED NOT NULL,
+  `brand` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `model` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `serial_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `current_status` enum('available','reserved','borrowed','damaged','maintenance','lost') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'available',
+  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `items_serial_number_unique`(`serial_number` ASC) USING BTREE,
+  INDEX `items_category_id_foreign`(`category_id` ASC) USING BTREE,
+  CONSTRAINT `items_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of items
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for job_batches
+-- ----------------------------
+DROP TABLE IF EXISTS `job_batches`;
+CREATE TABLE `job_batches`  (
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `cancelled_at` int NULL DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of job_batches
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for jobs
+-- ----------------------------
+DROP TABLE IF EXISTS `jobs`;
+CREATE TABLE `jobs`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint UNSIGNED NOT NULL,
+  `reserved_at` int UNSIGNED NULL DEFAULT NULL,
+  `available_at` int UNSIGNED NOT NULL,
+  `created_at` int UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `jobs_queue_index`(`queue` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of jobs
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for loan_applications
@@ -219,6 +426,7 @@ CREATE TABLE `loan_applications`  (
   `date_loan_to` datetime NULL DEFAULT NULL,
   `equipment_pickup_date` datetime NULL DEFAULT NULL,
   `loan_purpose` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `approver_staff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `approver_date` datetime NULL DEFAULT NULL,
   `approver_remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
@@ -232,13 +440,11 @@ CREATE TABLE `loan_applications`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of loan_applications
 -- ----------------------------
-INSERT INTO `loan_applications` VALUES (1, '12362020', '2025-01-27 00:00:00', '2025-02-20 00:00:00', NULL, 'Asd Asd Asd Asd Asd\r\nAsd Asd Asd Asd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, '2025-01-24 16:05:59', '2025-01-24 16:05:59');
-INSERT INTO `loan_applications` VALUES (2, '12362020', '2025-01-27 00:00:00', '2025-02-20 00:00:00', NULL, 'Asd Asd Asd Asd Asd\r\nAsd Asd Asd Asd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, '2025-01-24 16:11:23', '2025-01-24 16:11:23');
 
 -- ----------------------------
 -- Table structure for loan_equipments
@@ -260,13 +466,11 @@ CREATE TABLE `loan_equipments`  (
   INDEX `loan_equipments_equipment_id_foreign`(`equipment_id` ASC) USING BTREE,
   CONSTRAINT `loan_equipments_application_id_foreign` FOREIGN KEY (`application_id`) REFERENCES `loan_applications` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `loan_equipments_equipment_id_foreign` FOREIGN KEY (`equipment_id`) REFERENCES `equipments` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of loan_equipments
 -- ----------------------------
-INSERT INTO `loan_equipments` VALUES (1, 1, 1, NULL, NULL, 1, NULL, NULL, '2025-01-24 16:05:59', '2025-01-24 16:05:59');
-INSERT INTO `loan_equipments` VALUES (2, 2, 1, NULL, NULL, 1, NULL, NULL, '2025-01-24 16:11:23', '2025-01-24 16:11:23');
 
 -- ----------------------------
 -- Table structure for migrations
@@ -277,28 +481,39 @@ CREATE TABLE `migrations`  (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of migrations
 -- ----------------------------
-INSERT INTO `migrations` VALUES (1, '2024_12_01_122408_create_btm_approval_table', 1);
-INSERT INTO `migrations` VALUES (2, '2024_12_01_122452_create_categories_table', 1);
-INSERT INTO `migrations` VALUES (3, '2024_12_01_122508_create_dept_approval_table', 1);
-INSERT INTO `migrations` VALUES (4, '2024_12_01_122521_create_equipments_table', 1);
-INSERT INTO `migrations` VALUES (5, '2024_12_01_122539_create_loan_applications_table', 1);
-INSERT INTO `migrations` VALUES (6, '2024_12_01_122551_create_loan_equipments_table', 1);
-INSERT INTO `migrations` VALUES (7, '2024_12_01_122609_create_status_equipments_table', 1);
-INSERT INTO `migrations` VALUES (8, '2024_12_01_122618_create_status_loans_table', 1);
-INSERT INTO `migrations` VALUES (9, '2024_12_02_131615_create_status_approvals_table', 1);
-INSERT INTO `migrations` VALUES (10, '2024_12_05_094623_create_email_suggestions_table', 1);
-INSERT INTO `migrations` VALUES (11, '2024_12_09_131256_create_status_applications_table', 1);
-INSERT INTO `migrations` VALUES (12, '2024_12_10_111012_create_email_registration_applications_table', 1);
-INSERT INTO `migrations` VALUES (13, '2024_12_10_115842_create_email_group_members_table', 1);
-INSERT INTO `migrations` VALUES (14, '2024_12_17_101213_create_notifications_table', 1);
-INSERT INTO `migrations` VALUES (15, '2025_02_12_202714_create_sessions_table', 2);
-INSERT INTO `migrations` VALUES (16, '2025_02_12_202742_create_cache_table', 2);
-INSERT INTO `migrations` VALUES (17, '2019_12_14_000001_create_personal_access_tokens_table', 3);
+INSERT INTO `migrations` VALUES (1, '2019_12_14_000001_create_personal_access_tokens_table', 1);
+INSERT INTO `migrations` VALUES (2, '2024_12_01_122408_create_btm_approval_table', 1);
+INSERT INTO `migrations` VALUES (3, '2024_12_01_122452_create_categories_table', 1);
+INSERT INTO `migrations` VALUES (4, '2024_12_01_122508_create_dept_approval_table', 1);
+INSERT INTO `migrations` VALUES (5, '2024_12_01_122521_create_equipments_table', 1);
+INSERT INTO `migrations` VALUES (6, '2024_12_01_122539_create_loan_applications_table', 1);
+INSERT INTO `migrations` VALUES (7, '2024_12_01_122551_create_loan_equipments_table', 1);
+INSERT INTO `migrations` VALUES (8, '2024_12_01_122609_create_status_equipments_table', 1);
+INSERT INTO `migrations` VALUES (9, '2024_12_01_122618_create_status_loans_table', 1);
+INSERT INTO `migrations` VALUES (10, '2024_12_02_131615_create_status_approvals_table', 1);
+INSERT INTO `migrations` VALUES (11, '2024_12_05_094623_create_email_suggestions_table', 1);
+INSERT INTO `migrations` VALUES (12, '2024_12_09_131256_create_status_applications_table', 1);
+INSERT INTO `migrations` VALUES (13, '2024_12_10_111012_create_email_registration_applications_table', 1);
+INSERT INTO `migrations` VALUES (14, '2024_12_10_115842_create_email_group_members_table', 1);
+INSERT INTO `migrations` VALUES (15, '2024_12_17_101213_create_notifications_table', 1);
+INSERT INTO `migrations` VALUES (16, '2025_02_12_202714_create_sessions_table', 1);
+INSERT INTO `migrations` VALUES (17, '2025_02_12_202742_create_cache_table', 1);
+INSERT INTO `migrations` VALUES (18, '2025_08_19_160510_create_items_table', 2);
+INSERT INTO `migrations` VALUES (19, '2025_08_19_204604_add_location_to_loan_applications_table', 3);
+INSERT INTO `migrations` VALUES (20, '2025_09_08_125720_create_icms_requesters_table', 4);
+INSERT INTO `migrations` VALUES (21, '2025_09_08_132047_create_icms_requester_applicants_table', 4);
+INSERT INTO `migrations` VALUES (22, '2025_09_09_104932_create_icms_modules_table', 4);
+INSERT INTO `migrations` VALUES (23, '2025_09_09_110636_create_icms_applicant_modules_table', 4);
+INSERT INTO `migrations` VALUES (24, '2025_09_09_130232_add_username_and_password_to_icms_requester_applicants_table', 5);
+INSERT INTO `migrations` VALUES (25, '2025_09_10_115136_change_icms_requester_module_id_to_icms_applicants_module_id_to_icms_applicant_modules_table', 6);
+INSERT INTO `migrations` VALUES (26, '2025_09_29_202833_create_jobs_table', 7);
+INSERT INTO `migrations` VALUES (27, '2025_09_29_203036_create_job_batches_table', 7);
+INSERT INTO `migrations` VALUES (28, '2025_09_29_203037_create_failed_jobs_table', 7);
 
 -- ----------------------------
 -- Table structure for notifications
@@ -320,13 +535,6 @@ CREATE TABLE `notifications`  (
 -- ----------------------------
 -- Records of notifications
 -- ----------------------------
-INSERT INTO `notifications` VALUES ('1533e326-00f5-427e-9bb6-1ee559a45d41', 'App\\Notifications\\ApplicantEmailAlert', 'App\\Models\\Login', 21995, '{\"data\":\"New email registration application\",\"link\":\"http:\\/\\/localhost:8000\\/emailaccapp\\/1\"}', '2024-12-19 19:00:19', '2024-12-19 18:49:08', '2024-12-19 19:00:19');
-INSERT INTO `notifications` VALUES ('550088c1-efca-4237-a337-de1174d35e86', 'App\\Notifications\\ApplicantEmailAlert', 'App\\Models\\Login', 21995, '{\"data\":\"New email registration\",\"link\":\"http:\\/\\/localhost:8000\\/emailaccapp\\/2\"}', NULL, '2025-01-24 15:48:32', '2025-01-24 15:48:32');
-INSERT INTO `notifications` VALUES ('a561fb37-cb4a-4e48-ae71-ca0620850fd9', 'App\\Notifications\\ApplicantEmailAlertBTM', 'App\\Models\\Login', 2262007, '{\"data\":\"New email registration\",\"link\":\"http:\\/\\/localhost:8000\\/btmemailapplications\\/2\\/edit\"}', NULL, '2025-01-24 15:48:32', '2025-01-24 15:48:32');
-INSERT INTO `notifications` VALUES ('b6bb4845-9cb2-45e9-88a1-80cd20184080', 'App\\Notifications\\ApplicantEmailAlert', 'App\\Models\\Login', 10432014, '{\"data\":\"New email registration application\",\"link\":\"http:\\/\\/localhost:8000\\/emailaccapp\\/1\"}', '2024-12-21 09:54:52', '2024-12-19 18:49:08', '2024-12-21 09:54:52');
-INSERT INTO `notifications` VALUES ('c62d14d4-dd00-4894-8b1b-d6afb7054749', 'App\\Notifications\\ApplicantEmailAlert', 'App\\Models\\Login', 2262007, '{\"data\":\"New email registration application\",\"link\":\"http:\\/\\/localhost:8000\\/emailaccapp\\/1\"}', NULL, '2024-12-19 18:49:08', '2024-12-19 18:49:08');
-INSERT INTO `notifications` VALUES ('d7e10a8d-008a-4d52-898e-cb69c43616c0', 'App\\Notifications\\ApplicantEmailAlertBTM', 'App\\Models\\Login', 11802017, '{\"data\":\"New email registration\",\"link\":\"http:\\/\\/localhost:8000\\/btmemailapplications\\/2\\/edit\"}', NULL, '2025-01-24 15:48:32', '2025-01-24 15:48:32');
-INSERT INTO `notifications` VALUES ('f6270d08-8c46-4a32-8ca1-c1eafc7163c2', 'App\\Notifications\\ApplicantEmailAlertBTM', 'App\\Models\\Login', 10432014, '{\"data\":\"New email registration\",\"link\":\"http:\\/\\/localhost:8000\\/btmemailapplications\\/2\\/edit\"}', '2025-01-24 23:47:42', '2025-01-24 15:48:32', '2025-01-24 23:47:42');
 
 -- ----------------------------
 -- Table structure for personal_access_tokens
@@ -372,9 +580,9 @@ CREATE TABLE `sessions`  (
 -- ----------------------------
 -- Records of sessions
 -- ----------------------------
-INSERT INTO `sessions` VALUES ('gyv6gGXQm8XU5HVsVoz7trM62XkN7h9K1pKLlIqk', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibW5yTW8zUkdZOHo3cGtIUVNSNkptSVRWV0djZnRGTDZzTlhicWU0MiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fX0=', 1755519160);
-INSERT INTO `sessions` VALUES ('KclIZJpnddNu1v5l3g9LUCbgU9e1En98pD41Z7NJ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVWFTZkFOdktEbmVCTTJ4YUs4eTVaS1hKeU56c3dwN0RkdHdHUThQaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1755519230);
-INSERT INTO `sessions` VALUES ('XG5OPZE9AnYhnax6oJ60Q5MGI8hQJaXgzng387yV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUnpGTnVlY0hpUTBhRWZjZjIxV1JSU3ZmOWY1SG1XYlVLcXRCNGZPdCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fX0=', 1755520876);
+INSERT INTO `sessions` VALUES ('3y3ScxdVZ7ALWFwjOtlJ2GUV1GVPACC0ZUhjnV0m', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWEk3Qlp3RjFSMFUxbFJVazdqNjA4RXcyT1pQTmEyeHNuM0FmcWdEQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fX0=', 1759812381);
+INSERT INTO `sessions` VALUES ('AkOLNzyivIT4KcI8I2wSR63JoNgTdrbbXJUX8SnW', 12362020, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZ3c3ZnA0Z3FKWWhQZ293QVhjanExYjVHUWdmZzJDRWx1NDk4enFrUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9lbWFpbGFjY2FwcC9jcmVhdGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7czo4OiIxMjM2MjAyMCI7czoxNzoicGFzc3dvcmRfaGFzaF93ZWIiO3M6NjA6IiQyeSQxMiR1UXlmZ21Id2czLzlrdmlpU2dKaVYuOWFiQW03Z2M1WmxPNnZ3ejVsRDNDem55WkIxdGVvRyI7fQ==', 1759811590);
+INSERT INTO `sessions` VALUES ('eCQWSkICipQPNv1ZXXy7I80yIRKZBWryuy9IBrMY', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOW4zVzlZWXVmSGhBWjI1c3dBcGdhUENhZkRVdXlMdGNmYnpqUWJTZyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fX0=', 1759822928);
 
 -- ----------------------------
 -- Table structure for status_applications
@@ -392,9 +600,9 @@ CREATE TABLE `status_applications`  (
 -- ----------------------------
 -- Records of status_applications
 -- ----------------------------
-INSERT INTO `status_applications` VALUES (1, 'Permohonan Diluluskan', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_applications` VALUES (2, 'Permohonan Tidak Diluluskan', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_applications` VALUES (3, 'Permohonan Sedang Diproses', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
+INSERT INTO `status_applications` VALUES (1, 'Permohonan Diluluskan', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_applications` VALUES (2, 'Permohonan Tidak Diluluskan', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_applications` VALUES (3, 'Permohonan Sedang Diproses', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
 
 -- ----------------------------
 -- Table structure for status_approvals
@@ -412,8 +620,8 @@ CREATE TABLE `status_approvals`  (
 -- ----------------------------
 -- Records of status_approvals
 -- ----------------------------
-INSERT INTO `status_approvals` VALUES (1, 'Permohonan Disokong', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_approvals` VALUES (2, 'Permohonan Tidak Disokong', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
+INSERT INTO `status_approvals` VALUES (1, 'Permohonan Disokong', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_approvals` VALUES (2, 'Permohonan Tidak Disokong', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
 
 -- ----------------------------
 -- Table structure for status_equipments
@@ -431,9 +639,9 @@ CREATE TABLE `status_equipments`  (
 -- ----------------------------
 -- Records of status_equipments
 -- ----------------------------
-INSERT INTO `status_equipments` VALUES (1, 'OK', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_equipments` VALUES (2, 'Damage', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_equipments` VALUES (3, 'Obsolete', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
-INSERT INTO `status_equipments` VALUES (4, 'Under Repair', NULL, '2024-12-19 17:40:43', '2024-12-19 17:40:43');
+INSERT INTO `status_equipments` VALUES (1, 'OK', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_equipments` VALUES (2, 'Damage', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_equipments` VALUES (3, 'Obsolete', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
+INSERT INTO `status_equipments` VALUES (4, 'Under Repair', NULL, '2025-08-25 12:09:10', '2025-08-25 12:09:10');
 
 SET FOREIGN_KEY_CHECKS = 1;

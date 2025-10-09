@@ -316,7 +316,7 @@ class EmailRegistrationApplicationController extends Controller
 		->get()
 		->flatMap->hasmanylogin
 		->map(function ($login) use ($emailaccapp) {
-			$login->setConnection('mysql3');
+			// $login->setConnection('mysql3');
 			return $login->notify(new ApplicantEmailApproverDelete($emailaccapp));
 		});
 
@@ -329,7 +329,7 @@ class EmailRegistrationApplicationController extends Controller
 			->first();
 
 			if ($adm) {
-				$adm->setConnection('mysql3');
+				// $adm->setConnection('mysql3');
 				$adm->notify(new ApplicantEmailBTMDelete($emailaccapp));
 			}
 		});
