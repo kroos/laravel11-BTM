@@ -59,7 +59,3 @@ import	'./addRemoveRowjQueryPlugins';
 
 // bootstrap5Validator
 import	'./bootstrapValidator5';
-
-// datatable plugin
-import	'./dataTable-any-number';
-import	'./dataTable-moment';
