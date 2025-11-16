@@ -92,28 +92,29 @@ class EmailRegistrationApplicationController extends Controller
 	{
 		// dd($request->all());
 		$request->validate([
-				'nostaf' => 'required',
-				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
-				'emreg' => [new UniqueEmail],
-				'acknowledge' => 'required',
-				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
-				'emregmem.*.email_member' => 'required_if_accepted:group_email',
-			], [
-				'nostaf' => 'Please insert :attribute',
-				'group_email' => 'Please click :attribute',
-				'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
-				'acknowledge' => 'Please click on :attribute',
-				'emregmem.*.email_member_department' => 'Please choose :attribute at #:position',	//:index
-				'emregmem.*.email_member' => 'Please choose :attribute at #:position',	//:index
+			'nostaf' => 'required',
+			'group_email' => 'nullable',
+			'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
+			'emreg' => [new UniqueEmail],
+			'emregmem' => 'required_if_accepted:group_email|array|min:1',
+			'acknowledge' => 'required',
+			'emregmem.*.department_id' => 'required_if_accepted:group_email',
+			'emregmem.*.email_staff' => 'required_if_accepted:group_email',
+		], [
+			'nostaf' => 'Please insert :attribute',
+			'group_email' => 'Please click :attribute',
+			'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
+			'acknowledge' => 'Please click on :attribute',
+				'emregmem.*.department_id' => 'Please choose :attribute at #:position',	//:index
+				'emregmem.*.email_staff' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
 				'emreg.*.email_suggestion' => 'Email ID',
 				'acknowledge' => 'Acknowledgement',
-				'emregmem.*.email_member_department' => 'Department',
-				'emregmem.*.email_member' => 'Staff',
-		]);
+				'emregmem.*.department_id' => 'Department',
+				'emregmem.*.email_staff' => 'Staff',
+			]);
 
 		$data = $request->only(['nostaf', 'group_email']);
 		$data += ['active' => 1];
@@ -131,8 +132,8 @@ class EmailRegistrationApplicationController extends Controller
 		if ($request->has('emregmem')) {
 			foreach($request->emregmem as $k1 => $v1) {
 				$r->hasmanyemailgroupmember()->create([
-					'department_id' => $v1['email_member_department'],
-					'email_staff' => $v1['email_member']
+					'department_id' => $v1['department_id'],
+					'email_staff' => $v1['email_staff']
 				]);
 			};
 		};
@@ -203,54 +204,48 @@ class EmailRegistrationApplicationController extends Controller
 	{
 		// dd($request->all());
 		$request->validate([
-				'nostaf' => 'required',
-				'group_email' => 'nullable',
-				'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
-				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
-				'emregmem.*.email_member' => 'required_if_accepted:group_email',
-			], [
-				'nostaf' => 'Please insert :attribute',
-				'group_email' => 'Please click :attribute',
-				'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
-				'emregmem.*.email_member_department' => 'Please choose :attribute at #:position',	//:index
-				'emregmem.*.email_member' => 'Please choose :attribute at #:position',	//:index
+			'nostaf' => 'required',
+			'group_email' => 'nullable',
+			'emreg' => 'required|array|min:1',
+			'emregmem' => 'required_if_accepted:group_email|array|min:1',
+			'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
+			'emregmem.*.department_id' => 'required_if_accepted:group_email',
+			'emregmem.*.email_staff' => 'required_if_accepted:group_email',
+		], [
+			'nostaf' => 'Please insert :attribute',
+			'group_email' => 'Please click :attribute',
+			'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
+				'emregmem.*.department_id' => 'Please choose :attribute at #:position',	//:index
+				'emregmem.*.email_staff' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
+				'emreg' => 'Staff Email',
+				'emregmem' => 'Group Email',
 				'emreg.*.email_suggestion' => 'Email ID',
-				'emregmem.*.email_member_department' => 'Department',
-				'emregmem.*.email_member' => 'Staff',
-		]);
+				'emregmem.*.department_id' => 'Department',
+				'emregmem.*.email_staff' => 'Staff',
+			]);
 
 		$data = $request->only(['nostaf', 'group_email']);
 		$data += ['active' => 1];
 		$data += ['status_email_id' => 3];
+
 		$r = $emailaccapp->update($data);
 
-		if ($request->has('emreg')) {
-			foreach($request->emreg as $k => $v) {
-				EmailSuggestion::updateOrCreate([
-						'id' => $v['id'],
-						'email_application_id' => $emailaccapp->id
-					],
-					[
-						'email_suggestion' => $v['email_suggestion']
-				]);
-			};
-		};
+		foreach ($request->emreg as $entryData) {
+			$emailaccapp->hasmanyemailsuggestion()->updateOrCreate(
+				['id' => $entryData['id'] ?? null],
+				$entryData
+			);
+		}
 
-		if ($request->has('emregmem')) {
-			foreach($request->emregmem as $k1 => $v1) {
-				EmailGroupMember::updateOrCreate([
-						'id' => $v1['id'],
-						'email_application_id' => $emailaccapp->id
-					],
-					[
-						'department_id' => $v1['email_member_department'],
-						'email_staff' => $v1['email_member']
-				]);
-			};
-		};
+		foreach ($request->emregmem as $entry1Data) {
+			$emailaccapp->hasmanyemailgroupmember()->updateOrCreate(
+				['id' => $entry1Data['id'] ?? null],
+				$entry1Data
+			);
+		}
 
 		Pdf::loadView('email.show', ['email' => $emailaccapp])->setOption(['dpi' => 120])->save(storage_path('app/public/pdf/').'BTM-ER-'.Carbon::parse($emailaccapp->created_at)->format('ym').str_pad( $emailaccapp->id, 3, "0", STR_PAD_LEFT).'.pdf');
 		// pdf admin

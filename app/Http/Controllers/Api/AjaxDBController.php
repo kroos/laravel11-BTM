@@ -93,7 +93,12 @@ class AjaxDBController extends Controller
 	public function listjabatan(Request $request): JsonResponse
 	{
 		$values = Jabatan::where('aktif', 1)
-												->where('namajabatan','LIKE','%'.$request->search.'%')
+												->when($request->kodjabatan, function($query) use ($request){
+													$query->where('kodjabatan', $request->kodjabatan);
+												})
+												->when($request->kodjabatan, function($query) use ($request){
+													$query->where('namajabatan','LIKE','%'.$request->search.'%');
+												})
 												->orderBy('namajabatan')
 												->get();
 		// dd($values);
@@ -229,9 +234,18 @@ class AjaxDBController extends Controller
 		$je = Jabatan::find($request->dept_id)->belongstomanystaff()->get();
 		$p = [];
 		foreach ($je as $e) {
-			$activeLogin = $e->hasmanylogin()->where('is_active', 1)->first();
+			$activeLogin = $e->hasmanylogin()->where('is_active', 1)
+											->when($request->email, function($query) use ($request){
+												$query->where('email', $request->email);
+											})
+											->first();
 			if ($activeLogin !== null && $activeLogin->email !== null) {
-					$p[] = $e->hasmanylogin()->where('is_active', 1)->pluck('email', 'name');
+					$p[] = $e->hasmanylogin()
+										->where('is_active', 1)
+										->when($request->email, function($query) use ($request){
+											$query->where('email', $request->email);
+										})
+										->pluck('email', 'name');
 			}
 		}
 		return response()->json($p);
