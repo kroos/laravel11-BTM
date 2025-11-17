@@ -93,35 +93,38 @@ class ICMSRequesterController extends Controller
 	{
 		// dd($request->all());
 		$validator = Validator::make($request->all(), [
-				'emreg.*.nama' => 'required|string',
-				'emreg.*.position' => 'required|string',
-				'emreg.*.proposed_id' => 'required|alpha_num',
-				'emreg.*.icms_module_id' => 'required|array|min:1',
-				'emreg.*.icms_module_id.dll' => 'required_if:emreg.*.icms_module_id,9',
+				'applicants' => 'required|array|min:1',
+				// 'applicants' => 'required|array|min:1',
+				'applicants.*.nama' => 'required|string',
+				'applicants.*.position' => 'required|string',
+				'applicants.*.username' => 'required|alpha_num',
+				'applicants.*.icms_module_id' => 'required|array|min:1',
+				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
-				'emreg.*.nama' => 'Please insert :attribute at #:position',
-				'emreg.*.position' => 'Please insert :attribute at #:position',
-				// 'emreg.*.proposed_id' => 'Please insert :attribute at #:position',
-				'emreg.*.proposed_id.required'   => ':attribute wajib diisi.',
-				'emreg.*.proposed_id.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
-				'emreg.*.icms_module_id' => 'Please check on :attribute at #:position',
-				'emreg.*.icms_module_id.dll' => 'Please insert :attribute',
+				'applicants.*.nama' => 'Please insert :attribute at #:position',
+				'applicants.*.position' => 'Please insert :attribute at #:position',
+				// 'applicants.*.username' => 'Please insert :attribute at #:position',
+				'applicants.*.username.required'   => ':attribute wajib diisi.',
+				'applicants.*.username.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
+				'applicants.*.icms_module_id' => 'Please check on :attribute at #:position',
+				'applicants.*.icms_module_id.remarks' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
-				'emreg.*.nama' => 'Nama Staff',
-				'emreg.*.position' => 'Jawatan',
-				'emreg.*.proposed_id' => 'Cadangan ID',
-				'emreg.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				'emreg.*.icms_module_id.dll' => 'Sila Nyatakan',
+				'applicants' => 'Pemohon',
+				'applicants.*.nama' => 'Nama Staff',
+				'applicants.*.position' => 'Jawatan',
+				'applicants.*.username' => 'Cadangan ID',
+				'applicants.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
+				'applicants.*.icms_module_id.remarks' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
 		$validator->after(function ($validator) use ($request) {
-			foreach ($request->input('emreg', []) as $index => $emreg) {
-				if (isset($emreg['icms_module_id']) && in_array(9, $emreg['icms_module_id'])) {
-					if (empty($emreg['icms_module_id']['dll'] ?? null)) {
+			foreach ($request->input('applicants', []) as $index => $applicants) {
+				if (isset($applicants['icms_module_id']) && in_array(9, $applicants['icms_module_id'])) {
+					if (empty($applicants['icms_module_id']['remarks'] ?? null)) {
 						$validator->errors()->add(
-							"emreg.$index.icms_module_id.dll",
+							"applicants.$index.icms_module_id.remarks",
 							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
 						);
 					}
@@ -132,17 +135,20 @@ class ICMSRequesterController extends Controller
 		$validator->validate();
 		$requester = \Auth::user()->belongstostaff->hasmanyicmsrequester()->create(['status_request_id' => 3]);
 
-		foreach($request->emreg as $k => $v) {
+		foreach($request->applicants as $k => $v) {
 			// populate icms_requester_applicants
 			$ra = $requester->hasmanyapplicant()->create([
 				'nostaf' => $v['nama'],
 				'position' => $v['position'],
-				'username' => $v['proposed_id'],
+				'username' => $v['username'],
 			]);
 
 			// populate icms_applicant_modules
 			foreach ($v['icms_module_id'] as $ke => $va) {
-				if ($ke === 'dll') {
+				foreach($ke['icms_module_id'] as $k1 => $v1){
+					dd($v1);
+				}
+				if ($ke === 'remarks') {
 					continue;
 				}
 
@@ -150,12 +156,12 @@ class ICMSRequesterController extends Controller
 				$pivotData = [];
 
 				foreach ($v['icms_module_id'] as $ke => $va) {
-					if ($ke === 'dll') {
+					if ($ke === 'remarks') {
 						continue;
 					}
 
 					$pivotData[$va] = [
-						'remarks' => ($va == 9) ? ($v['icms_module_id']['dll'] ?? null) : null,
+						'remarks' => ($va == 9) ? ($va['icms_module_id']['remarks'] ?? null) : null,
 					];
 				}
 			};
@@ -228,35 +234,35 @@ class ICMSRequesterController extends Controller
 	{
 		// dd($request->all());
 		$validator = Validator::make($request->all(), [
-				'emreg.*.nama' => 'required|string',
-				'emreg.*.position' => 'required|string',
-				'emreg.*.proposed_id' => 'required|alpha_num',
-				'emreg.*.icms_module_id' => 'required|array|min:1',
-				'emreg.*.icms_module_id.remarks' => 'required_if:emreg.*.icms_module_id,9',
+				'applicants.*.nama' => 'required|string',
+				'applicants.*.position' => 'required|string',
+				'applicants.*.username' => 'required|alpha_num',
+				'applicants.*.icms_module_id' => 'required|array|min:1',
+				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
-				'emreg.*.nama' => 'Please insert :attribute at #:position',
-				'emreg.*.position' => 'Please insert :attribute at #:position',
-				// 'emreg.*.proposed_id' => 'Please insert :attribute at #:position',
-				'emreg.*.proposed_id.required'   => ':attribute wajib diisi.',
-				'emreg.*.proposed_id.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
-				'emreg.*.icms_module_id' => 'Please check on :attribute at #:position',
-				'emreg.*.icms_module_id.remarks' => 'Please insert :attribute',
+				'applicants.*.nama' => 'Please insert :attribute at #:position',
+				'applicants.*.position' => 'Please insert :attribute at #:position',
+				// 'applicants.*.username' => 'Please insert :attribute at #:position',
+				'applicants.*.username.required'   => ':attribute wajib diisi.',
+				'applicants.*.username.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
+				'applicants.*.icms_module_id' => 'Please check on :attribute at #:position',
+				'applicants.*.icms_module_id.remarks' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
-				'emreg.*.nama' => 'Nama Staff',
-				'emreg.*.position' => 'Jawatan',
-				'emreg.*.proposed_id' => 'Cadangan ID',
-				'emreg.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				'emreg.*.icms_module_id.remarks' => 'Sila Nyatakan',
+				'applicants.*.nama' => 'Nama Staff',
+				'applicants.*.position' => 'Jawatan',
+				'applicants.*.username' => 'Cadangan ID',
+				'applicants.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
+				'applicants.*.icms_module_id.remarks' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
 		$validator->after(function ($validator) use ($request) {
-			foreach ($request->input('emreg', []) as $index => $emreg) {
-				if (isset($emreg['icms_module_id']) && in_array(9, $emreg['icms_module_id'])) {
-					if (empty($emreg['icms_module_id']['remarks'] ?? null)) {
+			foreach ($request->input('applicants', []) as $index => $applicants) {
+				if (isset($applicants['icms_module_id']) && in_array(9, $applicants['icms_module_id'])) {
+					if (empty($applicants['icms_module_id']['remarks'] ?? null)) {
 						$validator->errors()->add(
-							"emreg.$index.icms_module_id.remarks",
+							"applicants.$index.icms_module_id.remarks",
 							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
 						);
 					}
@@ -266,7 +272,7 @@ class ICMSRequesterController extends Controller
 
 		$validator->validate();
 
-		foreach($request->emreg as $k => $v) {
+		foreach($request->applicants as $k => $v) {
 			// populate icms_requester_applicants
 
 			// can use this method but i made a mistake on frontend
@@ -277,7 +283,7 @@ class ICMSRequesterController extends Controller
 				],[
 				'nostaf' => $v['nama'],
 				'position' => $v['position'],
-				'username' => $v['proposed_id'],
+				'username' => $v['username'],
 			]);
 
 $d[$k] = $v['icms_module_id'];

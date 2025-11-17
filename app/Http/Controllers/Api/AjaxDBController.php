@@ -77,6 +77,9 @@ class AjaxDBController extends Controller
 												$query->where('nama','LIKE','%'.$request->search.'%')
 												->orWhere('nostaf','LIKE','%'.$request->search.'%');
 											})
+											->when($request->nostaf, function($query) use ($request){
+												$query->where('nostaf', $request->nostaf);
+											})
 											->orderBy('nama')
 											->get();
 		foreach ($values as $value) {

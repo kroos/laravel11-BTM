@@ -6,37 +6,11 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('regaccicms.update', $regaccicm) }}" method="POST" class="needs-validation" novalidate>
-		@method('PATCH')
+	<form action="{{ route('regaccicms.store') }}" method="POST" class="needs-validation" novalidate>
 		@csrf
-		<div class="container d-flex justify-content-between">
-<!--
-			<div class="col-4-sm m-2 p-1">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Pemohon</h3>
-					</div>
-					<div class="card-body">
-						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="id" class="col-sm-4" :value="__('No. Staf : ')" />
-							<div class="col-sm-8">
-								<x-text-input id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" class="{{ ($errors->has('nostaf')?'is-invalid':NULL) }}" readonly />
-								<x-input-error :messages="$errors->get('nostaf')" />
-							</div>
-						</div>
-						<div class="col-sm-12 mt-2 row">
-							<x-input-label for="staf" class="col-sm-4" :value="__('Nama Staf : ')" />
-							<div class="col-sm-8">
-								<x-text-input id="staf" name="nama" value="{{ Auth::user()->name }}" class="{{ ($errors->has('nama')?'is-invalid':NULL) }}" readonly />
-								<x-input-error :messages="$errors->get('nama')" />
-							</div>
-						</div>
+		<div class="col-sm-12 d-flex flex-column align-items-center">
 
-					</div>
-				</div>
-			</div>
-			-->
-			<div class="col-sm-12 mt-2 p-1">
+			<div class="col-sm-8 mt-2 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Maklumat Pemohon</h3>
@@ -44,82 +18,71 @@
 					<div class="card-body">
 
 						<div id="applicants_wrap">
-							<?php
-								$i = 0;
-							?>
-							@if($regaccicm->hasmanyapplicant()->count())
-								@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
-								<div class="col-sm-12 row m-3" id="applicant_{{ $i }}">
-									<input type="hidden" name="emreg[{{ $i }}][id]" value="{{ $v1->id }}">
-									<div class="col-sm-7 m-0 p-1">
+							<div class="col-sm-12 row m-0" id="applicant_0">
+								<div class="col-sm-7 m-0 p-1">
 
-										<div class="col-sm-12 m-1 row">
-											<x-input-label for="nama_{{ $i }}" class="col-sm-3" :value="__('Nama Staff : ')" />
-											<div class="col-sm-9">
-												<select id="nama_{{ $i }}" name="emreg[{{ $i }}][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
-												@error('emreg.*.nama')
-												<div class="invalid-feedback">
-													{{ $message }}
-												</div>
-												@enderror
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="nama_0" class="col-sm-3" :value="__('Nama Staff : ')" />
+										<div class="col-sm-9">
+											<select id="nama_0" name="emreg[0][nama]" class="form-select form-select-sm @error('emreg.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
+											@error('emreg.*.nama')
+											<div class="invalid-feedback">
+												{{ $message }}
 											</div>
+											@enderror
 										</div>
-
-										<div class="col-sm-12 m-1 row">
-											<x-input-label for="nostaf_{{ $i }}" class="col-sm-3" :value="__('No Staff : ')" />
-											<div class="col-sm-9">
-												<input id="nostaf_{{ $i }}" type="text" name="emreg[{{ $i }}][nostaf]" value="{{ old('emreg.*.nostaf', $v1->nostaf) }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
-											</div>
-										</div>
-
-										<div class="col-sm-12 m-1 row">
-											<x-input-label for="email_{{ $i }}" class="col-sm-3" :value="__('Email : ')" />
-											<div class="col-sm-9">
-												<input id="email_{{ $i }}" type="text" name="emreg[{{ $i }}][email]" value="{{ old('emreg.*.email', $v1->belongstoicmsapplicant?->hasmanylogin()?->first()?->email) }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
-											</div>
-										</div>
-
-										<div class="col-sm-12 m-1 row">
-											<x-input-label for="jawatan_{{ $i }}" class="col-sm-3" :value="__('Jawatan : ')" />
-											<div class="col-sm-9">
-												<input id="jawatan_{{ $i }}" type="text" name="emreg[{{ $i }}][position]" value="{{ old('emreg.*.position', $v1['position']) }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
-												@error('emreg.*.position')
-												<div class="invalid-feedback">
-													{{ $message }}
-												</div>
-												@enderror
-											</div>
-										</div>
-
-										<div class="col-sm-12 m-1 row">
-											<x-input-label for="cadid_{{ $i }}" class="col-sm-3" :value="__('Cadangan ID : ')" />
-											<div class="col-sm-9">
-												<input id="cadid_{{ $i }}" type="text" name="emreg[{{ $i }}][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" value="{{ old('emreg.*.proposed_id', $v1['username']) }}" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_{{ $i }}">
-												<div id="CadanganIDHelpBlock_{{ $i }}" class="form-text fs-6 fw-lighter">
-													Hanya untuk pemohon baru.
-												</div>
-												@error('emreg.*.proposed_id')
-												<div class="invalid-feedback">
-													{{ $message }}
-												</div>
-												@enderror
-											</div>
-										</div>
-
 									</div>
 
-									<div class="col-sm-5 m-0 p-1" id="checkbox_{{ $i }}">
-										<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="nostaf_0" class="col-sm-3" :value="__('No Staff : ')" />
+										<div class="col-sm-9">
+											<input id="nostaf_0" type="text" name="emreg[0][nostaf]" value="{{ old('emreg.*.nostaf') }}" class="form-control form-control-sm @error('emreg.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
+										</div>
 									</div>
-									<div class="col-sm-12 m-2">
-										<button type="button" class="btn btn-sm btn-danger applicant_delete" data-id="{{ $v1->id }}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="email_0" class="col-sm-3" :value="__('Email : ')" />
+										<div class="col-sm-9">
+											<input id="email_0" type="text" name="emreg[0][email]" value="{{ old('emreg.*.email') }}" class="form-control form-control-sm @error('emreg.*.email') is-invalid @enderror" placeholder="Email" readonly>
+										</div>
 									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="jawatan_0" class="col-sm-3" :value="__('Jawatan : ')" />
+										<div class="col-sm-9">
+											<input id="jawatan_0" type="text" name="emreg[0][position]" value="{{ old('emreg.*.position') }}" class="form-control form-control-sm @error('emreg.*.position') is-invalid @enderror" placeholder="Jawatan">
+											@error('emreg.*.position')
+											<div class="invalid-feedback">
+												{{ $message }}
+											</div>
+											@enderror
+										</div>
+									</div>
+
+									<div class="col-sm-12 m-1 row">
+										<x-input-label for="cadid_0" class="col-sm-3" :value="__('Cadangan ID : ')" />
+										<div class="col-sm-9">
+											<input id="cadid_0" type="text" name="emreg[0][proposed_id]" class="form-control form-control-sm @error('emreg.*.proposed_id') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_0">
+											<div id="CadanganIDHelpBlock_0" class="form-text fs-6 fw-lighter">
+												Hanya untuk pemohon baru.
+											</div>
+											@error('emreg.*.proposed_id')
+											<div class="invalid-feedback">
+												{{ $message }}
+											</div>
+											@enderror
+										</div>
+									</div>
+
 								</div>
-								<?php
-									$i++;
-								?>
-								@endforeach
-							@endif
+
+								<div class="col-sm-5 m-0 p-1" id="checkbox_0">
+									<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+								</div>
+								<div class="col-sm-12 m-2">
+									<button type="button" class="btn btn-sm btn-danger applicant_remove" data-id="1"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+								</div>
+							</div>
 						</div>
 
 						<x-primary-button type="button" id="applicants_add">
@@ -130,56 +93,58 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-10 m-2 mx-auto">
-			<div class="card">
-				<div class="card-header">
-					<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
-					<p>
-						@php
-						$r = \App\Models\Staff::find(Auth::user()->nostaf);
-						echo $r->belongstomanydepartment()->first()->namajabatan;
-						$idj = $r->belongstomanydepartment()->first()->kodjabatan;
-						@endphp
-					</p>
-				</div>
-				<div class="card-body">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
-						</div>
-						<div class="card-body">
-							<p>Status :
-								@php
-								$j = \App\Models\Jabatan::find($idj);
-								if($j->belongstomanyappr->count()){
-									echo $j->belongstomanyappr->first()->nama;
-								} else {
-									echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
-								}
-								@endphp
-							</p>
-							<p>Tarikh : </p>
-						</div>
-						<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
-							<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
-								<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
-									<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
-									Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
-								</label>
+
+			<div class="col-sm-8">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
+						<p>
+							@php
+							$r = \App\Models\Staff::find(Auth::user()->nostaf);
+							echo $r->belongstomanydepartment()->first()->namajabatan;
+							$idj = $r->belongstomanydepartment()->first()->kodjabatan;
+							@endphp
+						</p>
+					</div>
+					<div class="card-body">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">Sokongan Pengarah/Dekan/Ketua Jabatan</h3>
 							</div>
-							@error('acknowledge')
-							<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
-							@enderror
+							<div class="card-body">
+								<p>
+									@php
+									$j = \App\Models\Jabatan::find($idj);
+									if($j->belongstomanyappr->count()){
+										echo $j->belongstomanyappr->first()->nama;
+									} else {
+										echo '<span class="text-danger fw-bold">Dalam Proses/Disokong/Tidak Disokong</span>';
+									}
+									@endphp
+								</p>
+								<p>Tarikh : </p>
+							</div>
+							<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
+								<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
+									<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
+										<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+										Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
+									</label>
+								</div>
+								@error('acknowledge')
+								<div class="invalid-feedback text-center fs-6 fw-bolder">{{ $message }}</div>
+								@enderror
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-12 text-center">
-			<x-primary-button type="submit" class="m-2">
-				<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
-			</x-primary-button>
+			<div class="col-sm-4 text-center">
+				<x-primary-button type="submit" class="m-2">
+					<i class="fa-solid fa-floppy-disk fa-beat"></i>&nbsp;{{ __('Hantar') }}
+				</x-primary-button>
+			</div>
+
 		</div>
 	</form>
 
@@ -306,36 +271,17 @@
 			})(jQuery);
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	<?php
-		$p = 0;
-	?>
-	@if($regaccicm->hasmanyapplicant()->count())
-		@foreach($regaccicm->hasmanyapplicant()->get() as $k1 => $v1)
-			console.log({!! $v1->belongstomanyicmsmodule()->get()->map(function ($item) { return collect($item->pivot->toArray())->only(['icms_module_id', 'remarks'])->toArray(); }) !!});
-			selectname({{ $p }});
-			addingicmsmodule({{ $p }}, {!! $v1->belongstomanyicmsmodule()->get()->map(fn($item) => ['icms_module_id' => $item->pivot->icms_module_id,'remarks' => $item->pivot->remarks,]) !!});
-			var newOption{{ $p }} = new Option({!! json_encode($v1->nostaf . ' => ' . $v1->belongstoicmsapplicant?->nama) !!}, '{{ $v1->nostaf }}', true, true);
-			$('#nama_{{ $p }}').append(newOption{{ $p }}).trigger('change');
-			<?php
-				$p++;
-			?>
-		@endforeach
-	@endif
-
-	/////////////////////////////////////////////////////////////////////////////////////////
 	// usage plugin
 	// Applicants (fieldName "skills")
 	$("#applicants_wrap").remAddRow({
 		addBtn: "#applicants_add",
 		maxFields: 5,
-		startCounter: {{ $regaccicm->hasmanyapplicant()->count() }},
 		removeSelector: ".applicant_remove",
 		fieldName: "applicants",
 		rowIdPrefix: "applicant",
 		// rowTemplate must use the same removeSelector class so delegated handler fires:
 		rowTemplate: (i, name) => `
 			<div class="col-sm-12 row m-3" id="applicant_${i}">
-				<input type="hidden" name="emreg[${i}][id]" value="">
 				<div class="col-sm-7 m-0 p-1">
 
 					<div class="col-sm-12 m-1 row">
@@ -447,14 +393,14 @@
 							};
 						})
 					};
-				}
+				},
 			},
-			templateResult: function (data) {
-				return data.text;
-			},
-			templateSelection: function (data) {
-				return data.text;
-			}
+			// templateResult: function (data) {
+			// 	return data.text;
+			// },
+			// templateSelection: function (data) {
+			// 	return data.text;
+			// }
 		});
 
 		// ✅ When staff selected, populate NoStaf + Email
@@ -478,13 +424,12 @@
 		}
 	};
 	// this will populate 1st select2
-	@if(!$regaccicm->hasmanyapplicant()->count())
-		selectname();
-	@endif
+	selectname();
 
 	/////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// checkbox
-	function addingicmsmodule(y=0, icmsmodule = []){
+	function addingicmsmodule(y=0){
 		$.ajax({
 			dataType: 'json',
 			url: "{{ route('listicmsmodule') }}",
@@ -492,63 +437,36 @@
 			data: {
 				_token: '{{csrf_token()}}'
 			},
-success: (function(response) {
-    const $checkicmsmodule = $("#checkbox_"+y);
+			success: (function(response) {
+				const $checkicmsmodule = $("#checkbox_"+y);
 
-    // Pivot data from backend
-    let cicms = icmsmodule;
+				response.forEach(function(value, i) {
+					const checkboxId = `icms_${y}_${i}`;
 
-    response.forEach(function(value, i) {
-        const checkboxId = `icms_${y}_${i}`;
+					const row = `
+						<div id="cb_${y}_${i}" class="m-1">
+							<div class="form-check">
+								<input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror" type="checkbox" id="${checkboxId}" name="emreg[${y}][icms_module_id][${i}]" value="${value.id}" data-dll="#dll_container_${y}_${i}" data-y="${y}" data-i="${i}">
+								<label class="form-check-label " for="${checkboxId}">&nbsp;${value.text}</label>
+								@error('emreg.*.icms_module_id')
+								<div class="invalid-feedback">
+									{{ $message }}
+								</div>
+								@enderror
+							</div>
+						</div>
+					`;
+					$checkicmsmodule.append(row);
 
-        // Check if this module_id exists in cicms
-        let found = cicms.find(m => m.icms_module_id == value.id);
-
-        // If found, mark checked
-        let isChecked = found ? 'checked' : '';
-
-        const row = `
-            <div id="cb_${y}_${i}" class="m-1">
-                <div class="form-check">
-                    <input class="form-check-input icms-checkbox @error('emreg.*.icms_module_id') is-invalid @enderror"
-                           type="checkbox"
-                           id="${checkboxId}"
-                           name="emreg[${y}][icms_module_id][${i}]"
-                           value="${value.id}"
-                           data-dll="#dll_container_${y}_${i}"
-                           data-y="${y}" data-i="${i}" ${isChecked}>
-                    <label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
-                    @error('emreg.*.icms_module_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-        `;
-        $checkicmsmodule.append(row);
-
-        if (value.id == 9) {
-            const dll = `
-                <div id="dll_container_${y}_${i}" class="m-1 dll-container"></div>
-            `;
-            $checkicmsmodule.append(dll);
-
-            // If remarks exist, auto-insert input
-            if (found && found.remarks) {
-                const checkbicms = `
-                    <div class="form-check dll-input">
-                        <label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
-                        <input class="form-control form-control-sm"
-                               type="text"
-                               name="emreg[${y}][icms_module_id][remarks]"
-                               id="icms_dll_${y}_${i}"
-                               value="${found.remarks}">
-                    </div>
-                `;
-                $("#dll_container_"+y+"_"+i).append(checkbicms);
-            }
-        }
-    });
-}),
+					if (value.id == 9) {
+						const dll = `
+							<div id="dll_container_${y}_${i}" class="m-1 dll-container">
+							</div>
+						`;
+						$checkicmsmodule.append(dll);
+					}
+				});
+			}),
 			error: (function(jqXHR, textStatus, errorThrown) {
 				alert( "error" );
 				console.log(textStatus, errorThrown);
@@ -570,7 +488,7 @@ success: (function(response) {
 			let checkbicms = `
 				<div class="form-check dll-input">
 					<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
-					<input class="form-control form-control-sm" type="text" name="emreg[${y}][icms_module_id][remarks]" id="icms_dll_${y}_${i}" value="{{ old('emreg.*.icms_module_id.remarks') }}">
+					<input class="form-control form-control-sm" type="text" name="emreg[${y}][icms_module_id][dll]" id="icms_dll_${y}_${i}" value="{{ old('emreg.*.icms_module_id.dll') }}">
 					@error('emreg.*.icms_module_id.dll')
 					<div class="invalid-feedback">
 						{{ $message }}
@@ -590,66 +508,9 @@ success: (function(response) {
 			}
 		});
 	};
-	@if(!$regaccicm->hasmanyapplicant()->count())
-	addingicmsmodule();
-	@endif
+	addingicmsmodule()
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-$(document).on('click', '.applicant_delete', function(e){
-	var ackID = $(this).data('id');
-	SwalDeleteR(ackID);
-	e.preventDefault();
-});
-
-function SwalDeleteR(ackID){
-	swal.fire({
-		title: 'Delete Registeration Account ICMS Applicant',
-		text: 'Are you sure to delete Loan Equipment?',
-		icon: 'info',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		cancelButtonText: 'Cancel',
-		confirmButtonText: 'Yes',
-		showLoaderOnConfirm: true,
-
-		preConfirm: function() {
-			return new Promise(function(resolve) {
-				$.ajax({
-					url: '{{ url('regaccicmsapplicant') }}' + '/' + ackID,
-					type: 'DELETE',
-					dataType: 'json',
-					data: {
-							id: ackID,
-							_token : $('meta[name=csrf-token]').attr('content')
-					},
-				})
-				.done(function(response){
-					swal.fire('Accept', response.message, response.status)
-					.then(function(){
-						window.location.reload(true);
-					});
-					// $('#cancel_btn_' + ackID).parent().parent().remove();
-				})
-				.fail(function(){
-					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-					// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-				})
-			});
-		},
-		allowOutsideClick: false
-	})
-	.then((result) => {
-		if (result.dismiss === swal.DismissReason.cancel) {
-			swal.fire('Cancel Action', 'Registeration Account ICMS Applicant is still active.', 'info')
-		}
-	});
-}
-//auto refresh right after clicking OK button
-$(document).on('click', '.swal2-confirm', function(e){
-	window.location.reload(true);
-});
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@endsection
