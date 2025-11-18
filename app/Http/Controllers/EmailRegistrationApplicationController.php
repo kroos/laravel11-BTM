@@ -232,6 +232,8 @@ class EmailRegistrationApplicationController extends Controller
 		$data += ['status_email_id' => 3];
 
 		$r = $emailaccapp->update($data);
+		$emailaccapp->hasmanyemailgroupmember()->delete();
+		$emailaccapp->hasmanyemailsuggestion()->delete();
 
 		foreach ($request->emreg as $entryData) {
 			$emailaccapp->hasmanyemailsuggestion()->updateOrCreate(

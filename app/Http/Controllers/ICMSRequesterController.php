@@ -97,7 +97,7 @@ class ICMSRequesterController extends Controller
 				// 'applicants' => 'required|array|min:1',
 				'applicants.*.nama' => 'required|string',
 				'applicants.*.position' => 'required|string',
-				'applicants.*.username' => 'required|alpha_num',
+				'applicants.*.username' => 'nullable|alpha_num',
 				'applicants.*.icms_module_id' => 'required|array|min:1',
 				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
 				'acknowledge' => 'required',
@@ -135,38 +135,32 @@ class ICMSRequesterController extends Controller
 		$validator->validate();
 		$requester = \Auth::user()->belongstostaff->hasmanyicmsrequester()->create(['status_request_id' => 3]);
 
-		foreach($request->applicants as $k => $v) {
-			// populate icms_requester_applicants
+		foreach ($request->applicants as $applicant) {
+
+		// create applicant row
 			$ra = $requester->hasmanyapplicant()->create([
-				'nostaf' => $v['nama'],
-				'position' => $v['position'],
-				'username' => $v['username'],
+				'nostaf'   => $applicant['nama'],
+				'position' => $applicant['position'],
+				'username' => $applicant['username'],
 			]);
 
-			// populate icms_applicant_modules
-			foreach ($v['icms_module_id'] as $ke => $va) {
-				foreach($ke['icms_module_id'] as $k1 => $v1){
-					dd($v1);
-				}
-				if ($ke === 'remarks') {
-					continue;
-				}
+			$pivotData = [];
+			$remarks = $applicant['icms_module_id']['remarks'] ?? null;
 
-				// reset for each applicant
-				$pivotData = [];
+			foreach ($applicant['icms_module_id'] as $key => $moduleId) {
+				// skip the remarks item
+				if ($key === 'remarks') continue;
 
-				foreach ($v['icms_module_id'] as $ke => $va) {
-					if ($ke === 'remarks') {
-						continue;
-					}
+				$moduleId = (int) $moduleId;
 
-					$pivotData[$va] = [
-						'remarks' => ($va == 9) ? ($va['icms_module_id']['remarks'] ?? null) : null,
-					];
-				}
-			};
+				// remarks only for module 9
+				$pivotData[$moduleId] = [
+					'remarks' => ($moduleId === 9) ? $remarks : null,
+				];
+			}
+
 			$ra->belongstomanyicmsmodule()->attach($pivotData);
-		};
+		}
 
 		// need to create pdf and send email
 		// pdf user & approval
@@ -236,7 +230,7 @@ class ICMSRequesterController extends Controller
 		$validator = Validator::make($request->all(), [
 				'applicants.*.nama' => 'required|string',
 				'applicants.*.position' => 'required|string',
-				'applicants.*.username' => 'required|alpha_num',
+				'applicants.*.username' => 'nullable|alpha_num',
 				'applicants.*.icms_module_id' => 'required|array|min:1',
 				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
 				'acknowledge' => 'required',
@@ -272,47 +266,41 @@ class ICMSRequesterController extends Controller
 
 		$validator->validate();
 
-		foreach($request->applicants as $k => $v) {
-			// populate icms_requester_applicants
+		// $regaccicm->hasmanyapplicant()->get()->map(function($item1){
+		// 	return $item1->belongstomanyicmsmodule()->detach();
+		// });
+		// $regaccicm->hasmanyapplicant()->delete();
 
-			// can use this method but i made a mistake on frontend
-			// $g[] = Arr::except($v, ['icms_module_id']);
+		foreach ($request->applicants as $v) {
 
-			$ra = $regaccicm->hasmanyapplicant()->updateOrCreate([
-				'id' => $v['id'],
-				],[
-				'nostaf' => $v['nama'],
-				'position' => $v['position'],
-				'username' => $v['username'],
-			]);
-
-$d[$k] = $v['icms_module_id'];
-
-			foreach ($v['icms_module_id'] as $va) {
-				// $f[$k][$ke] = $va;
-				// if (Arr::exists($array, 'name')) {
-				// 	// Key 'name' exists in the array
-				// }
-
-				$f[$k][$va] = [
-					'remarks' => ($va == 9) ? ($v['icms_module_id']['remarks']) : null,
-				];
-
-			}
+    // update or create applicant row
+			$ra = $regaccicm->hasmanyapplicant()->updateOrCreate(
+        ['id' => $v['id'] ?? null],     // match for update
+        [
+        	'nostaf'   => $v['nama'],
+        	'position' => $v['position'],
+        	'username' => $v['username'],
+        ]
+      );
 
 			$modules = $v['icms_module_id'] ?? [];
-			$syncData = HelperArray::prepareModulesForSync($modules);
-			$syncData1[] = HelperArray::prepareModulesForSync($modules);
+			$remarks = $modules['remarks'] ?? null;
 
-			// this will produce:
-			// [2 => [], 4 => []]
-			// [2 => [], 4 => [], 6 => [], 9 => ['remarks' => 'Vcbvcb Vcb Vcb']]
-			// [2 => []]
-			// [1 => []]
+    // build sync data for pivot table
+			$syncData = [];
+			foreach ($modules as $key => $moduleId) {
+			if ($key === 'remarks') continue; // skip remarks array key
 
-			// sync with pivot
+				$moduleId = (int) $moduleId;
+
+				$syncData[$moduleId] = [
+					'remarks' => ($moduleId === 9) ? $remarks : null
+				];
+			}
+
+			// sync pivot data
 			$ra->belongstomanyicmsmodule()->sync($syncData);
-		};
+    }
 		// dd($d, $f, $syncData1);
 
 		// need to create pdf and send email

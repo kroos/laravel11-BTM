@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\RegisterAccountICMS\Delete;
+namespace App\Notifications\RegisterAccountICMS\Update;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

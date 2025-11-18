@@ -82,7 +82,39 @@
 			selectname(i);
 			addingicmsmodule(i);
 		},
-		onRemove: (i) => console.log('Skill removed', i)
+		onRemove: (i, event) => {
+			event.preventDefault();
+			const $row = $(`#applicant_${i}`);
+			const idv = $row.find(`input[name="applicants[${i}][id]"]`).val();
+			console.log(idv);
+			if (!idv) {
+				$row.remove();
+				return;
+			}
+			swal.fire({
+				title: 'Delete applicant?',
+				text: 'This action cannot be undone.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then(result => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: `/applicants/${idv}`,
+						type: 'DELETE',
+						data: { _token: $('meta[name="csrf-token"]').attr('content') },
+						success: response => {
+							swal.fire('Deleted!', response.message, 'success');
+							$row.remove();  // remove only after DB deletion
+						},
+						error: xhr => {
+							swal.fire('Error', 'Failed to delete applicant', 'error');
+						}
+					});
+				}
+			});
+		}
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -275,71 +307,100 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // restore old data
-// function oldICMSGroup() {
-	<?php
-	$items = @$regaccicm?->hasmanyapplicant()?->get()
-	->map(function ($item1) {
-	// Build the icms_module_id array format
-		$moduleArray = [];
-		$remarks = null;
+<?php
+$items = @$regaccicm?->hasmanyapplicant()?->get()
+->map(function ($item1) {
+// Build the icms_module_id array format
+	$moduleArray = [];
+	$remarks = null;
 
-		foreach ($item1->belongstomanyicmsmodule as $pivot) {
-			$moduleArray[$pivot->pivot->id] = $pivot->pivot->icms_module_id;
-			if (!empty($pivot->pivot->remarks)) {
-				$remarks = $pivot->pivot->remarks;
-			}
+	foreach ($item1->belongstomanyicmsmodule as $pivot) {
+		$moduleArray[$pivot->pivot->id] = $pivot->pivot->icms_module_id;
+		if (!empty($pivot->pivot->remarks)) {
+			$remarks = $pivot->pivot->remarks;
 		}
-
-		if ($remarks !== null) {
-			$moduleArray['remarks'] = $remarks;
-		}
-
-		// Build the final applicant structure
-		return [
-			'id'            => $item1->id,
-			'nama'          => $item1->nostaf,
-			'nostaf'        => $item1->nostaf,
-			'email'         => $item1->email,
-			'position'      => $item1->position,
-			'username'      => $item1->username,
-			'icms_module_id'=> $moduleArray,
-		];
-	})
-	->toArray()??[];
-	$oldItemsValue = old('applicants', $items??[]);
-	// dd($items, $oldItemsValue);
-	?>
-	const oldICMSGroup = @json($oldItemsValue);
-	if (oldICMSGroup.length > 0) {
-		oldICMSGroup.forEach(function (icmsGroup, i) {
-			$("#applicants_add").trigger('click');
-			const $row = $("#applicants_wrap").children().eq(i);
-			const $account_id = $row.find(`select[name="applicants[${i}][nama]"]`);
-
-			if (icmsGroup.nama) {
-				$.ajax({
-					url: `{{ route('liststaff') }}`,
-					data: {
-						_token: '{!! csrf_token() !!}',
-						nostaf: icmsGroup.nama,
-					},
-					dataType: 'json'
-				}).then(data => {
-					const itema = Array.isArray(data) ? data[0] : data;	// change object to array
-					if (!itema) return;
-					//console.log(itema, itema.results[0].children[0].id);
-					const option1 = new Option(itema.results[0].children[0].text, itema.results[0].children[0].id, true, true);
-					$account_id.append(option1).trigger('change');
-				});
-			}
-
-			$row.find(`input[name="applicants[${i}][id]"]`).val(icmsGroup.id || '');
-			$row.find(`input[name="applicants[${i}][nostaf]"]`).val(icmsGroup.nostaf || '');
-			$row.find(`input[name="applicants[${i}][email]"]`).val(icmsGroup.email || '');
-			$row.find(`input[name="applicants[${i}][position]"]`).val(icmsGroup.position || '');
-			$row.find(`input[name="applicants[${i}][username]"]`).val(icmsGroup.username || '');
-			addingicmsmodule(i, icmsGroup.icms_module_id);
-		});
 	}
-// }
+
+	if ($remarks !== null) {
+		$moduleArray['remarks'] = $remarks;
+	}
+
+	// Build the final applicant structure
+	return [
+		'id'            => $item1->id,
+		'nama'          => $item1->nostaf,
+		'nostaf'        => $item1->nostaf,
+		'email'         => $item1->email,
+		'position'      => $item1->position,
+		'username'      => $item1->username,
+		'icms_module_id'=> $moduleArray,
+	];
+})
+->toArray()??[];
+$oldItemsValue = old('applicants', $items??[]);
+// dd($items, $oldItemsValue);
+?>
+const oldICMSGroup = @json($oldItemsValue);
+if (oldICMSGroup.length > 0) {
+	oldICMSGroup.forEach(function (icmsGroup, i) {
+		$("#applicants_add").trigger('click');
+		const $row = $("#applicants_wrap").children().eq(i);
+		const $account_id = $row.find(`select[name="applicants[${i}][nama]"]`);
+
+		if (icmsGroup.nama) {
+			$.ajax({
+				url: `{{ route('liststaff') }}`,
+				data: {
+					_token: '{!! csrf_token() !!}',
+					nostaf: icmsGroup.nama,
+				},
+				dataType: 'json'
+			}).then(data => {
+				const itema = Array.isArray(data) ? data[0] : data;	// change object to array
+				if (!itema) return;
+				//console.log(itema, itema.results[0].children[0].id);
+				const option1 = new Option(itema.results[0].children[0].text, itema.results[0].children[0].id, true, true);
+				$account_id.append(option1).trigger('change');
+			});
+		}
+
+		$row.find(`input[name="applicants[${i}][id]"]`).val(icmsGroup.id || '');
+		$row.find(`input[name="applicants[${i}][nostaf]"]`).val(icmsGroup.nostaf || '');
+		$row.find(`input[name="applicants[${i}][email]"]`).val(icmsGroup.email || '');
+		$row.find(`input[name="applicants[${i}][position]"]`).val(icmsGroup.position || '');
+		$row.find(`input[name="applicants[${i}][username]"]`).val(icmsGroup.username || '');
+		addingicmsmodule(i, icmsGroup.icms_module_id);
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// $(document).on('click', '.applicant_remove', function(e) {
+// 	e.preventDefault();
+//
+// 	const id = $(this).data('id');
+// 	const idv = $(`applicant_${id}`).find(`input[name="applicants[${id}][${id}]"]`).val();
+//
+// 	console.log(id, idv);
+
+
+
+	// swal.fire({
+	// 	title: 'Delete Invoice?',
+	// 	text: 'This action cannot be undone.',
+	// 	icon: 'warning',
+	// 	showCancelButton: true,
+	// 	confirmButtonColor: '#d33',
+	// 	confirmButtonText: 'Yes, delete it!'
+	// }).then(result => {
+	// 	if (result.isConfirmed) {
+	// 		$.ajax({
+	// 			url: `{{ url('accounting/purchase-bills') }}/${id}`,
+	// 			type: 'DELETE',
+	// 			data: { _token: '{{ csrf_token() }}' },
+	// 			success: () => table.ajax.reload()
+	// 		});
+	// 	}
+	// });
+// });
+
 /////////////////////////////////////////////////////////////////////////////////////////
