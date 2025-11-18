@@ -67,8 +67,10 @@
 
 				</div>
 
-				<div class="col-sm-5 m-0 p-1" id="checkbox_${i}">
+				<div class="col-sm-5 m-0 p-1">
 					<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+					<div id="checkbox_${i}">
+					</div>
 				</div>
 				<div class="col-sm-12 m-2">
 					<button type="button" class=" btn btn-sm btn-danger applicant_remove" data-id="${i}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
@@ -156,6 +158,7 @@
 			},
 			success: (function(response) {
 				const $checkicmsmodule = $("#checkbox_"+y);
+				if($checkicmsmodule.length > 0) $checkicmsmodule.empty();
 				// Pivot data from backend
 				// Normalize icmsMod to: [{ icms_module_id: X, remarks: Y }]
 				// const cicms = Array.isArray(icmsMod) ? icmsMod : Object.entries(icmsMod);
