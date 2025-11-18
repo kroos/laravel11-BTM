@@ -276,13 +276,39 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // restore old data
 // function oldICMSGroup() {
-	@php
-		$items = @$regaccicm?->belongstomanyicmsmodule()?->get();
-		$itemsArray = $items?->toArray()??[];
-		$oldItemsValue = old('applicants', $itemsArray);
-		//dd($oldItemsValue, old('applicants.icms_module_id'));
-		// @json(old('icmsMod'));
-	@endphp
+	<?php
+	$items = @$regaccicm?->hasmanyapplicant()?->get()
+	->map(function ($item1) {
+	// Build the icms_module_id array format
+		$moduleArray = [];
+		$remarks = null;
+
+		foreach ($item1->belongstomanyicmsmodule as $pivot) {
+			$moduleArray[$pivot->pivot->id] = $pivot->pivot->icms_module_id;
+			if (!empty($pivot->pivot->remarks)) {
+				$remarks = $pivot->pivot->remarks;
+			}
+		}
+
+		if ($remarks !== null) {
+			$moduleArray['remarks'] = $remarks;
+		}
+
+		// Build the final applicant structure
+		return [
+			'id'            => $item1->id,
+			'nama'          => $item1->nostaf,
+			'nostaf'        => $item1->nostaf,
+			'email'         => $item1->email,
+			'position'      => $item1->position,
+			'username'      => $item1->username,
+			'icms_module_id'=> $moduleArray,
+		];
+	})
+	->toArray()??[];
+	$oldItemsValue = old('applicants', $items??[]);
+	// dd($items, $oldItemsValue);
+	?>
 	const oldICMSGroup = @json($oldItemsValue);
 	if (oldICMSGroup.length > 0) {
 		oldICMSGroup.forEach(function (icmsGroup, i) {
