@@ -179,6 +179,7 @@
 		}
 	};
 
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// checkbox
 	function addingicmsmodule(y=0, icmsMod = []){
 		$.ajax({
@@ -193,27 +194,15 @@
 				if($checkicmsmodule.length > 0) $checkicmsmodule.empty();
 				// Pivot data from backend
 				// Normalize icmsMod to: [{ icms_module_id: X, remarks: Y }]
-				// const cicms = Array.isArray(icmsMod) ? icmsMod : Object.entries(icmsMod);
-				// const cicms = Array.isArray(icmsMod) ? icmsMod : Object.value(icmsMod);
-				// const cicms = Array.isArray(icmsMod) ? icmsMod : icmsMod;
-				const obj = icmsMod;
-				const cicms = [];
-				for (const key in obj) {
-					if (key !== "remarks") {
-						cicms.push({ icms_module_id: obj[key] });
-					}
-				}
+				const obj = Array.isArray(icmsMod) ? icmsMod : Object.entries(icmsMod);
+				// const obj = Array.isArray(icmsMod) ? icmsMod : Object.value(icmsMod);
 
-				// if object contains remarks, add it to last element
-				if (obj.remarks) {
-					cicms[cicms.length - 1].remarks = obj.remarks;
-				}
+				const cicms = obj.map(item =>  item[1]);
+				console.log(cicms);
 
-				// console.log(cicms);
+
 				response.forEach(function(value, i) {
 					const checkboxId = `icms_${y}_${i}`;
-
-
 
 					// Check if this module_id exists in cicms
 					let found = cicms.find(m => m.icms_module_id == value.id);
@@ -224,15 +213,15 @@
 					const row = `
 					<div id="cb_${y}_${i}" class="m-1">
 						<div class="form-check">
-							<input class="form-check-input icms-checkbox @error('applicants.*.icms_module_id') is-invalid @enderror"
+							<input class="form-check-input icms-checkbox @error('applicants.*.icms.*.icms_module_id') is-invalid @enderror"
 							type="checkbox"
 							id="${checkboxId}"
-							name="applicants[${y}][icms_module_id][${i}]"
+							name="applicants[${y}][icms][${i}][icms_module_id]"
 							value="${value.id}"
 							data-dll="#dll_container_${y}_${i}"
 							data-y="${y}" data-i="${i}" ${isChecked}>
 							<label class="form-check-label" for="${checkboxId}">&nbsp;${value.text}</label>
-							@error('applicants.*.icms_module_id')
+							@error('applicants.*.icms.*.icms_module_id')
 							<div class="invalid-feedback">{{ $message }}</div>
 							@enderror
 						</div>
@@ -253,7 +242,7 @@
 								<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
 								<input class="form-control form-control-sm"
 								type="text"
-								name="applicants[${y}][icms_module_id][remarks]"
+								name="applicants[${y}][icms][${i}][remarks]"
 								id="icms_dll_${y}_${i}"
 								value="${found.remarks}">
 							</div>
@@ -284,8 +273,8 @@
 			let checkbicms = `
 				<div class="form-check dll-input">
 					<label class="form-check-label" for="icms_dll_${y}_${i}">Sila Nyatakan</label>
-					<input class="form-control form-control-sm" type="text" name="applicants[${y}][icms_module_id][remarks]" id="icms_dll_${y}_${i}">
-					@error('applicants.*.icms_module_id.remarks')
+					<input class="form-control form-control-sm" type="text" name="applicants[${y}][icms][${i}][remarks]" id="icms_dll_${y}_${i}">
+					@error('applicants.*.icms.*.icms_module_id.remarks')
 					<div class="invalid-feedback">
 						{{ $message }}
 					</div>
@@ -309,35 +298,31 @@
 // restore old data
 <?php
 $items = @$regaccicm?->hasmanyapplicant()?->get()
-->map(function ($item1) {
-// Build the icms_module_id array format
-	$moduleArray = [];
-	$remarks = null;
+										->map(function ($applicant) {
+											$modules = $applicant->belongstomanyicmsmodule()
+											->withPivot('remarks')
+											->get()
+											->map(function ($module) {
+												return [
+													$module->pivot->id, [
+														'icms_module_id' => $module->id,
+														'remarks'        => $module->pivot->remarks,
+													]
+												];
+											})
+											->toArray();
 
-	foreach ($item1->belongstomanyicmsmodule as $pivot) {
-		$moduleArray[$pivot->pivot->id] = $pivot->pivot->icms_module_id;
-		if (!empty($pivot->pivot->remarks)) {
-			$remarks = $pivot->pivot->remarks;
-		}
-	}
-
-	if ($remarks !== null) {
-		$moduleArray['remarks'] = $remarks;
-	}
-
-	// Build the final applicant structure
-	return [
-		'id'            => $item1->id,
-		'nama'          => $item1->nostaf,
-		'nostaf'        => $item1->nostaf,
-		'email'         => $item1->email,
-		'position'      => $item1->position,
-		'username'      => $item1->username,
-		'icms_module_id'=> $moduleArray,
-	];
-})
-->toArray()??[];
-$oldItemsValue = old('applicants', $items??[]);
+											return [
+												'id'       => $applicant->id,
+												'nostaf'   => $applicant->nostaf,
+												'email'    => $applicant->email,
+												'position' => $applicant->position,
+												'username' => $applicant->username,
+												'icms'     => $modules,
+											];
+										})
+										->toArray() ?? [];
+$oldItemsValue = old('applicants', $items);
 // dd($items, $oldItemsValue);
 ?>
 const oldICMSGroup = @json($oldItemsValue);
@@ -369,7 +354,7 @@ if (oldICMSGroup.length > 0) {
 		$row.find(`input[name="applicants[${i}][email]"]`).val(icmsGroup.email || '');
 		$row.find(`input[name="applicants[${i}][position]"]`).val(icmsGroup.position || '');
 		$row.find(`input[name="applicants[${i}][username]"]`).val(icmsGroup.username || '');
-		addingicmsmodule(i, icmsGroup.icms_module_id);
+		addingicmsmodule(i, icmsGroup.icms);
 	});
 }
 

@@ -92,74 +92,42 @@ class ICMSRequesterController extends Controller
 	public function store(Request $request): RedirectResponse
 	{
 		// dd($request->all());
-		$validator = Validator::make($request->all(), [
+		$request->validate([
 				'applicants' => 'required|array|min:1',
 				'applicants' => 'required|array|min:1',
 				'applicants.*.nama' => 'required|string',
 				'applicants.*.position' => 'required|string',
 				'applicants.*.username' => 'nullable|alpha_num',
-				'applicants.*.icms_module_id' => 'required|array|min:1',
-				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
+				'applicants.*.icms' => 'required|array|min:1',
+				'applicants.*.icms.*.remarks' => 'required_if:applicants.*.icms.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
 				'applicants.*.nama' => 'Please insert :attribute at #:position',
 				'applicants.*.position' => 'Please insert :attribute at #:position',
-				// 'applicants.*.username' => 'Please insert :attribute at #:position',
+				'applicants.*.username' => 'Please insert :attribute at #:position',
 				'applicants.*.username.required'   => ':attribute wajib diisi.',
 				'applicants.*.username.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
-				'applicants.*.icms_module_id' => 'Please check on :attribute at #:position',
-				'applicants.*.icms_module_id.remarks' => 'Please insert :attribute',
+				'applicants.*.icms' => 'Please check on :attribute at #:position',
+				'applicants.*.icms.*.remarks' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
 				'applicants' => 'Pemohon',
 				'applicants.*.nama' => 'Nama Staff',
 				'applicants.*.position' => 'Jawatan',
 				'applicants.*.username' => 'Cadangan ID',
-				'applicants.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				'applicants.*.icms_module_id.remarks' => 'Sila Nyatakan',
+				'applicants.*.icms' => 'PENETAPAN TAHAP CAPAIAN ICMS',
+				'applicants.*.icms.*.remarks' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
-		$validator->after(function ($validator) use ($request) {
-			foreach ($request->input('applicants', []) as $index => $applicants) {
-				if (isset($applicants['icms_module_id']) && in_array(9, $applicants['icms_module_id'])) {
-					if (empty($applicants['icms_module_id']['remarks'] ?? null)) {
-						$validator->errors()->add(
-							"applicants.$index.icms_module_id.remarks",
-							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
-						);
-					}
-				}
-			}
-		});
-
-		$validator->validate();
 		$requester = \Auth::user()->belongstostaff->hasmanyicmsrequester()->create(['status_request_id' => 3]);
 
 		foreach ($request->applicants as $applicant) {
-
-		// create applicant row
 			$ra = $requester->hasmanyapplicant()->create([
 				'nostaf'   => $applicant['nama'],
 				'position' => $applicant['position'],
 				'username' => $applicant['username'],
 			]);
-
-			$pivotData = [];
-			$remarks = $applicant['icms_module_id']['remarks'] ?? null;
-
-			foreach ($applicant['icms_module_id'] as $key => $moduleId) {
-				// skip the remarks item
-				if ($key === 'remarks') continue;
-
-				$moduleId = (int) $moduleId;
-
-				// remarks only for module 9
-				$pivotData[$moduleId] = [
-					'remarks' => ($moduleId === 9) ? $remarks : null,
-				];
-			}
-
-			$ra->belongstomanyicmsmodule()->attach($pivotData);
+			$ra->belongstomanyicmsmodule()->attach($applicant['icms']);
 		}
 
 		// need to create pdf and send email
@@ -227,50 +195,33 @@ class ICMSRequesterController extends Controller
 	public function update(Request $request, ICMSRequester $regaccicm): RedirectResponse
 	{
 		// dd($request->all());
-		$validator = Validator::make($request->all(), [
+		$request->validate([
 				'applicants' => 'required|array|min:1',
-				'applicants.*.nama' => 'required',
+				'applicants' => 'required|array|min:1',
+				'applicants.*.nama' => 'required|string',
 				'applicants.*.position' => 'required|string',
 				'applicants.*.username' => 'nullable|alpha_num',
-				'applicants.*.icms_module_id' => 'required|array|min:1',
-				'applicants.*.icms_module_id.remarks' => 'required_if:applicants.*.icms_module_id,9',
+				'applicants.*.icms' => 'required|array|min:1',
+				'applicants.*.icms.*.remarks' => 'required_if:applicants.*.icms.*.icms_module_id,9',
 				'acknowledge' => 'required',
 			], [
 				'applicants.*.nama' => 'Please insert :attribute at #:position',
 				'applicants.*.position' => 'Please insert :attribute at #:position',
-				// 'applicants.*.username' => 'Please insert :attribute at #:position',
+				'applicants.*.username' => 'Please insert :attribute at #:position',
 				'applicants.*.username.required'   => ':attribute wajib diisi.',
 				'applicants.*.username.alpha_num'  => ':attribute hanya boleh mengandungi huruf dan nombor tanpa ruang atau simbol.',
-				'applicants.*.icms_module_id' => 'Please check on :attribute at #:position',
-				'applicants.*.icms_module_id.remarks' => 'Please insert :attribute',
+				'applicants.*.icms' => 'Please check on :attribute at #:position',
+				'applicants.*.icms.*.remarks' => 'Please insert :attribute',
 				'acknowledge' => 'Please click on :attribute',
 			], [
+				'applicants' => 'Pemohon',
 				'applicants.*.nama' => 'Nama Staff',
 				'applicants.*.position' => 'Jawatan',
 				'applicants.*.username' => 'Cadangan ID',
-				'applicants.*.icms_module_id' => 'PENETAPAN TAHAP CAPAIAN ICMS',
-				'applicants.*.icms_module_id.remarks' => 'Sila Nyatakan',
+				'applicants.*.icms' => 'PENETAPAN TAHAP CAPAIAN ICMS',
+				'applicants.*.icms.*.remarks' => 'Sila Nyatakan',
 				'acknowledge' => 'Acknowledgement',
 		]);
-		$validator->after(function ($validator) use ($request) {
-			foreach ($request->input('applicants', []) as $index => $applicants) {
-				if (isset($applicants['icms_module_id']) && in_array(9, $applicants['icms_module_id'])) {
-					if (empty($applicants['icms_module_id']['remarks'] ?? null)) {
-						$validator->errors()->add(
-							"applicants.$index.icms_module_id.remarks",
-							'Ruang input "Sila Nyatakan" diperlukan apabila memilih modul "Lain-lain, Sila Nyatakan. (Others, Please Specify)".'
-						);
-					}
-				}
-			}
-		});
-
-		$validator->validate();
-
-		// $regaccicm->hasmanyapplicant()->get()->map(function($item1){
-		// 	return $item1->belongstomanyicmsmodule()->detach();
-		// });
-		// $regaccicm->hasmanyapplicant()->delete();
 
 		foreach ($request->applicants as $v) {
 
@@ -283,26 +234,8 @@ class ICMSRequesterController extends Controller
         	'username' => $v['username'],
         ]
       );
-
-			$modules = $v['icms_module_id'] ?? [];
-			$remarks = $modules['remarks'] ?? null;
-
-    // build sync data for pivot table
-			$syncData = [];
-			foreach ($modules as $key => $moduleId) {
-			if ($key === 'remarks') continue; // skip remarks array key
-
-				$moduleId = (int) $moduleId;
-
-				$syncData[$moduleId] = [
-					'remarks' => ($moduleId === 9) ? $remarks : null
-				];
-			}
-
-			// sync pivot data
-			$ra->belongstomanyicmsmodule()->sync($syncData);
+			$ra->belongstomanyicmsmodule()->sync($v['icms']);
     }
-		// dd($d, $f, $syncData1);
 
 		// need to create pdf and send email
 		// pdf user & approval
