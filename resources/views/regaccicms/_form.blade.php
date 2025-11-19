@@ -55,7 +55,7 @@
 							<div class="card-footer bg-warning-subtle @error('acknowledge') has-error @enderror">
 								<div class="form-check text-center @error('acknowledge') is-invalid @enderror">
 									<label class="form-check-label text-sm fs-6 fw-bolder" for="checkDefault">
-										<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault">
+										<input class="form-check-input mx-2 @error('acknowledge') is-invalid @enderror" type="checkbox" name="acknowledge" value="1" id="checkDefault" {{ old('acknowledge')==1?'checked':NULL }}>
 										Saya mengaku bahawa semakan telah dibuat dan maklumat ini adalah benar untuk kegunaan urusan rasmi.
 									</label>
 								</div>

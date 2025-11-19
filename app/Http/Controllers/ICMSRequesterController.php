@@ -94,7 +94,7 @@ class ICMSRequesterController extends Controller
 		// dd($request->all());
 		$validator = Validator::make($request->all(), [
 				'applicants' => 'required|array|min:1',
-				// 'applicants' => 'required|array|min:1',
+				'applicants' => 'required|array|min:1',
 				'applicants.*.nama' => 'required|string',
 				'applicants.*.position' => 'required|string',
 				'applicants.*.username' => 'nullable|alpha_num',
@@ -228,7 +228,8 @@ class ICMSRequesterController extends Controller
 	{
 		// dd($request->all());
 		$validator = Validator::make($request->all(), [
-				'applicants.*.nama' => 'required|string',
+				'applicants' => 'required|array|min:1',
+				'applicants.*.nama' => 'required',
 				'applicants.*.position' => 'required|string',
 				'applicants.*.username' => 'nullable|alpha_num',
 				'applicants.*.icms_module_id' => 'required|array|min:1',

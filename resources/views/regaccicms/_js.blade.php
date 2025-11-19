@@ -82,11 +82,11 @@
 			selectname(i);
 			addingicmsmodule(i);
 		},
-		onRemove: (i, event) => {
+		onRemove: (i, event, $row) => {
 			event.preventDefault();
-			const $row = $(`#applicant_${i}`);
+			// console.log($row);
+			// const $row = $(`#applicant_${i}`);
 			const idv = $row.find(`input[name="applicants[${i}][id]"]`).val();
-			console.log(idv);
 			if (!idv) {
 				$row.remove();
 				return;
@@ -101,7 +101,7 @@
 			}).then(result => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: `/applicants/${idv}`,
+						url: `{{ url('regaccicmsapplicant') }}/${idv}`,
 						type: 'DELETE',
 						data: { _token: $('meta[name="csrf-token"]').attr('content') },
 						success: response => {
@@ -136,15 +136,15 @@
 					};
 				},
 				processResults: function (data) {
-					//console.log(data);
+					// console.log(data);
 					let selectedValues = $('select.form-select').map(function () {
 						return $(this).val();
 					}).get();
-					//console.log(selectedValues);
+					// console.log(selectedValues);
 					data.results[0].children = $.grep(data.results[0].children, function(obj) {
 						return $.inArray(obj.id, selectedValues) === -1;
 					});
-					//console.log(data);
+					// console.log(data);
 					return {
 						results: $.map(data.results[0].children, function (item) {
 							return {
@@ -209,7 +209,7 @@
 					cicms[cicms.length - 1].remarks = obj.remarks;
 				}
 
-				console.log(cicms);
+				// console.log(cicms);
 				response.forEach(function(value, i) {
 					const checkboxId = `icms_${y}_${i}`;
 
@@ -265,7 +265,7 @@
 			}),
 			error: (function(jqXHR, textStatus, errorThrown) {
 				alert( "error" );
-				console.log(textStatus, errorThrown);
+				// console.log(textStatus, errorThrown);
 			}),
 			complete: (function() {
 				// alert( "complete" );
@@ -358,7 +358,7 @@ if (oldICMSGroup.length > 0) {
 			}).then(data => {
 				const itema = Array.isArray(data) ? data[0] : data;	// change object to array
 				if (!itema) return;
-				//console.log(itema, itema.results[0].children[0].id);
+				// console.log(itema, itema.results[0].children[0].id);
 				const option1 = new Option(itema.results[0].children[0].text, itema.results[0].children[0].id, true, true);
 				$account_id.append(option1).trigger('change');
 			});
@@ -372,35 +372,5 @@ if (oldICMSGroup.length > 0) {
 		addingicmsmodule(i, icmsGroup.icms_module_id);
 	});
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// $(document).on('click', '.applicant_remove', function(e) {
-// 	e.preventDefault();
-//
-// 	const id = $(this).data('id');
-// 	const idv = $(`applicant_${id}`).find(`input[name="applicants[${id}][${id}]"]`).val();
-//
-// 	console.log(id, idv);
-
-
-
-	// swal.fire({
-	// 	title: 'Delete Invoice?',
-	// 	text: 'This action cannot be undone.',
-	// 	icon: 'warning',
-	// 	showCancelButton: true,
-	// 	confirmButtonColor: '#d33',
-	// 	confirmButtonText: 'Yes, delete it!'
-	// }).then(result => {
-	// 	if (result.isConfirmed) {
-	// 		$.ajax({
-	// 			url: `{{ url('accounting/purchase-bills') }}/${id}`,
-	// 			type: 'DELETE',
-	// 			data: { _token: '{{ csrf_token() }}' },
-	// 			success: () => table.ajax.reload()
-	// 		});
-	// 	}
-	// });
-// });
 
 /////////////////////////////////////////////////////////////////////////////////////////

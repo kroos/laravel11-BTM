@@ -93,9 +93,10 @@ class EmailRegistrationApplicationController extends Controller
 		// dd($request->all());
 		$request->validate([
 			'nostaf' => 'required',
+			'emreg' => ['required', 'array', 'min:2', new UniqueEmail],
+			// 'emreg' => [new UniqueEmail],
 			'group_email' => 'nullable',
 			'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
-			'emreg' => [new UniqueEmail],
 			'emregmem' => 'required_if_accepted:group_email|array|min:1',
 			'acknowledge' => 'required',
 			'emregmem.*.department_id' => 'required_if_accepted:group_email',
@@ -110,6 +111,8 @@ class EmailRegistrationApplicationController extends Controller
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
+				'emreg' => 'Suggested New Email',
+				'emregmem' => 'Staff Member',
 				'emreg.*.email_suggestion' => 'Email ID',
 				'acknowledge' => 'Acknowledgement',
 				'emregmem.*.department_id' => 'Department',
@@ -205,24 +208,28 @@ class EmailRegistrationApplicationController extends Controller
 		// dd($request->all());
 		$request->validate([
 			'nostaf' => 'required',
+			'emreg' => ['required', 'array', 'min:2', new UniqueEmail],
+			// 'emreg' => [new UniqueEmail],
 			'group_email' => 'nullable',
-			'emreg' => 'required|array|min:1',
-			'emregmem' => 'required_if_accepted:group_email|array|min:1',
 			'emreg.*.email_suggestion' => 'required|alpha_num:ascii',
+			'emregmem' => 'required_if_accepted:group_email|array|min:1',
+			'acknowledge' => 'required',
 			'emregmem.*.department_id' => 'required_if_accepted:group_email',
 			'emregmem.*.email_staff' => 'required_if_accepted:group_email',
 		], [
 			'nostaf' => 'Please insert :attribute',
 			'group_email' => 'Please click :attribute',
 			'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
+			'acknowledge' => 'Please click on :attribute',
 				'emregmem.*.department_id' => 'Please choose :attribute at #:position',	//:index
 				'emregmem.*.email_staff' => 'Please choose :attribute at #:position',	//:index
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
-				'emreg' => 'Staff Email',
-				'emregmem' => 'Group Email',
+				'emreg' => 'Suggested New Email',
+				'emregmem' => 'Staff Member',
 				'emreg.*.email_suggestion' => 'Email ID',
+				'acknowledge' => 'Acknowledgement',
 				'emregmem.*.department_id' => 'Department',
 				'emregmem.*.email_staff' => 'Staff',
 			]);
@@ -232,8 +239,6 @@ class EmailRegistrationApplicationController extends Controller
 		$data += ['status_email_id' => 3];
 
 		$r = $emailaccapp->update($data);
-		$emailaccapp->hasmanyemailgroupmember()->delete();
-		$emailaccapp->hasmanyemailsuggestion()->delete();
 
 		foreach ($request->emreg as $entryData) {
 			$emailaccapp->hasmanyemailsuggestion()->updateOrCreate(

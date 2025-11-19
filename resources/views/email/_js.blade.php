@@ -52,7 +52,38 @@ function createPersonnels(){
 			// console.log('Personnel added', i, $r)
 			initializeChainedSelectsForPersonnels(i);
 		},
-		onRemove: (i) => console.log('Personnel removed', i)
+		onRemove: (i, event, $row, name) => {
+			event.preventDefault();
+			// console.log('Personnel removed', i, event, $row)
+			const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+			if (!idv) {
+				$row.remove();
+				return;
+			}
+			swal.fire({
+				title: 'Delete email group member?',
+				text: 'This action cannot be undone.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then(result => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: `{{ url('emailgroupmember') }}/${idv}`,
+						type: 'DELETE',
+						data: { _token: $('meta[name="csrf-token"]').attr('content') },
+						success: response => {
+							swal.fire('Deleted!', response.message, 'success');
+							$row.remove();  // remove only after DB deletion
+						},
+						error: xhr => {
+							swal.fire('Error', 'Failed to delete email group member', 'error');
+						}
+					});
+				}
+			});
+		}
 	});
 };
 
@@ -197,8 +228,38 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 		onAdd: (i, $r) => {
 			// console.log('Email added', i, $r)
 		},
-		onRemove: (i) => {
-			// console.log('Email removed', i)
+		onRemove: (i, event, $row, name) => {
+			console.log('Email removed', i, event, $row)
+			event.preventDefault();
+			// console.log('Personnel removed', i, event, $row)
+			const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+			if (!idv) {
+				$row.remove();
+				return;
+			}
+			swal.fire({
+				title: 'Delete email suggestion?',
+				text: 'This action cannot be undone.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then(result => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: `{{ url('emailsuggestion') }}/${idv}`,
+						type: 'DELETE',
+						data: { _token: $('meta[name="csrf-token"]').attr('content') },
+						success: response => {
+							swal.fire('Deleted!', response.message, 'success');
+							$row.remove();  // remove only after DB deletion
+						},
+						error: xhr => {
+							swal.fire('Error', 'Failed to delete email suggestion', 'error');
+						}
+					});
+				}
+			});
 		}
 	});
 

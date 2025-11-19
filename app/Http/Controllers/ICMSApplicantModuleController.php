@@ -43,64 +43,10 @@ use Log;
 
 class ICMSApplicantModuleController extends Controller
 {
-    function __construct()
-    {
-        // $this->middleware(['auth']);
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(ICMSApplicantModule $iCMSApplicantModule): View
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ICMSApplicantModule $iCMSApplicantModule): View
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ICMSApplicantModule $iCMSApplicantModule): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ICMSApplicantModule $iCMSApplicantModule): RedirectResponse
-    {
-        //
-    }
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy(ICMSApplicantModule $iCMSApplicantModule): RedirectResponse
+	{
+	}
 }
