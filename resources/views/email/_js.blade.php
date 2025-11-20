@@ -199,69 +199,69 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add email
-	$("#emails_wrap").remAddRow({
-		addBtn: "#emails_add",
-		maxFields: 10,
-		removeSelector: ".email_remove",
-		fieldName: "emreg",
-		rowIdPrefix: "email",
-		// rowTemplate must use the same removeSelector class so delegated handler fires:
-		rowTemplate: (i, name) => `
-			<div class="col-sm-12 row mt-3" id="email_${i}">
-				<div class="col-sm-11 m-0 row">
-					<x-input-label for="email_${i}" class="col-sm-3" :value="__('Alamat Emel : ')" />
-					<div class="col-sm-9">
-						<input type="hidden" name="${name}[${i}][id]" value="">
-						<div class="input-group">
-							<input id="email_${i}" type="text" name="${name}[${i}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${i}">
-							<span class="input-group-text" id="emailID_${i}">@unishams.edu.my</span>
-						</div>
+$("#emails_wrap").remAddRow({
+	addBtn: "#emails_add",
+	maxFields: 10,
+	removeSelector: ".email_remove",
+	fieldName: "emreg",
+	rowIdPrefix: "email",
+	// rowTemplate must use the same removeSelector class so delegated handler fires:
+	rowTemplate: (i, name) => `
+		<div class="col-sm-12 row mt-3" id="email_${i}">
+			<div class="col-sm-11 m-0 row">
+				<x-input-label for="email_${i}" class="col-sm-3" :value="__('Alamat Emel : ')" />
+				<div class="col-sm-9">
+					<input type="hidden" name="${name}[${i}][id]" value="">
+					<div class="input-group">
+						<input id="email_${i}" type="text" name="${name}[${i}][email_suggestion]" class="form-control form-control-sm {{ ($errors->has('emreg.*.email_suggestion')?'is-invalid':NULL) }}" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${i}">
+						<span class="input-group-text" id="emailID_${i}">@unishams.edu.my</span>
 					</div>
 				</div>
-				<div class="col-sm-1 m-0">
-					<x-danger-button type="button" class="email_remove" data-id="${i}">
-						<i class="fa-regular fa-trash-can"></i>
-					</x-danger-button>
-				</div>
 			</div>
-		`,
-		onAdd: (i, $r) => {
-			// console.log('Email added', i, $r)
-		},
-		onRemove: (i, event, $row, name) => {
-			console.log('Email removed', i, event, $row)
-			event.preventDefault();
-			// console.log('Personnel removed', i, event, $row)
-			const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
-			if (!idv) {
-				$row.remove();
-				return;
-			}
-			swal.fire({
-				title: 'Delete email suggestion?',
-				text: 'This action cannot be undone.',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then(result => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: `{{ url('emailsuggestion') }}/${idv}`,
-						type: 'DELETE',
-						data: { _token: $('meta[name="csrf-token"]').attr('content') },
-						success: response => {
-							swal.fire('Deleted!', response.message, 'success');
-							$row.remove();  // remove only after DB deletion
-						},
-						error: xhr => {
-							swal.fire('Error', 'Failed to delete email suggestion', 'error');
-						}
-					});
-				}
-			});
+			<div class="col-sm-1 m-0">
+				<x-danger-button type="button" class="email_remove" data-id="${i}">
+					<i class="fa-regular fa-trash-can"></i>
+				</x-danger-button>
+			</div>
+		</div>
+	`,
+	onAdd: (i, $r) => {
+		// console.log('Email added', i, $r)
+	},
+	onRemove: (i, event, $row, name) => {
+		console.log('Email removed', i, event, $row)
+		event.preventDefault();
+		// console.log('Personnel removed', i, event, $row)
+		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+		if (!idv) {
+			$row.remove();
+			return;
 		}
-	});
+		swal.fire({
+			title: 'Delete email suggestion?',
+			text: 'This action cannot be undone.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(result => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: `{{ url('emailsuggestion') }}/${idv}`,
+					type: 'DELETE',
+					data: { _token: $('meta[name="csrf-token"]').attr('content') },
+					success: response => {
+						swal.fire('Deleted!', response.message, 'success');
+						$row.remove();  // remove only after DB deletion
+					},
+					error: xhr => {
+						swal.fire('Error', 'Failed to delete email suggestion', 'error');
+					}
+				});
+			}
+		});
+	}
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // restore old data
