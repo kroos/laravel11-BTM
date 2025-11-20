@@ -259,7 +259,7 @@ $("#equipments_wraps").remAddRow({
 	$itemsa = @$loanapp?->hasmanyequipments()?->get(['id', 'category_id', 'equipment_id']);
 	$itemsArrayb = $itemsa?->toArray()??[];
 	$oldItemsValuec = old('equipments', $itemsArrayb);
-	//  dd($oldItemsValuec);
+	// dd($oldItemsValuec);
 @endphp
 const oldEquipments = @json($oldItemsValuec);
 if (oldEquipments.length > 0) {
@@ -309,6 +309,4 @@ if (oldEquipments.length > 0) {
 	});
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
