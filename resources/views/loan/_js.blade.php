@@ -187,7 +187,7 @@ $("#equipments_wraps").remAddRow({
 			<div class="col-sm-11 m-0 row">
 				<label for="catequip_${i}" class="form-label form-label-sm col-sm-4">Category : </label>
 				<div class="col-sm-8">
-					<select id="catequip_${i}" name="${name}[${i}][catequipment_id]" class="form-control"></select>
+					<select id="catequip_${i}" name="${name}[${i}][category_id]" class="form-control"></select>
 				</div>
 			</div>
 			<div class="col-sm-11 m-0 row @error('equipments.*.equipment_id') has-error @enderror">
@@ -205,7 +205,7 @@ $("#equipments_wraps").remAddRow({
 				</button>
 			</div>
 			<div class="col-sm-12 m-0" id="desc_${i}">
-				<div id="desc_wrap_' + counter + '">
+				<div id="desc_wrap_${i}">
 					<p>Brand :<br/>
 					Model :<br/>
 					Serial Number :<br/>
@@ -219,7 +219,7 @@ $("#equipments_wraps").remAddRow({
 		initializeChainedSelects(i);
 	},
 	onRemove: (i, event, $row, name) => {
-		console.log('Equipment removed', i, event, $row)
+		// console.log('Equipment removed', i, event, $row)
 		event.preventDefault();
 		// console.log('Personnel removed', i, event, $row)
 		const idv = $row.find(`select[name="${name}[${i}][id]"]`).val();
@@ -252,5 +252,61 @@ $("#equipments_wraps").remAddRow({
 		});
 	}
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// restore old data
+@php
+	$itemsa = @$loanapp?->hasmanyequipments()?->get(['id', 'category_id', 'equipment_id']);
+	$itemsArrayb = $itemsa?->toArray()??[];
+	$oldItemsValuec = old('equipments', $itemsArrayb);
+	//  dd($oldItemsValuec);
+@endphp
+const oldEquipments = @json($oldItemsValuec);
+if (oldEquipments.length > 0) {
+	oldEquipments.forEach(function (gema, i) {
+		$("#equipments_add").trigger('click');
+
+		const $row = $("#equipments_wraps").children().eq(i);
+
+		const $account_id = $row.find(`select[name="equipments[${i}][category_id]"]`);
+		const $ledger_id = $row.find(`select[name="equipments[${i}][equipment_id]"]`);
+
+		if (gema.category_id) {
+			$.ajax({
+				url: CATEGORY_API,
+				data: {
+					_token: $('meta[name="csrf-token"]').attr('content'),
+					id: gema.category_id,
+				},
+				dataType: 'json'
+			}).then(data => {
+				const itema = Array.isArray(data) ? data[0] : data;	// change object to array
+				if (!itema) return;
+				const option1 = new Option(itema.cat, itema.id, true, true);
+				$account_id.append(option1).trigger('change');
+			});
+		}
+
+		if (gema.equipment_id) {
+			$.ajax({
+				url: EQUIPMENT_API,
+				data: {
+					_token: $('meta[name="csrf-token"]').attr('content'),
+					id: gema.equipment_id,
+				},
+				dataType: 'json'
+			}).then(data => {
+				// const [name, email] = Object.entries(data[0])[0];
+				const obj = Object.entries(data);
+				// console.log(obj[0][1][0].children[0].id, obj[0][1][0].children[0].text);
+
+				const option2 = new Option(obj[0][1][0].children[0].text, obj[0][1][0].children[0].id, true, true);
+				$ledger_id.append(option2).trigger('change');
+			});
+		}
+
+		$row.find(`input[name="equipments[${i}][id]"]`).val(gema.id || '');
+	});
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -117,7 +117,11 @@ class AjaxDBController extends Controller
 
 	public function listcategory(Request $request): JsonResponse
 	{
-		$values = Category::where('category','LIKE','%'.$request->search.'%')->get();
+		$values = Category::where('category','LIKE','%'.$request->search.'%')
+												->when($request->id, function ($query) use ($request){
+													$query->where('id', $request->id);
+												})
+												->get();
 		// dd($values);
 		foreach ($values as $value) {
 			$g[] = [
@@ -151,6 +155,9 @@ class AjaxDBController extends Controller
 										})
 										->when($request->search, function ($query) use ($request) {
 												$query->where('name', 'LIKE', '%' . $request->search . '%');
+										})
+										->when($request->id, function ($query) use ($request) {
+												$query->where('id', $request->id);
 										})
 										// ->get(['id', 'item', 'category_id']);
 										->get();

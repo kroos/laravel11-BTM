@@ -30,7 +30,7 @@
 							<div class="col-sm-12 mt-2 row">
 								<x-input-label for="dafrom" class="col-sm-4" :value="__('Pinjam DARI : ')" />
 								<div class="col-sm-8">
-									<x-text-input id="dafrom" name="date_loan_from" value="{{ old('date_loan_from') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+									<x-text-input id="dafrom" name="date_loan_from" value="{{ old('date_loan_from', @$loanapp->date_loan_from) }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
 									<x-input-error :messages="$errors->get('date_loan_from')" />
 								</div>
 							</div>
@@ -39,7 +39,7 @@
 							<div class="col-sm-12 mt-2 row">
 								<x-input-label for="dato" class="col-sm-4" :value="__('Pinjam HINGGA : ')" />
 								<div class="col-sm-8">
-									<x-text-input id="dato" name="date_loan_to" value="{{ old('date_loan_to') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+									<x-text-input id="dato" name="date_loan_to" value="{{ old('date_loan_to', @$loanapp->date_loan_to) }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
 									<x-input-error :messages="$errors->get('date_loan_to')" />
 								</div>
 							</div>
@@ -48,7 +48,7 @@
 							<div class="col-sm-12 mt-2 row">
 								<x-input-label for="purp" class="col-sm-4" :value="__('Tujuan Pinjaman : ')" />
 								<div class="col-sm-8">
-									<x-textarea-input id="purp" name="loan_purpose" value="{{ old('loan_purpose') }}" class="{{ ($errors->has('date_loan_from')?'is-invalid':NULL) }}"  />
+									<textarea name="loan_purpose" id="purp" class="form-control form-control-sm @error('loan_purpose') is-invalid @enderror" placeholder="Tujuan Pinjaman">{{ old('loan_purpose', @$loanapp->loan_purpose) }}</textarea>
 									<x-input-error :messages="$errors->get('loan_purpose')" />
 								</div>
 							</div>
@@ -57,7 +57,7 @@
 							<div class="col-sm-12 mt-2 row">
 								<x-input-label for="loc" class="col-sm-4" :value="__('Lokasi / Tempat : ')" />
 								<div class="col-sm-8">
-									<x-text-input id="loc" name="location" value="{{ old('location') }}" class="{{ ($errors->has('location')?'is-invalid':NULL) }}"  />
+									<x-text-input id="loc" name="location" value="{{ old('location', @$loanapp->location) }}" class="{{ ($errors->has('location')?'is-invalid':NULL) }}"  />
 									<x-input-error :messages="$errors->get('location')" />
 								</div>
 							</div>
