@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'users',
+        'passwords' => 'webuser',
         'connection' => 'mysql1'
     ],
 
@@ -98,7 +98,7 @@ return [
     */
 
     'passwords' => [
-        'users' => [
+        'webuser' => [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
