@@ -349,11 +349,11 @@ if (oldICMSGroup.length > 0) {
 			});
 		}
 
-		$row.find(`input[name="applicants[${i}][id]"]`).val(icmsGroup.id || '');
-		$row.find(`input[name="applicants[${i}][nostaf]"]`).val(icmsGroup.nostaf || '');
-		$row.find(`input[name="applicants[${i}][email]"]`).val(icmsGroup.email || '');
-		$row.find(`input[name="applicants[${i}][position]"]`).val(icmsGroup.position || '');
-		$row.find(`input[name="applicants[${i}][username]"]`).val(icmsGroup.username || '');
+		$row.find(`[name="applicants[${i}][id]"]`).val(icmsGroup.id || '');
+		$row.find(`[name="applicants[${i}][nostaf]"]`).val(icmsGroup.nostaf || '');
+		$row.find(`[name="applicants[${i}][email]"]`).val(icmsGroup.email || '');
+		$row.find(`[name="applicants[${i}][position]"]`).val(icmsGroup.position || '');
+		$row.find(`[name="applicants[${i}][username]"]`).val(icmsGroup.username || '');
 		addingicmsmodule(i, icmsGroup.icms);
 	});
 }

@@ -54,12 +54,11 @@ class AddApproverController extends Controller
 	public function store(Request $request): RedirectResponse
 	{
 		$request->validate([
+				'approver' => ['required', 'array', 'min:1'],
 				'approver.*.nostaf' => 'required',
 				'approver.*.kod_jabatan' => 'required',
-			], [
-				'approver.*.nostaf' => 'Please choose :attribute',
-				'approver.*.kod_jabatan.required' => 'Please choose :attribute',
-			], [
+			], [], [
+				'approver' => 'Approver Department',
 				'approver.*.nostaf' => 'Approver',
 				'approver.*.kod_jabatan' => 'Department',
 		]);

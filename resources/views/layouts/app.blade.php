@@ -33,13 +33,13 @@
 		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
 			<div class="container">
 				<a class="navbar-brand" href="{{ url('/dashboard') }}">
-					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-thumbnail" width="30%">
+					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarColor01">
-					<ul class="navbar-nav me-auto">
+					<ul class="navbar-nav mx-auto">
 						<li class="nav-item">
 							<a class="nav-link" href="{{ url('/dashboard') }}">Utama
 								<span class="visually-hidden">(current)</span>

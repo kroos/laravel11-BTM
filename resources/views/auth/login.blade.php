@@ -8,17 +8,21 @@
 		@csrf
 
 		<!-- Username -->
-		<div class="form-group row mb-3">
-			<x-input-label for="username" :value="__('No. Staf : ')" />
-			<x-text-input id="username" name="username" :value="old('username')" class="{{ $errors->has('username') ? 'is-invalid' : NULL }}"/>
-			<x-input-error :messages="$errors->get('username')" />
+		<div class="form-group col-sm-12 row mb-3 @error('username') is-invalid @enderror ">
+			<label class="col-form-label col-sm-4" for="username">No. Staf : </label>
+			<div class="col-sm-8 my-auto">
+				<input id="username" name="username" :value="old('username')" class="form-control form-control-sm @error('username') is-invalid @enderror"/>
+				<x-input-error :messages="$errors->get('username')" />
+			</div>
 		</div>
 
 		<!-- Password -->
-		<div class="form-group row mb-3">
-			<x-input-label for="password" :value="__('Password : ')" />
-			<x-text-input type="password" id="password" name="password" :value="old('password')" autocomplete="current-password" class="{{ $errors->has('password') ? 'is-invalid' : NULL }}" />
-			<x-input-error :messages="$errors->get('password')" />
+		<div class="form-group col-sm-12 row mb-3 @error('password') is-invalid @enderror">
+			<x-input-label for="password" class="col-sm-4 col-form-label" :value="__('Password : ')" />
+			<div class="col-sm-8 my-auto">
+				<input type="password" id="password" name="password" :value="old('password')" autocomplete="current-password" class="form-control form-control-sm @error('password') is-invalid @enderror" />
+				<x-input-error :messages="$errors->get('password')" />
+			</div>
 		</div>
 
 		<!-- Remember Me -->
