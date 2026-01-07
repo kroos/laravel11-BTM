@@ -107,6 +107,7 @@ class BTMLoanApplicationController extends Controller
 				'date_loan_from' => 'required|date_format:"Y-m-d"',
 				'date_loan_to' => 'required|date_format:"Y-m-d"',
 				'loan_purpose' => 'required',
+				'lequ' => 'required|array|min:1',
 				'lequ.*.equipment_id' => 'required',
 				'lequ.*.taken_on' => 'nullable|date_format:"Y-m-d"',
 				'lequ.*.return_on' => 'nullable|date_format:"Y-m-d"',
@@ -114,21 +115,11 @@ class BTMLoanApplicationController extends Controller
 				'lequ.*.status_condition_remarks' => 'required_unless:lequ.*.status_item_id, 1',
 				'status_loan_id' => 'required',
 				'btm_remarks' => 'required_if:status_loan_id, 2',
-			], [
-				'date_loan_from' => 'Please insert :attribute',
-				'date_loan_to' => 'Please insert :attribute',
-				'loan_purpose' => 'Please insert :attribute',
-				'lequ.*.equipment_id' => 'Please choose :attribute at #:position',	//:index
-				'lequ.*.taken_on' => 'Please choose :attribute at #:position',
-				'lequ.*.return_on' => 'Please choose :attribute at #:position',
-				'lequ.*.status_item_id' => 'Please choose :attribute at #:position',
-				'lequ.*.status_condition_remarks' => 'Please choose :attribute at #:position',
-				'status_loan_id' => 'Please choose :attribute',
-				'btm_remarks' => 'Please insert :attribute',
-			], [
+			], [], [
 				'date_loan_from' => 'Date From',
 				'date_loan_to' => 'Date To',
 				'loan_purpose' => 'Purpose of Loan',
+				'lequ' => 'Loan Equipment',
 				'lequ.*.equipment_id' => 'Equipment',
 				'lequ.*.taken_on' => 'Equipment Taken On',
 				'lequ.*.return_on' => 'Equipment Return On',
@@ -151,7 +142,6 @@ class BTMLoanApplicationController extends Controller
 				LoanEquipment::updateOrCreate(
 					[
 						'id' => $v['id'],
-						'application_id' => $btmloanapplication->id,
 					],
 					[
 						'equipment_id' => $v['equipment_id'],

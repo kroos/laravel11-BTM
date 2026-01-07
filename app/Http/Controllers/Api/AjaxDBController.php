@@ -179,7 +179,11 @@ class AjaxDBController extends Controller
 
 	public function status(Request $request): JsonResponse
 	{
-		$values = StatusEquipment::where('status_item','LIKE','%'.$request->search.'%')->get();
+		$values = StatusEquipment::where('status_item','LIKE','%'.$request->search.'%')
+														->when($request->id, function($q) use ($request){
+															$q->where('id', $request->id);
+														})
+															->get();
 		// dd($values);
 		foreach ($values as $value) {
 				$g['children'][] = [
