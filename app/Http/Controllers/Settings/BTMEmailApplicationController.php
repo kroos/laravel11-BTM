@@ -108,15 +108,17 @@ class BTMEmailApplicationController extends Controller
 	 */
 	public function update(Request $request, EmailRegistrationApplication $btmemailapplication): RedirectResponse
 	{
+		// dd($request->all());
 		$request->validate([
 				'nostaf' => 'required',
 				'group_email' => 'nullable',
 				'emreg.*.email_suggestion' => 'required|alpha:ascii',
 				'emreg.*.temp_password' => 'required_if_accepted:emreg.*.approved_email|nullable|alpha_num:ascii',
 				'emreg.*.approved_email' => 'accepted_if:emreg.*.temp_password,string|nullable|',
-				'emregmem.*.email_member_department' => 'required_if_accepted:group_email',
-				'emregmem.*.email_member' => 'required_if_accepted:group_email',
-				'emreg' => [new OnlyOneTempPassword],
+				'emregmem' => 'required|array|min:1',
+				'emregmem.*.department_id' => 'required_if_accepted:group_email',
+				'emregmem.*.email_staff' => 'required_if_accepted:group_email',
+				'emreg' => [new OnlyOneTempPassword, 'required', 'array', 'min:1'],
 				'status_email_id' => 'required',
 				'btm_remarks' => 'required_if:status_email_id, 2'
 			], [
@@ -125,18 +127,19 @@ class BTMEmailApplicationController extends Controller
 				'emreg.*.email_suggestion.required' => 'Please insert :attribute at #:position',
 				'emreg.*.temp_password' => 'Please insert :attribute at #:position',
 				'emreg.*.approved_email' => 'Please checked :attribute at #:position',
-				'emregmem.*.email_member_department' => 'Please choose :attribute at #:position',	//:index
-				'emregmem.*.email_member' => 'Please choose :attribute at #:position',	//:index
+				'emregmem.*.department_id' => 'Please choose :attribute at #:position',	//:index
+				'emregmem.*.email_staff' => 'Please choose :attribute at #:position',	//:index
 				'status_email_id' => 'Please choose :attribute',
 				'btm_remarks' => 'Please insert :attribute'
 			], [
 				'nostaf' => 'Staff ID',
 				'group_email' => 'Group Email',
+				'emreg' => 'Email Suggestion',
 				'emreg.*.email_suggestion' => 'Email ID',
 				'emreg.*.temp_password' => 'Temporary Password',
 				'emreg.*.approved_email' => 'Approved Email',
-				'emregmem.*.email_member_department' => 'Department',
-				'emregmem.*.email_member' => 'Staff',
+				'emregmem.*.department_id' => 'Department',
+				'emregmem.*.email_staff' => 'Staff',
 				'status_email_id' => 'Email Registration Status',
 				'btm_remarks' => 'BTM Remarks'
 		]);
@@ -151,7 +154,7 @@ class BTMEmailApplicationController extends Controller
 			foreach($request->emreg as $k => $v) {
 				EmailSuggestion::updateOrCreate([
 						'id' => $v['id'],
-						'email_application_id' => $btmemailapplication->id
+						// 'email_application_id' => $btmemailapplication->id
 					],
 					[
 						'email_suggestion' => $v['email_suggestion'],
@@ -165,11 +168,11 @@ class BTMEmailApplicationController extends Controller
 			foreach($request->emregmem as $k1 => $v1) {
 				EmailGroupMember::updateOrCreate([
 						'id' => $v1['id'],
-						'email_application_id' => $btmemailapplication->id
+						// 'email_application_id' => $btmemailapplication->id
 					],
 					[
-						'department_id' => $v1['email_member_department'],
-						'email_staff' => $v1['email_member']
+						'department_id' => $v1['department_id'],
+						'email_staff' => $v1['email_staff']
 				]);
 			};
 		};

@@ -176,165 +176,165 @@ function initializeChainedSelects(counter) {
 	updateDescription(equipmentSelector, descriptionSelector);
 }
 
-	$("#equipments_wrap").remAddRow({
-		addBtn: "#equipments_add",
-		maxFields: 20,
-		removeSelector: ".equipments_remove",
-		fieldName: "lequ",
-		rowIdPrefix: "loans",
-		rowTemplate: (i, name) => `
-			<div class="col-sm-12 row mt-3" id="loans_${i}">
-				<!-- equipment -->
-				<div class="form-group col-sm-11 m-0 row @error('lequ.*.category_id') has-error @enderror">
-					<input type="hidden" name="${name}[${i}][id]" value="">
-					<input type="hidden" name="${name}[${i}][application_id]" value="">
-					<label for="catequip_${i}" class="col-form-label col-sm-4">Equipment Category : </label>
-					<div class="col-sm-8 my-auto">
-						<select id="catequip_${i}" name="${name}[${i}][category_id]" class="form-select form-select-sm @error('lequ.*.category_id') is-invalid @enderror" palceholder="Please Choose"></select>
-						@error('lequ.*.category_id')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
-				</div>
-				<div class="form-group col-sm-11 m-0 row @error('lequ.*.equipment_id') has-error @enderror">
-					<label class="form-label form-label-sm col-sm-4" for="equip_${i}">Equipment :</label>
-					<div class="col-sm-8 my-auto">
-						<select id="equip_${i}" name="${name}[${i}][equipment_id]" class="form-select form-select-sm @error('lequ.*.equipment_id') is-invalid @enderror" palceholder="Please Choose"></select>
-						@error('lequ.*.equipment_id')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
-				</div>
-				<!-- remove button -->
-				<div class="col-sm-1 m-0">
-					<button type="button" class="btn btn-sm btn-danger equipments_remove">
-						<i class="fa-regular fa-trash-can"></i>
-					</button>
-				</div>
-				<!-- equipment description -->
-				<div class="col-sm-12 m-0" id="desc_${i}">
-					<div id="desc_wrap_${i}">
-						<p>Brand :</br>
-						Model :</br>
-						Serial Number :</br>
-						Description :</p>
-					</div>
-				</div>
-
-				<div class="form-group col-sm-12 mt-2 row @error('lequ.*.taken_on') has-error @enderror">
-					<label for="take_${i}" class="col-form-label col-sm-4">Taken On : </label>
-					<div class="col-sm-8">
-						<input type="text" id="take_${i}" name="${name}\[${i}\][taken_on]" value="" class="form-control form-control-sm @error('lequ.*.taken_on') is-invalid @enderror"/>
-						@error('lequ.*.equipment_id')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
-				</div>
-				<div class="form-group col-sm-12 mt-2 row @error('lequ.*.return_on') has-error @enderror">
-					<label for="return_${i}" class="col-form-label col-sm-4">Return On : </label>
-					<div class="col-sm-8">
-						<input type="type" id="return_${i}" name="${name}[${i}][return_on]" value="" class="form-control form-control-sm @error('lequ.*.return_on') is-invalid @enderror "/>
-						@error('lequ.*.return_on')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
-				</div>
-				<div class="form -group col-sm-12 mt-2 row @error('lequ.*.status_item_id') has-error @enderror">
-					<label for="status_${i}" class="col-sm-4">Status Item After Return : </label>
-					<div class="col-sm-8 my-auto">
-						<select name="${name}[${i}][status_item_id]" id="status_${i}" class="form-select form-select-sm @error('lequ.*.status_item_id') is-invalid @enderror"></select>
-						@error('lequ.*.status_item_id')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
-				</div>
-				<div class="form -group
-			@error('lequ.*.status_condition_remarks') has-error @enderror col-sm-12 mt-2 row">
-					<label for="remarks_${i}" class="col-form-label col-sm-4">Remarks : </label>
-					<div class="col-sm-8">
-						<textarea id="remarks_${i}" name="${name}[${i}][status_condition_remarks]" value="" class="form-control form-control-sm @error('lequ.*.status_condition_remarks') is-invalid @enderror"></textarea>
-						@error('lequ.*.status_condition_remarks')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-						@enderror
-					</div>
+$("#equipments_wrap").remAddRow({
+	addBtn: "#equipments_add",
+	maxFields: 20,
+	removeSelector: ".equipments_remove",
+	fieldName: "lequ",
+	rowIdPrefix: "loans",
+	rowTemplate: (i, name) => `
+		<div class="col-sm-12 row mt-3" id="loans_${i}">
+			<!-- equipment -->
+			<div class="form-group col-sm-11 m-0 row @error('lequ.*.category_id') has-error @enderror">
+				<input type="hidden" name="${name}[${i}][id]" value="">
+				<input type="hidden" name="${name}[${i}][application_id]" value="">
+				<label for="catequip_${i}" class="col-form-label col-sm-4">Equipment Category : </label>
+				<div class="col-sm-8 my-auto">
+					<select id="catequip_${i}" name="${name}[${i}][category_id]" class="form-select form-select-sm @error('lequ.*.category_id') is-invalid @enderror" palceholder="Please Choose"></select>
+					@error('lequ.*.category_id')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
 				</div>
 			</div>
-		`,
-		onAdd: (i, event, $r , name) => {
-			// console.log('Equipmwnts added', i, $r)
+			<div class="form-group col-sm-11 m-0 row @error('lequ.*.equipment_id') has-error @enderror">
+				<label class="form-label form-label-sm col-sm-4" for="equip_${i}">Equipment :</label>
+				<div class="col-sm-8 my-auto">
+					<select id="equip_${i}" name="${name}[${i}][equipment_id]" class="form-select form-select-sm @error('lequ.*.equipment_id') is-invalid @enderror" palceholder="Please Choose"></select>
+					@error('lequ.*.equipment_id')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
+				</div>
+			</div>
+			<!-- remove button -->
+			<div class="col-sm-1 m-0">
+				<button type="button" class="btn btn-sm btn-danger equipments_remove">
+					<i class="fa-regular fa-trash-can"></i>
+				</button>
+			</div>
+			<!-- equipment description -->
+			<div class="col-sm-12 m-0" id="desc_${i}">
+				<div id="desc_wrap_${i}">
+					<p>Brand :</br>
+					Model :</br>
+					Serial Number :</br>
+					Description :</p>
+				</div>
+			</div>
 
-			// Initialize the chained selects and description updater for the new set
-			initializeChainedSelects(i);
-		},
-		onRemove: (i, event, $row, name) => {
-			event.preventDefault();
-			// console.log('Personnel removed', i, event, $row)
-			const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
-			if (!idv) {
-				$row.remove();
-				return;
-			}
+			<div class="form-group col-sm-12 mt-2 row @error('lequ.*.taken_on') has-error @enderror">
+				<label for="take_${i}" class="col-form-label col-sm-4">Taken On : </label>
+				<div class="col-sm-8">
+					<input type="text" id="take_${i}" name="${name}\[${i}\][taken_on]" value="" class="form-control form-control-sm @error('lequ.*.taken_on') is-invalid @enderror"/>
+					@error('lequ.*.equipment_id')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
+				</div>
+			</div>
+			<div class="form-group col-sm-12 mt-2 row @error('lequ.*.return_on') has-error @enderror">
+				<label for="return_${i}" class="col-form-label col-sm-4">Return On : </label>
+				<div class="col-sm-8">
+					<input type="type" id="return_${i}" name="${name}[${i}][return_on]" value="" class="form-control form-control-sm @error('lequ.*.return_on') is-invalid @enderror "/>
+					@error('lequ.*.return_on')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
+				</div>
+			</div>
+			<div class="form -group col-sm-12 mt-2 row @error('lequ.*.status_item_id') has-error @enderror">
+				<label for="status_${i}" class="col-sm-4">Status Item After Return : </label>
+				<div class="col-sm-8 my-auto">
+					<select name="${name}[${i}][status_item_id]" id="status_${i}" class="form-select form-select-sm @error('lequ.*.status_item_id') is-invalid @enderror"></select>
+					@error('lequ.*.status_item_id')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
+				</div>
+			</div>
+			<div class="form -group
+		@error('lequ.*.status_condition_remarks') has-error @enderror col-sm-12 mt-2 row">
+				<label for="remarks_${i}" class="col-form-label col-sm-4">Remarks : </label>
+				<div class="col-sm-8">
+					<textarea id="remarks_${i}" name="${name}[${i}][status_condition_remarks]" value="" class="form-control form-control-sm @error('lequ.*.status_condition_remarks') is-invalid @enderror"></textarea>
+					@error('lequ.*.status_condition_remarks')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+					@enderror
+				</div>
+			</div>
+		</div>
+	`,
+	onAdd: (i, event, $r , name) => {
+		// console.log('Equipmwnts added', i, $r)
 
-			const titleapp = 'Loan Equipment';
-			const apiUrl = '{{ url('loanequipments') }}';
-			swal.fire({
-				title: `Delete ${titleapp}`,
-				text: `Are you sure to delete ${titleapp}?`,
-				icon: 'info',
-				showCancelButton: true,
-				showLoaderOnConfirm: true,
-				allowOutsideClick: false,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'Cancel',
-				preConfirm: function() {
-					return new Promise(function(resolve) {
-						$.ajax({
-							url: `${apiUrl}/${idv}`,
-							type: 'DELETE',
-							dataType: 'json',
-							data: {
-									id: `${idv}`,
-									_token : `{{ csrf_token() }}`
-							},
-						})
-						.done(function(response){
-							swal.fire('Accept', response.message, response.status)
-							.then(function(){
-								// window.location.reload(true);
-								// table.ajax.reload(true);
-								// $('#form').bootstrapValidator('removeField', $field1);
-								// $('#form').bootstrapValidator('removeField', $field2);
-							});
-						})
-						.fail(function(){
-							swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-							// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-						})
-					});
-				},
-			})
-			.then((result) => {
-				if (result.dismiss === swal.DismissReason.cancel) {
-					swal.fire('Cancel Action', `${titleapp} is still active.`, 'info')
-				}
-			});
-
+		// Initialize the chained selects and description updater for the new set
+		initializeChainedSelects(i);
+	},
+	onRemove: (i, event, $row, name) => {
+		event.preventDefault();
+		// console.log('Personnel removed', i, event, $row)
+		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+		if (!idv) {
+			$row.remove();
+			return;
 		}
-	});
+
+		const titleapp = 'Loan Equipment';
+		const apiUrl = '{{ url('loanequipments') }}';
+		swal.fire({
+			title: `Delete ${titleapp}`,
+			text: `Are you sure to delete ${titleapp}?`,
+			icon: 'info',
+			showCancelButton: true,
+			showLoaderOnConfirm: true,
+			allowOutsideClick: false,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'Cancel',
+			preConfirm: function() {
+				return new Promise(function(resolve) {
+					$.ajax({
+						url: `${apiUrl}/${idv}`,
+						type: 'DELETE',
+						dataType: 'json',
+						data: {
+								id: `${idv}`,
+								_token : `{{ csrf_token() }}`
+						},
+					})
+					.done(function(response){
+						swal.fire('Accept', response.message, response.status)
+						.then(function(){
+							// window.location.reload(true);
+							// table.ajax.reload(true);
+							// $('#form').bootstrapValidator('removeField', $field1);
+							// $('#form').bootstrapValidator('removeField', $field2);
+						});
+					})
+					.fail(function(){
+						swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+						// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
+					})
+				});
+			},
+		})
+		.then((result) => {
+			if (result.dismiss === swal.DismissReason.cancel) {
+				swal.fire('Cancel Action', `${titleapp} is still active.`, 'info')
+			}
+		});
+
+	}
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // restore old data
