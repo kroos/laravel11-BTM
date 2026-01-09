@@ -46,6 +46,7 @@ function createPersonnels(){
 		removeSelector: ".personnel_remove",
 		fieldName: "emregmem",
 		rowIdPrefix: "emailgrp",
+		reindexKnownAttributes: [],
 		// rowTemplate must use the same removeSelector class so delegated handler fires:
 		rowTemplate: (i, name) => createPersonnelRow(i, name),
 		onAdd: (i, $r) => {
@@ -201,15 +202,59 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 // add email
 $("#emails_wrap").remAddRow({
 	addBtn: "#emails_add",
-	maxFields: 10,
+	maxFields: 5,
 	removeSelector: ".email_remove",
 	fieldName: "emreg",
 	rowIdPrefix: "email",
-	// rowTemplate must use the same removeSelector class so delegated handler fires:
+	idField: 'emreg[{index}][id]', // Tell plugin where to find ID
+	reindexKnownAttributes: [],
+	// SweetAlert2 Configuration
+	swal: {
+		enabled: true,
+		options: {
+			title: 'Delete Email Suggestion',
+			text: 'Are you sure you want to delete this Email Suggestion?',
+		},
+		ajax: {
+			url: `{{ url('emailsuggestion') }}/{id}`, // Supports {id}, {index}, {fieldName}
+			method: 'DELETE',
+			data: {
+				id: '{id}',
+				_token: '{{ csrf_token() }}'
+			}
+		},
+		successCallback: function(response, $row, vars) {
+			swal.fire('Success!', response.message, 'success')
+			.then(() => {
+				$row.remove();
+			});
+		}
+	},
+	// Bootstrap Validator Configuration
+	validator: {
+		enabled: true,
+		form: '#form',
+		fields: {
+			'emreg[{index}][email_suggestion]': {
+				validators: {
+					notEmpty: {
+						message: 'Please insert name.'
+					},
+					stringLength: {
+						min: 2,
+						max: 100,
+						message: 'Email must be between 2-100 characters'
+					}
+				}
+			}
+		},
+		skipFields: [] // Fields to skip auto-validation
+	},
+	// Custom row template
 	rowTemplate: (i, name) => `
-		<div class="col-sm-12 row mt-3" id="email_${i}">
+			<div class="col-sm-12 row mt-3" id="email_${i}">
 			<div class="col-sm-11 m-0 row">
-				<x-input-label for="email_${i}" class="col-sm-3" :value="__('Alamat Emel : ')" />
+				<label for="email_${i}" class="col-form-label col-sm-3">Alamat Emel : </label>
 				<div class="col-sm-9">
 					<input type="hidden" name="${name}[${i}][id]" value="">
 					<div class="input-group">
@@ -219,47 +264,21 @@ $("#emails_wrap").remAddRow({
 				</div>
 			</div>
 			<div class="col-sm-1 m-0">
-				<x-danger-button type="button" class="email_remove" data-id="${i}">
+				<button type="button" class="btn btn-sm btn-danger email_remove" data-index="${i}">
 					<i class="fa-regular fa-trash-can"></i>
-				</x-danger-button>
+				</button>
 			</div>
 		</div>
-	`,
-	onAdd: (i, $r) => {
-		// console.log('Email added', i, $r)
+		`,
+	// User callbacks (run before plugin features)
+	onAdd: (i, e, $row, name) => {
+		console.log('User: Row added at index', i);
+
 	},
-	onRemove: (i, event, $row, name) => {
-		console.log('Email removed', i, event, $row)
-		event.preventDefault();
-		// console.log('Personnel removed', i, event, $row)
-		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
-		if (!idv) {
-			$row.remove();
-			return;
-		}
-		swal.fire({
-			title: 'Delete email suggestion?',
-			text: 'This action cannot be undone.',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			confirmButtonText: 'Yes, delete it!'
-		}).then(result => {
-			if (result.isConfirmed) {
-				$.ajax({
-					url: `{{ url('emailsuggestion') }}/${idv}`,
-					type: 'DELETE',
-					data: { _token: $('meta[name="csrf-token"]').attr('content') },
-					success: response => {
-						swal.fire('Deleted!', response.message, 'success');
-						$row.remove();  // remove only after DB deletion
-					},
-					error: xhr => {
-						swal.fire('Error', 'Failed to delete email suggestion', 'error');
-					}
-				});
-			}
-		});
+	onRemove: (i, e, $row, name) => {
+		console.log('User: About to remove row', i);
+	// User can prevent default if needed
+	// e.preventDefault(); // This stops plugin's removal logic
 	}
 });
 

@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('emailaccapp.update', $emailaccapp->id) }}" method="POST">
+	<form method="POST" action="{{ route('emailaccapp.update', $emailaccapp) }}" accept-charset="UTF-8" id="form" autocomplete="off" class="needs-validation" enctype="multipart/form-data">
 		@method('PATCH')
 		@csrf
 		@include('email._form')

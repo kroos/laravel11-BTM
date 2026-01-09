@@ -6,7 +6,7 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('emailaccapp.store') }}" method="POST">
+	<form method="POST" action="{{ route('emailaccapp.store') }}" accept-charset="UTF-8" id="form" autocomplete="off" class="needs-validation" enctype="multipart/form-data">
 		@csrf
 		@include('email._form')
 	</form>
