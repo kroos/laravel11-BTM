@@ -1,254 +1,461 @@
-(function ($) {
-    const defaultSwalOptions = {
-        title: 'Delete This Item?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        showLoaderOnConfirm: true,
-        allowOutsideClick: false,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'Cancel',
-    };
+/**
+ * --------------------------------------------------------------------------
+ * jQuery Add/Remove Row Plugin
+ * --------------------------------------------------------------------------
+ * A lightweight jQuery plugin to dynamically add and remove rows or form fields
+ * with automatic reindexing, configurable templates, and event callbacks.
+ *
+ * Author: kroos
+ * License: MIT
+ * Version: 2.0.0
+ * --------------------------------------------------------------------------
+ *
+ * 🧩 FEATURES:
+ * - Add and remove form rows dynamically
+ * - Automatic reindexing of names and IDs (e.g. rows[0], rows[1], ...)
+ * - Customizable HTML row template via `rowTemplate()`
+ * - Built-in callbacks: `onAdd()` and `onRemove()`
+ * - Optional limits for max number of fields
+ * - ES module compatible (`export default $`)
+ *
+ * --------------------------------------------------------------------------
+ * 📦 USAGE:
+ *
+ * HTML:
+ *   <div id="rowsWrapper"></div>
+ *   <button id="addRowBtn" type="button">Add Row</button>
+ *
+ * JS:
+ *   $('#rowsWrapper').remAddRow({
+ *     addBtn: '#addRowBtn',
+ *     fieldName: 'users',
+ *     onAdd: (i, $row) => console.log('Added:', i),
+ *     onRemove: (i) => console.log('Removed:', i)
+ *   });
+ *
+ * --------------------------------------------------------------------------
+ * ⚙️ OPTIONS:
+ *
+ *  addBtn            → Selector for the Add button (required)
+ *  maxFields         → Max number of rows (default: 10)
+ *  removeClass    → Selector for remove buttons (default: ".row_remove")
+ *  fieldName         → Base name for field groups (default: "rows")
+ *  rowIdPrefix       → Prefix for each row id (default: "row")
+ *  rowTemplate(i, name) → Function returning HTML for each row
+ *  onAdd(i, $row)    → Callback after a new row is added
+ *  onRemove(i)       → Callback after a row is removed
+ *
+ * --------------------------------------------------------------------------
+ * 💻 EXAMPLE CUSTOM TEMPLATE:
+ *
+ *   rowTemplate: (i, name) => `
+ *     <div class="user-row" id="user_${i}">
+ *       <label>User ${i + 1}</label>
+ *       <input type="text" name="${name}[${i}][name]" />
+ *       <button type="button" class="btn btn-danger row_remove" data-id="${i}">
+ *         Remove
+ *       </button>
+ *     </div>
+ *   `
+ *
+ * --------------------------------------------------------------------------
+ * 🧠 NOTES:
+ * - Works great with Laravel-style indexed form arrays.
+ * - Reindexes automatically on both add and remove events.
+ * - Disable add button automatically when `maxFields` is reached.
+ * - Compatible with Bootstrap, TailwindCSS, or custom UI frameworks.
+ * - You can safely import/export with modern build systems.
+ *
+ * --------------------------------------------------------------------------
+ */
 
-    // Default attributes that should ALWAYS be reindexed
-    const DEFAULT_REINDEX_ATTRIBUTES = ['id', 'for', 'aria-describedby', 'data-bv-field', 'data-bv-for'];
+// remAddRow jQuery Plugin - ES6 Compatible
+(function($) {
+	'use strict';
 
-    $.fn.remAddRow = function (options) {
-        // First, get user options to see if they provided custom reindex attributes
-        const userReindexAttributes = options && options.reindexKnownAttributes ? options.reindexKnownAttributes : [];
+	// Plugin definition
+	$.fn.remAddRow = function(options) {
+		// Make sure we have elements to work with
+		if (!this.length) {
+			console.warn('remAddRow: No elements found');
+			return this;
+		}
 
-        // Merge default attributes with user attributes (removing duplicates)
-        const allReindexAttributes = [...new Set([...DEFAULT_REINDEX_ATTRIBUTES, ...userReindexAttributes])];
+		// Default settings
+		const defaults = {
+			addBtn: '',
+			maxRows: 5,
+			startRow: 0,
+			fieldName: 'data',
+			rowSelector: 'rowserial',
+			removeClass: 'serial_remove',
+			onAdd: null,
+			onRemove: null,
+			// Default reindexing patterns
+			reindexRowName: ['name', 'data-bv-field', 'data-bv-for'],
+			reindexRowID: ['id', 'for', 'aria-describedby'],
+			reindexRowIndex: ['data-index', 'data-id']
+		};
 
-        const settings = $.extend(true, {
-            addBtn: null,
-            maxFields: 10,
-            removeSelector: ".row_remove",
-            fieldName: "rows",
-            rowIdPrefix: "row",
-            reindexOnRemove: true,
-            startCounter: 0,
-            rowTemplate: (i, name) => {
-                const removeClass = settings.removeSelector.replace(/^\./, '');
-                return `
-                    <div class="row-box" id="${settings.rowIdPrefix}_${i}">
-                        <span data-row-index>Row #${i+1}</span>
-                        <input type="text" name="${name}[${i}]" />
-                        <button type="button" class="${removeClass}" data-index="${i}">Remove</button>
-                    </div>`;
-            },
-            onAdd: (i, e, $row, fieldName) => {},
-            onRemove: (i, e, $row, fieldName) => {},
-            idField: null,
-            validator: { enabled: false, form: '#form', fields: {}, skipFields: [] },
-            swal: { enabled: false, options: {}, ajax: {}, successCallback: null, errorCallback: null },
-            templateVars: (template, values) => template.replace(/\{(\w+)\}/g, (m, k) => values[k] !== undefined ? values[k] : m),
-            indexPattern: '_index',
-            // This is now just a reference to the merged array, users can't override defaults
-            reindexKnownAttributes: allReindexAttributes,
-        }, options);
+		// Merge options
+		const settings = Object.assign({}, defaults, options);
 
-        // Override the reindexKnownAttributes with our merged array
-        // (this ensures user can't override the defaults)
-        settings.reindexKnownAttributes = allReindexAttributes;
+		// custom
+		// 🔹 Smart merge for reindex arrays
+		['reindexRowName', 'reindexRowID', 'reindexRowIndex'].forEach(key => {
+			if (key in options) {
+				// If user explicitly sets it (even empty), respect it
+				settings[key] = Array.isArray(options[key])
+				? [...new Set([...(defaults[key] || []), ...options[key]])]
+				: options[key];
+			} else {
+				// User did NOT provide it → keep defaults
+				settings[key] = [...(defaults[key] || [])];
+			}
+		});
 
-        settings.swal.options = $.extend(true, {}, defaultSwalOptions, settings.swal.options || {});
-        const $wrapper = this;
-        const $addBtn = $(settings.addBtn);
 
-        function escapeRegex(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
-        const namePrefixRegex = new RegExp('^'+escapeRegex(settings.fieldName)+'\\[\\d+\\]');
 
-        function reindexRow($row, i) {
-            // Store the current index from the row's ID or data-index
-            const currentMatch = $row.attr('id').match(new RegExp(escapeRegex(settings.rowIdPrefix) + '_(\\d+)'));
-            const currentIndex = currentMatch ? currentMatch[1] : null;
+		const $wrapper = this;
+		let i = settings.startRow;
 
-            // Update row ID
-            $row.attr('id', `${settings.rowIdPrefix}_${i}`);
+		// Initialize
+		function init() {
+			// Count existing rows (0-based index)
+			i = $wrapper.find(`.${settings.rowSelector}`).length;
 
-            // Update data-row-index elements
-            $row.find('[data-row-index]').each(function () {
-                $(this).text($(this).data('row-index-offset') ? $(this).data('row-index-offset') + i : i + 1);
-            });
+			// Attach click event to add button
+			if (settings.addBtn) {
+				$(settings.addBtn).off('click.remAddRow').on('click.remAddRow', addRow);
+			}
 
-            // Update name attributes - THIS IS WORKING, DON'T CHANGE
-            $row.find('input[name], select[name], textarea[name]').each(function () {
-                const name = $(this).attr('name');
-                if(!name) return;
-                // Replace the specific index in the name
-                const newName = name.replace(
-                    new RegExp(escapeRegex(settings.fieldName) + '\\[' + (currentIndex !== null ? currentIndex : '\\d+') + '\\]'),
-                    `${settings.fieldName}[${i}]`
-                );
-                $(this).attr('name', newName);
-            });
+			// Delegate remove button events
+			$wrapper.off('click.remAddRow', `.${settings.removeClass}`)
+			.on('click.remAddRow', `.${settings.removeClass}`, removeRow);
 
-            // Update remove button data-index - THIS IS WORKING, DON'T CHANGE
-            $row.find(settings.removeSelector).attr('data-index', i);
+			return methods;
+		}
 
-            // Process reindexKnownAttributes for attributes like id, for, aria-describedby
-            if (settings.reindexKnownAttributes && settings.reindexKnownAttributes.length > 0 && currentIndex !== null) {
-                // Create selector for all attributes that need reindexing
-                const selector = settings.reindexKnownAttributes
-                    .map(attr => `[${attr}]`)
-                    .join(',');
+		// Add a new row
+		const addRow = function(e) {
+			if (i < settings.maxRows) {
+				const currentIndex = i;
+				const rowHTML = createRowHTML(currentIndex);
+				$wrapper.append(rowHTML);
+				i++;
 
-                $row.find(selector).each(function () {
-                    const $this = $(this);
-                    settings.reindexKnownAttributes.forEach(attr => {
-                        const val = $this.attr(attr);
-                        if(val) {
-                            // Check if this is a Bootstrap Validator field that needs special handling
-                            if ((attr === 'data-bv-field' || attr === 'data-bv-for') && val.includes(settings.fieldName + '[' + currentIndex + ']')) {
-                                // Special handling for Bootstrap Validator fields
-                                const newVal = val.replace(
-                                    new RegExp(escapeRegex(settings.fieldName) + '\\[' + currentIndex + '\\]'),
-                                    `${settings.fieldName}[${i}]`
-                                );
-                                if(newVal !== val) {
-                                    $this.attr(attr, newVal);
-                                }
-                            }
-                            // Check if it contains the indexPattern placeholder
-                            else if (settings.indexPattern && val.includes(settings.indexPattern)) {
-                                // Replace the indexPattern placeholder
-                                const newVal = val.replace(
-                                    new RegExp(escapeRegex(settings.indexPattern), 'g'),
-                                    i
-                                );
-                                if(newVal !== val) {
-                                    $this.attr(attr, newVal);
-                                }
-                            }
-                            // For other attributes like id, for, aria-describedby
-                            // We need to find and replace the currentIndex number
-                            else {
-                                // Look for the currentIndex as a standalone number or preceded/followed by non-digits
-                                // This handles patterns like: email_2, row2, item-2, etc.
-                                const pattern = new RegExp('(^|\\D)' + escapeRegex(currentIndex) + '(\\D|$)', 'g');
-                                const newVal = val.replace(pattern, function(match) {
-                                    // Replace the index in the match while preserving surrounding characters
-                                    return match.replace(new RegExp(escapeRegex(currentIndex)), i);
-                                });
-                                if(newVal !== val) {
-                                    $this.attr(attr, newVal);
-                                }
-                            }
-                        }
-                    });
-                });
-            }
-        }
+				// Callback with your signature: (index, event, $row, name)
+				if (typeof settings.onAdd === 'function') {
+					const $newRow = $(`#${settings.fieldName}_${currentIndex}`, $wrapper);
+					settings.onAdd(currentIndex, e, $newRow, settings.fieldName);
+				}
 
-        function reindexRows() {
-            $wrapper.children().each(function(i){
-                reindexRow($(this), i);
-            });
-        }
+				if (e && e.preventDefault) {
+					e.preventDefault();
+				}
+			} else {
+				console.log(`Maximum rows reached: ${settings.maxRows}`);
+			}
+			return false;
+		};
 
-        function removeRowAndReindex($row) {
-            if(settings.validator.enabled) removeValidators($row);
-            $row.remove();
-            if(settings.reindexOnRemove) reindexRows();
-            updateAddBtnState();
-        }
+		// Create row HTML - uses your template function
+		const createRowHTML = function(index) {
+			// Use custom template if provided (with your signature: (i, name))
+			if (typeof settings.rowTemplate === 'function') {
+				return settings.rowTemplate(index, settings.fieldName);
+			}
 
-        function updateAddBtnState() {
-            if(!$addBtn.length) return;
-            $addBtn.prop('disabled', $wrapper.children().length >= settings.maxFields);
-        }
+			// Default template
+			return `
+				<div id="${settings.rowSelector}_${index}" class="row m-0 ${settings.rowSelector}">
+					<input type="hidden" name="${settings.fieldName}[${index}][id]" value="">
 
-        function getIdFieldValue($row, index) {
-            if(!settings.idField) return null;
-            const fieldName = settings.idField.replace(/\{index\}/g,index);
-            const $field = $row.find(`[name="${fieldName}"]`);
-            return $field.length ? $field.val()?.trim()||null : null;
-        }
+					<div class="form-group row m-0">
+						<label for="name_${index}" class="col-form-label col-sm-4">Name : </label>
+						<div class="col-sm-8 my-auto">
+							<input type="text"
+									 name="${settings.fieldName}[${index}][name]"
+									 value=""
+									 id="name_${index}"
+									 class="form-control form-control-sm"
+									 placeholder="Name">
+						</div>
+					</div>
 
-        function registerValidators(index, $row) {
-            if(!settings.validator.enabled) return;
-            const $form = $(settings.validator.form);
-            if(!$form.length || !$.fn.bootstrapValidator) return;
-            Object.keys(settings.validator.fields).forEach(pattern => {
-                if(settings.validator.skipFields.includes(pattern)) return;
-                const fieldName = pattern.replace(/\{index\}/g,index);
-                const $field = $row.find(`[name="${fieldName}"]`);
-                if($field.length){
-                    try{ $form.bootstrapValidator('addField', $field, settings.validator.fields[pattern]); }
-                    catch(e){ console.warn(`remAddRow: Failed to add validator ${fieldName}`, e); }
-                }
-            });
-        }
+					<div class="form-group row m-0">
+						<label for="skill_${index}" class="col-form-label col-sm-4">Skill : </label>
+						<div class="col-sm-8 my-auto">
+							<input type="text"
+									 name="${settings.fieldName}[${index}][skill]"
+									 value=""
+									 id="skill_${index}"
+									 class="form-control form-control-sm"
+									 placeholder="Skill">
+						</div>
+					</div>
 
-        function removeValidators($row) {
-            if(!settings.validator.enabled) return;
-            const $form = $(settings.validator.form);
-            if(!$form.length || !$.fn.bootstrapValidator) return;
-            Object.keys(settings.validator.fields).forEach(pattern => {
-                const $field = $row.find(`[name^="${settings.fieldName}"]`);
-                if($field.length) try{ $form.bootstrapValidator('removeField', $field); } catch(e){}
-            });
-        }
+					<div class="col-sm-4 m-0">
+						<button type="button"
+								class="btn btn-sm btn-outline-danger ${settings.removeClass}"
+								data-index="${index}">Remove</button>
+					</div>
+				</div>
+			`;
+		};
 
-        function handleAjaxDelete(id,index,$row,e) {
-            const SwalInstance = window.Swal || window.swal;
-            if(!settings.swal.enabled || !SwalInstance || !settings.swal.ajax.url){ removeRowAndReindex($row); return; }
-            const vars = {fieldName:settings.fieldName, id:index, index, rowId:$row.attr('id')};
-            const url = settings.templateVars(settings.swal.ajax.url,vars);
-            let ajaxData = {};
-            if(settings.swal.ajax.data) Object.keys(settings.swal.ajax.data).forEach(k=>{
-                const v=settings.swal.ajax.data[k];
-                ajaxData[k] = typeof v==='string'?settings.templateVars(v,vars):v;
-            });
-            SwalInstance.fire(settings.swal.options).then(r=>{
-                if(r.isConfirmed){
-                    $.ajax({url,method:settings.swal.ajax.method,data:ajaxData,dataType:'json'})
-                    .done(resp=>{
-                        if(typeof settings.swal.successCallback==='function') settings.swal.successCallback(resp,$row,vars);
-                        else SwalInstance.fire('Deleted!','Item has been deleted.','success').then(()=>removeRowAndReindex($row));
-                    })
-                    .fail(xhr=>{
-                        if(typeof settings.swal.errorCallback==='function') settings.swal.errorCallback(xhr,$row,vars);
-                        else SwalInstance.fire('Error!','Failed to delete item.','error');
-                    });
-                }
-            });
-        }
+		// Remove a row
+		const removeRow = function(e) {
+			const $button = $(this);
+			const idIndex = $button.data('index');
+			let $row = $(`#${settings.rowSelector}_${idIndex}`, $wrapper);
 
-        if(settings.reindexOnRemove) reindexRows();
-        updateAddBtnState();
+			// Fallback: try to find row by traversing DOM
+			if (!$row.length) {
+				$row = $button.closest(`.${settings.rowSelector}`);
+			}
 
-        // Add button
-        $addBtn.on('click', e=>{
-            const index = $wrapper.children().length;
-            if(index >= settings.maxFields) return;
-            const $row = $(settings.rowTemplate(index,settings.fieldName));
-            $wrapper.append($row);
-            if(settings.reindexOnRemove) reindexRows();
-            settings.onAdd(index,e,$row,settings.fieldName);
-            if(settings.validator.enabled) registerValidators(index,$row);
-            updateAddBtnState();
-        });
+			if ($row.length) {
+				// Callback with your signature: (index, event, $row, name)
+				// Return false to PREVENT removal, true to ALLOW removal
+				if (typeof settings.onRemove === 'function') {
+					if (settings.onRemove(idIndex, e, $row, settings.fieldName) === false) {
+						console.log(`Removal blocked by onRemove callback for row ${idIndex}`);
+						return false; // ❌ BLOCK removal
+					}
+				}
 
-        // Remove button — FIXED: use normal function, not arrow
-        $wrapper.on('click', settings.removeSelector, function(e){
-            const clicked = $(this), index = clicked.data('index');
-            let $target = clicked.closest(`#${settings.rowIdPrefix}_${index}`);
-            if(!$target.length) $target = clicked.closest('.row-box');
-            if($target.length){
-                settings.onRemove?.(index,e,$target,settings.fieldName);
-                if(e.isDefaultPrevented()) return;
-                const idValue = getIdFieldValue($target,index);
-                if(idValue && settings.swal.enabled) handleAjaxDelete(idValue,index,$target,e);
-                else removeRowAndReindex($target);
-            }
-        });
+				// ✅ ALLOW removal
+				$row.remove();
+				i--;
+				reindexRowAll(); // This runs only if removal is allowed
+				console.log(`Row ${idIndex} removed, reindexing triggered`);
+			}
 
-        return this;
-    };
+			if (e && e.preventDefault) {
+				e.preventDefault();
+			}
+			return false;
+		};
+
+		// Reindex functions (unchanged)
+		const reindexRowNamePattern = function() {
+			if (!settings.reindexRowName || !settings.reindexRowName.length) return;
+			const $rows = $wrapper.find(`.${settings.rowSelector}`);
+			$rows.each(function(newIndex) {
+				const newPosition = newIndex;
+				const $row = $(this);
+				settings.reindexRowName.forEach(function(attrName) {
+					$row.find(`[${attrName}*="${settings.fieldName}"]`).each(function() {
+						const $element = $(this);
+						const attrValue = $element.attr(attrName);
+						const regex = new RegExp(`${settings.fieldName}\\[(\\d+)\\]`);
+						const match = attrValue.match(regex);
+						if (match && match[1]) {
+							const newValue = attrValue.replace(
+							                                   new RegExp(`${settings.fieldName}\\[${match[1]}\\]`, 'g'),
+							                                 `${settings.fieldName}[${newPosition}]`
+							                                 );
+							$element.attr(attrName, newValue);
+						}
+					});
+				});
+			});
+		};
+
+		const reindexRowIDPattern = function() {
+			if (!settings.reindexRowID || !settings.reindexRowID.length) return;
+			const $rows = $wrapper.find(`.${settings.rowSelector}`);
+			$rows.each(function(newIndex) {
+				const newPosition = newIndex;
+				const $row = $(this);
+				$row.attr('id', `${settings.rowSelector}_${newPosition}`);
+				settings.reindexRowID.forEach(function(attrName) {
+					$row.find(`[${attrName}*="_"]`).each(function() {
+						const $element = $(this);
+						const attrValue = $element.attr(attrName);
+						if (attrValue && attrValue.match(/_\d+$/)) {
+							const newValue = attrValue.replace(/_\d+$/, `_${newPosition}`);
+							$element.attr(attrName, newValue);
+						}
+					});
+				});
+			});
+		};
+
+		const reindexRowIndexPattern = function() {
+			if (!settings.reindexRowIndex || !settings.reindexRowIndex.length) return;
+			const $rows = $wrapper.find(`.${settings.rowSelector}`);
+			$rows.each(function(newIndex) {
+				const newPosition = newIndex;
+				const $row = $(this);
+				settings.reindexRowIndex.forEach(function(attrName) {
+					$row.find(`[${attrName}]`).each(function() {
+						const $element = $(this);
+						const attrValue = $element.attr(attrName);
+						if (attrValue && /^\d+$/.test(attrValue)) {
+							$element.attr(attrName, newPosition);
+						}
+					});
+				});
+			});
+		};
+
+		// Master reindex function
+		const reindexRowAll = function() {
+			const $rows = $wrapper.find(`.${settings.rowSelector}`);
+			if ($rows.length === 0) return;
+
+			// Reindex all attributes
+			reindexRowIDPattern();      // First: IDs and FOR attributes
+			reindexRowNamePattern();    // Second: Name attributes
+			reindexRowIndexPattern();   // Third: Index-based attributes
+
+			console.log(`Reindexing complete. Now ${$rows.length} rows.`);
+		};
+
+		// Public methods
+		const methods = {
+			add: function() {
+				if (i < settings.maxRows) {
+					const event = new Event('click');
+					addRow(event);
+				}
+				return this;
+			},
+			remove: function(index) {
+				const $removeBtn = $wrapper.find(`#${settings.rowSelector}_${index} .${settings.removeClass}`);
+				if ($removeBtn.length) {
+					$removeBtn.trigger('click.remAddRow');
+				}
+				return this;
+			},
+			getCount: function() {
+				return i;
+			},
+			reset: function() {
+				$wrapper.find(`.${settings.rowSelector}`).remove();
+				i = 0;
+				return this;
+			},
+			reindexAll: function() {
+				reindexRowAll();
+				return this;
+			},
+			setReindexConfig: function(type, attributes) {
+				if (type === 'name') {
+					settings.reindexRowName = Array.isArray(attributes) ? attributes : [attributes];
+				} else if (type === 'id') {
+					settings.reindexRowID = Array.isArray(attributes) ? attributes : [attributes];
+				} else if (type === 'index') {
+					settings.reindexRowIndex = Array.isArray(attributes) ? attributes : [attributes];
+				}
+				return this;
+			},
+			getConfig: function() {
+				return {
+					fieldName: settings.fieldName,
+					rowSelector: settings.rowSelector,
+					removeClass: settings.removeClass,
+					maxRows: settings.maxRows,
+					currentIndex: i,
+					reindexConfig: {
+						name: settings.reindexRowName,
+						id: settings.reindexRowID,
+						index: settings.reindexRowIndex
+					}
+				};
+			},
+			destroy: function() {
+				if (settings.addBtn) {
+					$(settings.addBtn).off('click.remAddRow');
+				}
+				$wrapper.off('click.remAddRow', `.${settings.removeClass}`);
+				this.reset();
+				return this;
+			}
+		};
+
+		// Initialize and return methods
+		return init();
+	};
+
+	// Add noConflict method
+	$.fn.remAddRow.noConflict = function() {
+		$.fn.remAddRow = old;
+		return this;
+	};
+
+	// Store the old version in case of conflict
+	const old = $.fn.remAddRow;
+
 })(jQuery);
 
-export default $;
+/*
+			$('#serial_wrap').remAddRow({
+				addBtn: '#serial_add',
+				maxRows: 5,
+				fieldName: 'per',
+				reindexRowName: ['data-name'],	// pattern => ${name}[${i}][product]
+				reindexRowID: ['data-id-id'],		// pattern => userdefined_${i}
+				reindexRowIndex: ['row-id'],		// pattern => ${i}
+				rowTemplate: (i, name) => `
+	        <div id="${name}_${i}" class="row m-0 rowserial" data-index="${i}">
+	            <div class="col-sm-5">
+	                <input type="text"
+	                       name="${name}[${i}][product]"
+	                       placeholder="Product name"
+	                       class="form-control"
+												 data-name="${name}[${i}][product]"
+												 data-id-id="exp_${i}"
+												 row-id="${i}"
+	                       required>
+	            </div>
+	            <div class="col-sm-5">
+	                <input type="number"
+	                       name="${name}[${i}][quantity]"
+	                       placeholder="Quantity"
+	                       class="form-control"
+	                       min="1"
+	                       value="1">
+	            </div>
+	            <div class="col-sm-2">
+	                <button type="button"
+	                        class="btn btn-danger serial_remove"
+	                        data-index="${i}">
+	                    ×
+	                </button>
+	            </div>
+	        </div>
+					`,
+				onAdd: (index, event, $row, name) => {
+					console.log(`✅ Added row ${index} with field name: ${name}`);
+
+					// Auto-focus the first input
+					setTimeout(() => {
+							$row.find('input').first().focus();
+					}, 100);
+				},
+				onRemove: (index, event, $row, name) => {
+					const productName = $row.find(`input[name="${name}[${index}][product]"]`).val();
+
+					// Ask for confirmation with product name
+					const confirm = window.confirm(`Delete "${productName || 'this item'}"?`);
+
+					if (!confirm) {
+						console.log(`❌ Removal cancelled for row ${index}`);
+						return false; // ❌ BLOCK removal
+					}
+
+					console.log(`✅ Allowed removal of row ${index}`);
+					return true; // ✅ ALLOW removal (reindexing will happen)
+				}
+			});
+
+
+The return true/false in onRemove directly controls whether:
+
+	✅ true → Remove row + Run reindexing
+
+	❌ false → Keep row + Skip reindexing
+*/
