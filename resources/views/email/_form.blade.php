@@ -1,5 +1,5 @@
 <x-text-input type="hidden" id="id" name="nostaf" value="{{ Auth::user()->nostaf }}" readonly />
-<div class="col-sm-12 d-flex flex-column align-items-center">
+<div class="col-sm-12 ">
 	<div class="col-12-sm row">
 
 		<div class="col-sm-6 m-0 p-1">

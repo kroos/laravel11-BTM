@@ -6,12 +6,12 @@
 		</h2>
 	</x-slot>
 
-	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST" class="container row justify-content-evenly mx-auto">
+	<form action="{{ route('btmloanapplications.update', $loanapp->id) }}" method="POST" class="">
 			@csrf
 			@method('PATCH')
-		<div class="container row justify-content-evenly mx-auto mt-2 mb-2">
+		<div class="container row mx-auto mt-2 mb-2">
 			<!-- 1st column -->
-			<div class="col-sm-5 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Applicant</h3>
@@ -66,7 +66,7 @@
 			</div>
 
 			<!-- 2nd column -->
-			<div class="col-sm-5 m-0 p-1">
+			<div class="col-sm-6 m-0 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Equipments

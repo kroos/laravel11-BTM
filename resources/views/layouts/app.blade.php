@@ -26,32 +26,31 @@
 	@livewireStyles
 
 </head>
-<body class=" bg-secondary bg-opacity-75">
-	<div class="container-fluid row min-vh-100 justify-content-center mx-auto">
+<body class=" bg-primary-subtle bg-opacity-75 min-vh-100 d-flex flex-column">
 
-		<!-- navigator -->
-		<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
-			<div class="container">
-				<a class="navbar-brand" href="{{ url('/dashboard') }}">
-					<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarColor01">
-					<ul class="navbar-nav mx-auto">
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url('/dashboard') }}">Utama
-								<span class="visually-hidden">(current)</span>
-							</a>
-						</li>
-						@auth
-							@include('layouts.nav-app')
-						@else
-							@include('layouts.nav-guest')
-						@endauth
-					</ul>
+	<!-- navigator -->
+	<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
+		<div class="container">
+			<a class="navbar-brand" href="{{ url('/dashboard') }}">
+				<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarColor01">
+				<ul class="navbar-nav mx-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="{{ url('/dashboard') }}">Utama
+							<span class="visually-hidden">(current)</span>
+						</a>
+					</li>
 					@auth
+						@include('layouts.nav-app')
+					@else
+						@include('layouts.nav-guest')
+					@endauth
+				</ul>
+				@auth
 @php
 $user = \App\Models\Login::find(\Auth::user()->nostaf);
 $user->setConnection('mysql3');
@@ -61,60 +60,73 @@ $user->setConnection('mysql3');
 // 	echo $notification->data['data'];
 // }
 @endphp
-						<div class="dropdown">
-							<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								@if($user->unreadNotifications->count())<span class="badge text-bg-warning">{{$user->unreadNotifications->count()}}</span>@endif
-								{{ Auth::user()->name }}
-							</a>
-							<ul class="dropdown-menu">
-								@if($user->unreadNotifications->count())
-									@foreach($user->unreadNotifications as $v)
-										<li>
-											<a class="dropdown-item" href="{{ $v->data['link'] }}">
-												<i class="fa-regular fa-comment"></i>
-												{{ $v->data['data'] }}
-											</a>
-										</li>
-									@endforeach
-								@endif
-								<form method="POST" action="{{ route('logout') }}">
-									@csrf
+					<div class="dropdown">
+						<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							@if($user->unreadNotifications->count())<span class="badge text-bg-warning">{{$user->unreadNotifications->count()}}</span>@endif
+							{{ Auth::user()->name }}
+						</a>
+						<ul class="dropdown-menu">
+							@if($user->unreadNotifications->count())
+								@foreach($user->unreadNotifications as $v)
 									<li>
-										<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fas fa-light fa-right-from-bracket"></i> Log Out</a>
+										<a class="dropdown-item" href="{{ $v->data['link'] }}">
+											<i class="fa-regular fa-comment"></i>
+											{{ $v->data['data'] }}
+										</a>
 									</li>
-								</form>
-							</ul>
-						</div>
-					@else
-						<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
-					@endauth
-				</div>
+								@endforeach
+							@endif
+							<form method="POST" action="{{ route('logout') }}">
+								@csrf
+								<li>
+									<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fas fa-light fa-right-from-bracket"></i> Log Out</a>
+								</li>
+							</form>
+						</ul>
+					</div>
+				@else
+					<a href="{{ route('login') }}" class="btn btn-info btn-sm text-white my-2 my-sm-0">Sign In</a>
+				@endauth
 			</div>
-		</nav>
-		<!-- navigator end -->
+		</div>
+	</nav>
+	<!-- navigator end -->
 
-		<div class="col-sm-12 row justify-content-center m-0">
-			@include('layouts.messages')
-			@isset($header)
-				<div class="shadow">
-					{{ $header }}
-				</div>
-			@endisset
+	<div class="container-fluid mx-auto d-flex flex-fill justify-content-evenly p-1">
+
+		<div class="col-sm-2 m-0">
 		</div>
 
-		<div class="col-sm-12 row justify-content-center m-0">
-			@yield('content')
-			{{ $slot }}
+		<div class="col-sm-8 m-0 my-2 p-1 align-self-center">
+
+			<div class="col-sm-12 row justify-content-center m-0">
+				@include('layouts.messages')
+				@isset($header)
+					<div class="shadow">
+						{{ $header }}
+					</div>
+				@endisset
+			</div>
+
+			<div class="col-sm-12 row justify-content-center m-0">
+				@yield('content')
+				{{ $slot }}
+			</div>
+
 		</div>
 
-		<!-- footer -->
-		<div class="container py-3 align-self-end text-center text-sm text-secondary">
-			&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
-			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		<div class="col-sm-2 m-0 p-1">
 		</div>
-		<!-- footer end -->
+
 
 	</div>
+
+	<!-- footer -->
+	<div class="container py-3 align-self-end text-center text-sm text-secondary">
+		&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
+		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+	</div>
+	<!-- footer end -->
 
 </body>
 <script type="module">

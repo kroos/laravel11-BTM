@@ -4,7 +4,7 @@
 			{{ __('Welcome to BTMgo') }}
 		</h2>
 	</x-slot>
-	<form method="POST" action="{{ route('login') }}" id="form" class="col-sm-4" >
+	<form method="POST" action="{{ route('login') }}" id="form" class="" >
 		@csrf
 
 		<!-- Username -->
@@ -42,11 +42,6 @@
 // validator
 // $(document).ready(function() {
 // 	$('#form').bootstrapValidator({
-// 		feedbackIcons: {
-// 			valid: 'fas fa-light fa-check',
-// 			invalid: 'fas fa-sharp fa-light fa-xmark',
-// 			validating: 'fas fa-duotone fa-spinner-third'
-// 		},
 // 		fields: {
 // 			username: {
 // 				validators: {

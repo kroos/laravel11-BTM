@@ -22,12 +22,10 @@
 	@livewireStyles
 
 </head>
-<body class="bg-secondary bg-opacity-75">
-
-	<div class="container-fluid row min-vh-100 align-items-center justify-content-center mx-auto">
+<body class="bg-primary-subtle bg-opacity-75 min-vh-100 d-flex flex-column">
 
 			<!-- navigator -->
-			<nav class="navbar navbar-expand-lg align-self-start bg-primary rounded" data-bs-theme="dark">
+			<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="{{ url('/') }}">
 						<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
@@ -56,28 +54,40 @@
 			</nav>
 			<!-- navigator end -->
 
-		<div class="col-sm-12 row justify-content-center m-0">
-			@include('layouts.messages')
-			@isset($header)
-				<div class="shadow">
-					{{ $header }}
-				</div>
-			@endisset
+	<div class="container-fluid mx-auto d-flex flex-fill justify-content-evenly p-1">
+
+		<div class="col-sm-2 m-0">
 		</div>
 
-		<div class="container row justify-content-center m-0">
-			@yield('content')
-			{{ $slot }}
+		<div class="col-sm-8 m-0 my-2 p-1 align-self-center">
+
+			<div class="col-sm-12 row justify-content-center m-0">
+				@include('layouts.messages')
+				@isset($header)
+					<div class="shadow">
+						{{ $header }}
+					</div>
+				@endisset
+			</div>
+
+			<div class="container row justify-content-center m-0">
+				@yield('content')
+				{{ $slot }}
+			</div>
+
 		</div>
 
-		<!-- footer -->
-		<div class="container align-self-end py-3 text-center text-sm text-secondary fw-lighter">
-			&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
-			Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		<div class="col-sm-2 m-0 p-1">
 		</div>
-		<!-- footer end -->
 
 	</div>
+
+	<!-- footer -->
+	<div class="container align-self-end py-3 text-center text-sm text-secondary fw-lighter">
+		&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
+		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+	</div>
+	<!-- footer end -->
 
 </body>
 <script type="javascript" src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>

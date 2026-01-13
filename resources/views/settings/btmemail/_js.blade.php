@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 function createPersonnelRow(index, name) {
 	return `
-		<div class="col-sm-12 row mt-3" id="groupmember_${index}">
+		<div class="col-sm-12 row mt-3 groupmember" id="groupmember_${index}">
 			<div class="col-sm-11 m-0 mt-2 row @error('emregmem.*.department_id') has-error @enderror">
 				<label for="dept_${index}" class="col-sm-4">Department : </label>
 				<div class="col-sm-8">
@@ -43,71 +43,62 @@ function createPersonnelRow(index, name) {
 /////////////////////////////////////////////////////////////////////////////////////////
 // create personnels
 function createPersonnels(){
+
 	$("#personnels_wrap").remAddRow({
 		addBtn: "#personnels_add",
 		maxFields: 20,
-		removeSelector: ".personnel_remove",
+		removeClass: "personnel_remove",
 		fieldName: "emregmem",
-		rowIdPrefix: "groupmember",
+		rowSelector: "groupmember",
 		rowTemplate: (i, name) => createPersonnelRow(i, name),
 		onAdd: (i, event, $r , name) => {
 			// console.log('Personnel added', i, $r)
 			initializeChainedSelectsForPersonnels(i);
 		},
-		onRemove: (i, event, $row, name) => {
-			event.preventDefault();
-			// console.log('Personnel removed', i, event, $row)
+		onRemove: async (i, event, $row, name) => {
+
 			const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
 			if (!idv) {
-				$row.remove();
-				return;
+				return true;
 			}
 
-			const titleapp = 'Group Member Email';
-			const apiUrl = '{{ url('emailgroupmember') }}';
-			swal.fire({
-				title: `Delete ${titleapp}`,
-				text: `Are you sure to delete ${titleapp}?`,
-				icon: 'info',
+			let url = `{{ url('emailgroupmember') }}`;
+			let dbId = idv;
+
+			const result = await swal.fire({
+				title: 'Are you sure?',
+				text: "It will be deleted permanently!",
+				type: 'warning',
 				showCancelButton: true,
-				showLoaderOnConfirm: true,
 				allowOutsideClick: false,
+				showLoaderOnConfirm: true,
+				confirmButtonText: 'Yes, delete it!',
 				confirmButtonColor: '#3085d6',
 				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'Cancel',
-				preConfirm: function() {
-					return new Promise(function(resolve) {
-						$.ajax({
-							url: `${apiUrl}/${idv}`,
-							type: 'DELETE',
-							dataType: 'json',
-							data: {
-									id: `${idv}`,
-									_token : `{{ csrf_token() }}`
-							},
-						})
-						.done(function(response){
-							swal.fire('Accept', response.message, response.status)
-							.then(function(){
-								// window.location.reload(true);
-								// table.ajax.reload(true);
-								// $('#form').bootstrapValidator('removeField', $field1);
-								// $('#form').bootstrapValidator('removeField', $field2);
-							});
-						})
-						.fail(function(){
-							swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-							// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-						})
-					});
-				},
-			})
-			.then((result) => {
-				if (result.dismiss === swal.DismissReason.cancel) {
-					swal.fire('Cancel Action', `${titleapp} is still active.`, 'info')
-				}
 			});
+
+			// ❌ Cancel clicked
+			if (result.isDismissed) {
+				await swal.fire('Cancelled', 'Your data is safe from delete', 'info' );
+				return false;
+			}
+			// 2️⃣ Perform AJAX delete
+			try {
+				const response = await $.ajax({
+					type: 'DELETE',
+					url: `${url}/${dbId}`,
+					data: {
+						_token: `{{ csrf_token() }}`,
+						id: dbId
+					},
+					dataType: 'json'
+				});
+				await swal.fire('Deleted!', response.message, response.status);
+			} catch (e) {
+				await swal.fire( 'Ajax Error', 'Something went wrong with ajax!', 'error' );
+				return false; // ❌ BLOCK removal
+			}
+
 
 		}
 	});
@@ -215,11 +206,11 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 // Add equipment fields dynamically
 function createEmailRow(i, name){
 	return `
-		<div class="col-sm-12 row mt-3" id="email_staff_${i}">
+		<div class="col-sm-12 row mt-3 email_staff" id="email_staff_${i}">
+			<input type="hidden" name="${name}[${i}][id]" value="">
 			<div class="col-sm-11 m-0 row @error('emreg.*.email_suggestion') has-error @enderror">
 				<x-input-label for="email_${i}" class="col-sm-3" :value="__('Email ID : ')" />
 				<div class="col-sm-9 my-auto">
-					<input type="hidden" name="${name}[${i}][id]" value="">
 					<div class="input-group input-group-sm">
 						<input id="email_${i}" type="text" name="${name}[${i}][email_suggestion]" class="form-control form-control-sm @error('emreg.*.email_suggestion') is-invalid @enderror" placeholder="Email ID" aria-label="Email ID" aria-describedby="emailID_${i}">
 						<span class="input-group-text" id="emailID_${i}">@unishams.edu.my</span>
@@ -232,7 +223,7 @@ function createEmailRow(i, name){
 				</div>
 			</div>
 			<div class="col-sm-1 m-0 my-auto">
-				<x-danger-button type="button" class="btn btn-sm remove_email">
+				<x-danger-button type="button" class="btn btn-sm remove_email" data-index="${i}">
 					<i class="fa-regular fa-trash-can"></i>
 				</x-danger-button>
 			</div>
@@ -261,68 +252,59 @@ function createEmailRow(i, name){
 $("#emails_wrap").remAddRow({
 	addBtn: "#emails_add",
 	maxFields: 20,
-	removeSelector: ".remove_email",
+	removeClass: "remove_email",
 	fieldName: "emreg",
-	rowIdPrefix: "email_staff",
+	rowSelector: "email_staff",
 	rowTemplate: (i, name) => createEmailRow(i, name),
 	onAdd: (i, event, $r , name) => {
 		// console.log('Email added', i, $r)
 		initializeChainedSelectsForPersonnels(i);
 	},
-	onRemove: (i, event, $row, name) => {
-		event.preventDefault();
-		// console.log('Email removed', i, event, $row)
-		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+	onRemove: async (i, event, $row, name) => {
+
+		const idv = $row.find(`[name="${name}[${i}][id]"]`).val();
+		console.log(idv, i, event, $row, name);
 		if (!idv) {
-			$row.remove();
-			return;
+			return true;
 		}
 
-		const titleapp = 'Group Member Email';
-		const apiUrl = '{{ url('emailsuggestion') }}';
-		swal.fire({
-			title: `Delete ${titleapp}`,
-			text: `Are you sure to delete ${titleapp}?`,
-			icon: 'info',
+		let url = `{{ url('emailsuggestion') }}`;
+		let dbId = idv;
+
+		const result = await swal.fire({
+			title: 'Are you sure?',
+			text: "It will be deleted permanently!",
+			type: 'warning',
 			showCancelButton: true,
-			showLoaderOnConfirm: true,
 			allowOutsideClick: false,
+			showLoaderOnConfirm: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'Cancel',
-			preConfirm: function() {
-				return new Promise(function(resolve) {
-					$.ajax({
-						url: `${apiUrl}/${idv}`,
-						type: 'DELETE',
-						dataType: 'json',
-						data: {
-								id: `${idv}`,
-								_token : `{{ csrf_token() }}`
-						},
-					})
-					.done(function(response){
-						swal.fire('Accept', response.message, response.status)
-						.then(function(){
-							// window.location.reload(true);
-							// table.ajax.reload(true);
-							// $('#form').bootstrapValidator('removeField', $field1);
-							// $('#form').bootstrapValidator('removeField', $field2);
-						});
-					})
-					.fail(function(){
-						swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-						// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-					})
-				});
-			},
-		})
-		.then((result) => {
-			if (result.dismiss === swal.DismissReason.cancel) {
-				swal.fire('Cancel Action', `${titleapp} is still active.`, 'info')
-			}
+			confirmButtonText: 'Yes, delete it!'
 		});
+
+		// ❌ Cancel clicked
+		if (result.isDismissed) {
+			await swal.fire('Cancelled', 'Your data is safe from delete', 'info' );
+			return false;
+		}
+		// 2️⃣ Perform AJAX delete
+		try {
+			const response = await $.ajax({
+				type: 'DELETE',
+				url: `${url}/${dbId}`,
+				data: {
+					_token: `{{ csrf_token() }}`,
+					id: dbId
+				},
+				dataType: 'json'
+			});
+			await swal.fire('Deleted!', response.message, response.status);
+		} catch (e) {
+			await swal.fire( 'Ajax Error', 'Something went wrong with ajax!', 'error' );
+			return false; // ❌ BLOCK removal
+		}
+
 
 	}
 });

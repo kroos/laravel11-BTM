@@ -4,12 +4,12 @@
 	<div class="container my-4">
 
 		<!-- Header image -->
-		<div class="col-sm-4 text-center mb-4 mx-auto">
+		<div class="col-sm-12 text-center mb-4 mx-auto">
 			<img src="{{ asset('images/front4.jpg') }}" alt="BTM, UniSHAMS" class="img-fluid rounded shadow">
 		</div>
 
 		<!-- New Email Application Flow -->
-		<div class="col-sm-4 mx-auto">
+		<div class="col-sm-12 mx-auto">
 			<div class="card mb-5 shadow rounded-3">
 				<div class="card-header bg-primary text-white">
 					<i class="bi bi-envelope-paper"></i> (BTM01) New Email Application Flow
@@ -34,7 +34,7 @@
 		</div>
 
 		<!-- IT Equipment Loan Flow -->
-		<div class="col-sm-4 mx-auto">
+		<div class="col-sm-12 mx-auto">
 			<div class="card shadow rounded-3">
 				<div class="card-header bg-success text-white">
 					<i class="bi bi-laptop"></i> (BTM03) IT Equipment Loan Flow

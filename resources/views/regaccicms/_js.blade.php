@@ -1,121 +1,134 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 	// usage plugin
 	// Applicants (fieldName "skills")
-	$("#applicants_wrap").remAddRow({
-		addBtn: "#applicants_add",
-		maxFields: 5,
-		removeSelector: ".applicant_remove",
-		fieldName: "applicants",
-		rowIdPrefix: "applicant",
-		rowTemplate: (i, name) => `
-			<div class="col-sm-12 row m-3" id="applicant_${i}">
-				<input type="hidden" name="${name}[${i}][id]" value="">
-				<div class="col-sm-7 m-0 p-1">
+$("#applicants_wrap").remAddRow({
+	addBtn: "#applicants_add",
+	maxFields: 5,
+	removeClass: "applicant_remove",
+	fieldName: "applicants",
+	rowSelector: "applicant",
+	rowTemplate: (i, name) => `
+		<div class="col-sm-12 row m-3 applicant" id="applicant_${i}">
+			<input type="hidden" name="${name}[${i}][id]" value="">
+			<div class="col-sm-7 m-0 p-1">
 
-					<div class="col-sm-12 m-1 row">
-						<x-input-label for="nama_${i}" class="col-sm-3" :value="__('Nama : ')" />
-						<div class="col-sm-9">
-							<select id="nama_${i}" name="${name}[${i}][nama]" class="form-select form-select-sm @error('applicants.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
-							@error('applicants.*.nama')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-							@enderror
+				<div class="col-sm-12 m-1 row">
+					<x-input-label for="nama_${i}" class="col-sm-3" :value="__('Nama : ')" />
+					<div class="col-sm-9">
+						<select id="nama_${i}" name="${name}[${i}][nama]" class="form-select form-select-sm @error('applicants.*.nama') is-invalid @enderror" placeholder="Please choose"></select>
+						@error('applicants.*.nama')
+						<div class="invalid-feedback">
+							{{ $message }}
 						</div>
+						@enderror
 					</div>
-
-					<div class="col-sm-12 m-1 row">
-						<x-input-label for="nostaf_${i}" class="col-sm-3" :value="__('No Staff : ')" />
-						<div class="col-sm-9">
-							<input id="nostaf_${i}" type="text" name="${name}[${i}][nostaf]" value="" class="form-control form-control-sm @error('applicants.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
-						</div>
-					</div>
-
-					<div class="col-sm-12 m-1 row">
-						<x-input-label for="email_${i}" class="col-sm-3" :value="__('Email : ')" />
-						<div class="col-sm-9">
-							<input id="email_${i}" type="text" name="${name}[${i}][email]" value="" class="form-control form-control-sm @error('applicants.*.email') is-invalid @enderror" placeholder="Email" readonly>
-						</div>
-					</div>
-
-					<div class="col-sm-12 m-1 row">
-						<x-input-label for="jawatan_${i}" class="col-sm-3" :value="__('Jawatan : ')" />
-						<div class="col-sm-9">
-							<input id="jawatan_${i}" type="text" name="${name}[${i}][position]" value="" class="form-control form-control-sm @error('applicants.*.position') is-invalid @enderror" placeholder="Jawatan">
-							@error('applicants.*.proposed_id')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-							@enderror
-						</div>
-					</div>
-
-					<div class="col-sm-12 m-1 row">
-						<x-input-label for="cadid_${i}" class="col-sm-3" :value="__('Cadangan ID : ')" />
-						<div class="col-sm-9">
-							<input id="cadid_${i}" type="text" name="${name}[${i}][username]" class="form-control form-control-sm @error('applicants.*.username') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_${i}">
-							<div id="CadanganIDHelpBlock_${i}" class="form-text fs-6 fw-lighter">
-								Hanya untuk pemohon baru.
-							</div>
-							@error('applicants.*.username')
-							<div class="invalid-feedback">
-								{{ $message }}
-							</div>
-							@enderror
-						</div>
-					</div>
-
 				</div>
 
-				<div class="col-sm-5 m-0 p-1">
-					<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
-					<div id="checkbox_${i}">
+				<div class="col-sm-12 m-1 row">
+					<x-input-label for="nostaf_${i}" class="col-sm-3" :value="__('No Staff : ')" />
+					<div class="col-sm-9">
+						<input id="nostaf_${i}" type="text" name="${name}[${i}][nostaf]" value="" class="form-control form-control-sm @error('applicants.*.nostaf') is-invalid @enderror" placeholder="No Staff" readonly>
 					</div>
 				</div>
-				<div class="col-sm-12 m-2">
-					<button type="button" class=" btn btn-sm btn-danger applicant_remove" data-id="${i}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+
+				<div class="col-sm-12 m-1 row">
+					<x-input-label for="email_${i}" class="col-sm-3" :value="__('Email : ')" />
+					<div class="col-sm-9">
+						<input id="email_${i}" type="text" name="${name}[${i}][email]" value="" class="form-control form-control-sm @error('applicants.*.email') is-invalid @enderror" placeholder="Email" readonly>
+					</div>
+				</div>
+
+				<div class="col-sm-12 m-1 row">
+					<x-input-label for="jawatan_${i}" class="col-sm-3" :value="__('Jawatan : ')" />
+					<div class="col-sm-9">
+						<input id="jawatan_${i}" type="text" name="${name}[${i}][position]" value="" class="form-control form-control-sm @error('applicants.*.position') is-invalid @enderror" placeholder="Jawatan">
+						@error('applicants.*.proposed_id')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+						@enderror
+					</div>
+				</div>
+
+				<div class="col-sm-12 m-1 row">
+					<x-input-label for="cadid_${i}" class="col-sm-3" :value="__('Cadangan ID : ')" />
+					<div class="col-sm-9">
+						<input id="cadid_${i}" type="text" name="${name}[${i}][username]" class="form-control form-control-sm @error('applicants.*.username') is-invalid @enderror" placeholder="Cadangan ID" aria-describedby="CadanganIDHelpBlock_${i}">
+						<div id="CadanganIDHelpBlock_${i}" class="form-text fs-6 fw-lighter">
+							Hanya untuk pemohon baru.
+						</div>
+						@error('applicants.*.username')
+						<div class="invalid-feedback">
+							{{ $message }}
+						</div>
+						@enderror
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-sm-5 m-0 p-1">
+				<h6>PENETAPAN TAHAP CAPAIAN ICMS</h6>
+				<div id="checkbox_${i}">
 				</div>
 			</div>
-		`,
-		onAdd: (i, $r) => {
-			// console.log('Skill added', i, $r)
-			selectname(i);
-			addingicmsmodule(i);
-		},
-		onRemove: (i, event, $row) => {
-			event.preventDefault();
-			// console.log($row);
-			// const $row = $(`#applicant_${i}`);
-			const idv = $row.find(`input[name="applicants[${i}][id]"]`).val();
-			if (!idv) {
-				$row.remove();
-				return;
-			}
-			swal.fire({
-				title: 'Delete applicant?',
-				text: 'This action cannot be undone.',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then(result => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: `{{ url('regaccicmsapplicant') }}/${idv}`,
-						type: 'DELETE',
-						data: { _token: $('meta[name="csrf-token"]').attr('content') },
-						success: response => {
-							swal.fire('Deleted!', response.message, 'success');
-							$row.remove();  // remove only after DB deletion
-						},
-						error: xhr => {
-							swal.fire('Error', 'Failed to delete applicant', 'error');
-						}
-					});
-				}
-			});
+			<div class="col-sm-12 m-2">
+				<button type="button" class=" btn btn-sm btn-danger applicant_remove" data-id="${i}"><i class="fa-regular fa-trash-can fa-beat"></i>&nbsp;Padam Pemohon</button>
+			</div>
+		</div>
+	`,
+	onAdd: (i, e, $r, name) => {
+		// console.log('Skill added', i, $r)
+		selectname(i);
+		addingicmsmodule(i);
+	},
+	onRemove: async (i, event, $row, name) => {
+
+		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
+		if (!idv) {
+			return true;
 		}
-	});
+
+		let url = `{{ url('regaccicmsapplicant') }}`;
+		let dbId = idv;
+
+		const result = await swal.fire({
+			title: 'Are you sure?',
+			text: "It will be deleted permanently!",
+			type: 'warning',
+			showCancelButton: true,
+			allowOutsideClick: false,
+			showLoaderOnConfirm: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!'
+		});
+
+		// ❌ Cancel clicked
+		if (result.isDismissed) {
+			await swal.fire('Cancelled', 'Your data is safe from delete', 'info' );
+			return false;
+		}
+		// 2️⃣ Perform AJAX delete
+		try {
+			const response = await $.ajax({
+				type: 'DELETE',
+				url: `${url}/${dbId}`,
+				data: {
+					_token: `{{ csrf_token() }}`,
+					id: dbId
+				},
+				dataType: 'json'
+			});
+			await swal.fire('Deleted!', response.message, response.status);
+		} catch (e) {
+			await swal.fire( 'Ajax Error', 'Something went wrong with ajax!', 'error' );
+			return false; // ❌ BLOCK removal
+		}
+
+
+	}
+});
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	function selectname(r = 0){

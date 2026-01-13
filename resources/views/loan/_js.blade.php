@@ -177,12 +177,11 @@ function initializeChainedSelects(counter) {
 $("#equipments_wraps").remAddRow({
 	addBtn: "#equipments_add",
 	maxFields: 10,
-	removeSelector: ".equipment_remove",
+	removeClass: "equipment_remove",
 	fieldName: "equipments",
-	rowIdPrefix: "equipment",
-	// rowTemplate must use the same removeSelector class so delegated handler fires:
+	rowSelector: "equipment",
 	rowTemplate: (i, name) => `
-		<div class="col-sm-12 row mt-3" id="equipment_${i}">
+		<div class="col-sm-12 row mt-3 equipment" id="equipment_${i}">
 			<input type="hidden" name="${name}[${i}][id]" value="">
 			<div class="col-sm-11 m-0 row">
 				<label for="catequip_${i}" class="form-label form-label-sm col-sm-4">Category : </label>
@@ -218,38 +217,53 @@ $("#equipments_wraps").remAddRow({
 		// console.log('Equipment added', i, $r);
 		initializeChainedSelects(i);
 	},
-	onRemove: (i, event, $row, name) => {
+	onRemove: async (i, event, $row, name) => {
 		// console.log('Equipment removed', i, event, $row)
-		event.preventDefault();
-		// console.log('Personnel removed', i, event, $row)
-		const idv = $row.find(`select[name="${name}[${i}][id]"]`).val();
+
+		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
 		if (!idv) {
-			$row.remove();
-			return;
+			return true;
 		}
-		swal.fire({
-			title: 'Delete email suggestion?',
-			text: 'This action cannot be undone.',
-			icon: 'warning',
+
+		let url = `{{ url('emailsuggestion') }}`;
+		let dbId = idv;
+
+		const result = await swal.fire({
+			title: 'Are you sure?',
+			text: "It will be deleted permanently!",
+			type: 'warning',
 			showCancelButton: true,
-			confirmButtonColor: '#d33',
+			allowOutsideClick: false,
+			showLoaderOnConfirm: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
 			confirmButtonText: 'Yes, delete it!'
-		}).then(result => {
-			if (result.isConfirmed) {
-				$.ajax({
-					url: `{{ url('emailsuggestion') }}/${idv}`,
-					type: 'DELETE',
-					data: { _token: $('meta[name="csrf-token"]').attr('content') },
-					success: response => {
-						swal.fire('Deleted!', response.message, 'success');
-						$row.remove();  // remove only after DB deletion
-					},
-					error: xhr => {
-						swal.fire('Error', 'Failed to delete email suggestion', 'error');
-					}
-				});
-			}
 		});
+
+		// ❌ Cancel clicked
+		if (result.isDismissed) {
+			await swal.fire('Cancelled', 'Your data is safe from delete', 'info' );
+			return false;
+		}
+		// 2️⃣ Perform AJAX delete
+		try {
+			const response = await $.ajax({
+				type: 'DELETE',
+				url: `${url}/${dbId}`,
+				data: {
+					_token: `{{ csrf_token() }}`,
+					id: dbId
+				},
+				dataType: 'json'
+			});
+			await swal.fire('Deleted!', response.message, response.status);
+		} catch (e) {
+			await swal.fire( 'Ajax Error', 'Something went wrong with ajax!', 'error' );
+			return false; // ❌ BLOCK removal
+		}
+
+
+
 	}
 });
 

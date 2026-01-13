@@ -179,11 +179,11 @@ function initializeChainedSelects(counter) {
 $("#equipments_wrap").remAddRow({
 	addBtn: "#equipments_add",
 	maxFields: 20,
-	removeSelector: ".equipments_remove",
+	removeClass: "equipments_remove",
 	fieldName: "lequ",
-	rowIdPrefix: "loans",
+	rowSelector: "loans",
 	rowTemplate: (i, name) => `
-		<div class="col-sm-12 row mt-3" id="loans_${i}">
+		<div class="col-sm-12 row mt-3 loans" id="loans_${i}">
 			<!-- equipment -->
 			<div class="form-group col-sm-11 m-0 row @error('lequ.*.category_id') has-error @enderror">
 				<input type="hidden" name="${name}[${i}][id]" value="">
@@ -211,7 +211,7 @@ $("#equipments_wrap").remAddRow({
 			</div>
 			<!-- remove button -->
 			<div class="col-sm-1 m-0">
-				<button type="button" class="btn btn-sm btn-danger equipments_remove">
+				<button type="button" class="btn btn-sm btn-danger equipments_remove" data-id="${i}">
 					<i class="fa-regular fa-trash-can"></i>
 				</button>
 			</div>
@@ -278,60 +278,49 @@ $("#equipments_wrap").remAddRow({
 		// Initialize the chained selects and description updater for the new set
 		initializeChainedSelects(i);
 	},
-	onRemove: (i, event, $row, name) => {
-		event.preventDefault();
-		// console.log('Personnel removed', i, event, $row)
+	onRemove: async (i, event, $row, name) => {
 		const idv = $row.find(`input[name="${name}[${i}][id]"]`).val();
 		if (!idv) {
-			$row.remove();
-			return;
+			return true;
 		}
 
-		const titleapp = 'Loan Equipment';
-		const apiUrl = '{{ url('loanequipments') }}';
-		swal.fire({
-			title: `Delete ${titleapp}`,
-			text: `Are you sure to delete ${titleapp}?`,
-			icon: 'info',
+		let url = `{{ url('loanequipments') }}`;
+		let dbId = idv;
+
+		const result = await swal.fire({
+			title: 'Are you sure?',
+			text: "It will be deleted permanently!",
+			type: 'warning',
 			showCancelButton: true,
-			showLoaderOnConfirm: true,
 			allowOutsideClick: false,
+			showLoaderOnConfirm: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'Cancel',
-			preConfirm: function() {
-				return new Promise(function(resolve) {
-					$.ajax({
-						url: `${apiUrl}/${idv}`,
-						type: 'DELETE',
-						dataType: 'json',
-						data: {
-								id: `${idv}`,
-								_token : `{{ csrf_token() }}`
-						},
-					})
-					.done(function(response){
-						swal.fire('Accept', response.message, response.status)
-						.then(function(){
-							// window.location.reload(true);
-							// table.ajax.reload(true);
-							// $('#form').bootstrapValidator('removeField', $field1);
-							// $('#form').bootstrapValidator('removeField', $field2);
-						});
-					})
-					.fail(function(){
-						swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
-						// swal.fire('Unauthorised', 'Error 401 : Unauthorised Action!', 'error');
-					})
-				});
-			},
-		})
-		.then((result) => {
-			if (result.dismiss === swal.DismissReason.cancel) {
-				swal.fire('Cancel Action', `${titleapp} is still active.`, 'info')
-			}
+			confirmButtonText: 'Yes, delete it!'
 		});
+
+		// ❌ Cancel clicked
+		if (result.isDismissed) {
+			await swal.fire('Cancelled', 'Your data is safe from delete', 'info' );
+			return false;
+		}
+		// 2️⃣ Perform AJAX delete
+		try {
+			const response = await $.ajax({
+				type: 'DELETE',
+				url: `${url}/${dbId}`,
+				data: {
+					_token: `{{ csrf_token() }}`,
+					id: dbId
+				},
+				dataType: 'json'
+			});
+			await swal.fire('Deleted!', response.message, response.status);
+		} catch (e) {
+			await swal.fire( 'Ajax Error', 'Something went wrong with ajax!', 'error' );
+			return false; // ❌ BLOCK removal
+		}
+
 
 	}
 });

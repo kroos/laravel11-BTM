@@ -1,6 +1,6 @@
-		<div class="col-sm-12 d-flex flex-column align-items-center">
+		<div class="col-sm-12 d-flex row">
 
-			<div class="col-sm-8 mt-2 p-1">
+			<div class="col-sm-12 mt-2 p-1">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Maklumat Pemohon</h3>
@@ -22,7 +22,7 @@
 				</div>
 			</div>
 
-			<div class="col-sm-8">
+			<div class="col-sm-12">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Kulliyyah/Pusat/Bahagian</h3>
