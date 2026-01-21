@@ -31,19 +31,15 @@
 	<!-- navigator -->
 	<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 		<div class="container">
+				<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="my-auto img-fluid rounded-1" width="3%">
 			<a class="navbar-brand" href="{{ url('/dashboard') }}">
-				<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
+				{!! config('app.name') !!}
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarColor01">
 				<ul class="navbar-nav mx-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url('/dashboard') }}">Utama
-							<span class="visually-hidden">(current)</span>
-						</a>
-					</li>
 					@auth
 						@include('layouts.nav-app')
 					@else
@@ -122,9 +118,9 @@ $user->setConnection('mysql3');
 	</div>
 
 	<!-- footer -->
-	<div class="container py-3 align-self-end text-center text-sm text-secondary">
+	<div class="container py-3 align-self-bottom text-center text-sm text-secondary">
 		&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
-		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		{{ config('app.name', 'Laravel') }} develop using Laravel v{{ Illuminate\Foundation\Application::VERSION }}
 	</div>
 	<!-- footer end -->
 

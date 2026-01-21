@@ -18,7 +18,7 @@
 	<title>{!! config('app.name') !!}</title>
 	<!-- Styles -->
 	@vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])
-	<link href="{{ URL::asset('css/bootstrap.css') }}" rel="stylesheet">
+	<link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
 	@livewireStyles
 
 </head>
@@ -27,8 +27,9 @@
 			<!-- navigator -->
 			<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
 				<div class="container-fluid">
+						<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="my-auto img-fluid rounded-1" width="3%">
 					<a class="navbar-brand" href="{{ url('/') }}">
-						<img src="{{ asset('images/logo.png') }}" alt="UniSHAMS" class="img-fluid rounded-1" width="30%">
+						{!! config('app.name') !!}
 					</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
@@ -70,7 +71,7 @@
 				@endisset
 			</div>
 
-			<div class="container row justify-content-center m-0">
+			<div class="col-sm-12 row justify-content-center m-0">
 				@yield('content')
 				{{ $slot }}
 			</div>
@@ -83,9 +84,9 @@
 	</div>
 
 	<!-- footer -->
-	<div class="container align-self-end py-3 text-center text-sm text-secondary fw-lighter">
+	<div class="container align-self-bottom py-3 text-center text-sm text-secondary fw-lighter">
 		&copy; Bahagian Teknologi Maklumat, UniSHAMS.<br />
-		Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+		{{ config('app.name', 'Laravel') }} develop using Laravel v{{ Illuminate\Foundation\Application::VERSION }}
 	</div>
 	<!-- footer end -->
 
