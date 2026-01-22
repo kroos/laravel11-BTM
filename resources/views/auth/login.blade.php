@@ -26,15 +26,21 @@
 		</div>
 
 		<!-- Remember Me -->
-		<div class="form-check mb-3">
-			<label for="remember_me" class="form-check-label">
-				<input type="checkbox" name="remember" id="remember_me" class="form-check-input rounded" >
-				<span class="text-sm">Remember me</span>
-			</label>
+		<div class="col-sm-6 offset-sm-4">
+			<div class="form-check mb-3">
+				<label for="remember_me" class="form-check-label">
+					<input type="checkbox" name="remember" id="remember_me" class="form-check-input rounded" >
+					<span class="text-sm">Remember me</span>
+				</label>
+			</div>
 		</div>
-			<x-primary-button class="ml-3" type="submit">
+
+		<div class="col-sm-12 d-flex justify-content-end">
+			<x-primary-button class="" type="submit">
 				{{ __('Log Masuk') }}
 			</x-primary-button>
+		</div>
+
 	</form>
 
 @section('js')
