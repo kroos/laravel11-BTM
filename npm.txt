@@ -1,0 +1,245 @@
+http://localhost:8000
+
+web
+cd
+pa serve
+pa optimize:clear
+pa route:list
+
+Install
+npm install -g npm-check-updates
+
+Update package.json to latest
+ncu -u
+
+Or only update production deps:
+ncu -u --dep prod
+
+Upgrade all packages to latest compatible versions
+npx npm-check-updates -u
+
+Upgrade a single package to latest
+npm install package-name@latest
+
+npm install tailwindcss@">=3.0 <4"
+
+BEST PRACTICE: Upgrade ALL packages, but stay within the same major version
+npx npm-check-updates -u --target minor
+
+Finally
+rm -rf node_modules package-lock.json
+npm install
+
+npm outdated
+ncu -u
+npx npm-check-updates -u --target minor
+rm -rf node_modules package-lock.json
+npm install
+
+
+/////////////////////////////////////////////////
+
+4 major categories of casts
+1. Primitive (Built-in) Cast Types
+These cast attributes to basic PHP types.
+Common primitive casts include:
+
+int, integer
+real, float, double
+string
+bool, boolean
+array
+object
+json
+collection
+
+Example:
+protected $casts = [
+    'is_active' => 'boolean',
+    'price' => 'float',
+    'meta' => 'array',
+];
+
+2. Date & Time Cast Types
+Used for automatic conversion to Carbon instances.
+
+date
+datetime
+immutable_date
+immutable_datetime
+timestamp
+
+Example:
+protected $casts = [
+    'published_at' => 'datetime',
+    'created_at' => 'immutable_datetime',
+];
+
+3. Enum Casts (PHP 8.1+)
+Laravel supports casting attributes directly to PHP enums.
+
+Example:
+
+use App\Enums\OrderStatus;
+protected $casts = [
+    'status' => OrderStatus::class,
+];
+
+4. Custom Casts
+You can define your own cast logic using:
+
+CastsAttributes
+Castable
+Value Objects
+
+Example:
+
+protected $casts = [
+    'address' => AddressCast::class,
+];
+
+Special / Advanced Casts
+These are still built-in but often considered “advanced”:
+
+encrypted
+encrypted:array
+encrypted:collection
+hashed
+
+Example:
+protected $casts = [
+    'password' => 'hashed',
+    'settings' => 'encrypted:array',
+];
+
+
+/////////////////////////////////////////////////
+1️⃣ Primitive / Scalar Casts
+These convert database values to basic PHP types.
+integer / int
+'age' => 'integer',
+
+float / double / real
+'price' => 'float',
+
+string
+'name' => 'string',
+
+boolean / bool
+'is_active' => 'boolean',
+
+
+2️⃣ Array / JSON / Object Casts
+array
+Returns a PHP array.
+'options' => 'array',
+
+json
+Same as array, but semantically clearer.
+'meta' => 'json',
+
+object
+Returns a PHP object (stdClass).
+'payload' => 'object',
+
+collection
+Returns a Laravel Illuminate\Support\Collection.
+'tags' => 'collection',
+
+
+3️⃣ Date & Time Casts (Carbon)
+date
+Returns a Carbon instance (date only).
+'birth_date' => 'date',
+
+datetime
+Returns a Carbon instance (date + time).
+'published_at' => 'datetime',
+
+immutable_date
+Returns CarbonImmutable.
+'start_date' => 'immutable_date',
+
+immutable_datetime
+'created_at' => 'immutable_datetime',
+
+timestamp
+Returns a UNIX timestamp (int).
+'logged_at' => 'timestamp',
+
+
+4️⃣ Decimal Cast
+decimal:<precision>
+Keeps fixed precision (stored as string).
+'amount' => 'decimal:2',
+
+
+5️⃣ Enum Casts (PHP 8.1+)
+Casts to a PHP Enum.
+use App\Enums\OrderStatus;
+
+'status' => OrderStatus::class,
+
+
+6️⃣ Encrypted Casts
+Laravel automatically encrypts/decrypts values.
+encrypted
+'secret' => 'encrypted',
+
+encrypted:array
+'settings' => 'encrypted:array',
+
+encrypted:collection
+'permissions' => 'encrypted:collection',
+
+encrypted:json
+'metadata' => 'encrypted:json',
+
+encrypted:object
+'profile' => 'encrypted:object',
+
+
+7️⃣ Hashed Cast
+hashed
+Automatically hashes the value (ideal for passwords).
+'password' => 'hashed',
+
+
+8️⃣ Custom Cast Classes
+Implements CastsAttributes or Castable.
+use App\Casts\MoneyCast;
+
+'price' => MoneyCast::class,
+
+
+✅ FULL CAST STRING LIST (Quick Reference)
+int, integer
+real, float, double
+string
+bool, boolean
+array
+json
+object
+collection
+date
+datetime
+immutable_date
+immutable_datetime
+timestamp
+decimal:x
+encrypted
+encrypted:array
+encrypted:collection
+encrypted:json
+encrypted:object
+hashed
+
+➕ Plus:
+
+Enum class names
+Custom cast class names
+
+Laravel 12.x Notes
+All casts are defined in the $casts property
+Enum & immutable casts require PHP 8.1+
+decimal always returns string (for precision safety)
