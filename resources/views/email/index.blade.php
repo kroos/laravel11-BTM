@@ -143,9 +143,9 @@
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
-DataTable.datetime( 'D MMM YYYY' );
-DataTable.datetime( 'YYYY' );
-DataTable.datetime( 'h:mm a' );
+$.fn.dataTable.moment( 'D MMM YYYY' );
+$.fn.dataTable.moment( 'YYYY' );
+$.fn.dataTable.moment( 'h:mm a' );
 $('#loanapp').DataTable({
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
 	"columnDefs": [

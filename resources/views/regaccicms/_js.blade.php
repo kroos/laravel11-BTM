@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 	// usage plugin
 	// Applicants (fieldName "skills")
-$("#applicants_wrap").remAddRow({
+$("#applicants_wrap").addRemRow({
 	addBtn: "#applicants_add",
 	maxFields: 5,
 	removeClass: "applicant_remove",

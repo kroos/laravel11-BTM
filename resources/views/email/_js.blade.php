@@ -41,7 +41,7 @@ function toggleGroupEmail() {
 // create personnels
 function createPersonnels(){
 
-	$("#personnels_wrap").remAddRow({
+	$("#personnels_wrap").addRemRow({
 		addBtn: "#personnels_add",
 		maxFields: 20,
 		removeClass: "personnel_remove",
@@ -216,7 +216,7 @@ function initializeChainedSelectsForPersonnels(personnels_counter) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add email
-$("#emails_wrap").remAddRow({
+$("#emails_wrap").addRemRow({
 	addBtn: "#emails_add",
 	maxFields: 5,
 	removeClass: "email_remove",

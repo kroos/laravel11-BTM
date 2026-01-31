@@ -211,7 +211,7 @@
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// jquery plugin (addRemoveRow)
 	(function ($) {
-		$.fn.remAddRow = function (options) {
+		$.fn.addRemRow = function (options) {
 			const settings = $.extend({
 				addBtn: null,                 // selector for add button (required)
 				maxFields: 10,                // maximum visible rows
@@ -321,7 +321,7 @@
 							settings.onRemove(id);
 							updateAddBtnState();
 						} else {
-							console.warn('remAddRow: could not locate row to remove for id=', id);
+							console.warn('addRemRow: could not locate row to remove for id=', id);
 						}
 					});
 
@@ -349,7 +349,7 @@
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// usage plugin
 	// Applicants (fieldName "skills")
-	$("#applicants_wrap").remAddRow({
+	$("#applicants_wrap").addRemRow({
 		addBtn: "#applicants_add",
 		maxFields: 5,
 		startCounter: {{ $btmicmsrequester->hasmanyapplicant()->count() }},

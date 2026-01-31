@@ -44,7 +44,7 @@ function createPersonnelRow(index, name) {
 // create personnels
 function createPersonnels(){
 
-	$("#personnels_wrap").remAddRow({
+	$("#personnels_wrap").addRemRow({
 		addBtn: "#personnels_add",
 		maxFields: 20,
 		removeClass: "personnel_remove",
@@ -249,7 +249,7 @@ function createEmailRow(i, name){
 	`;
 };
 
-$("#emails_wrap").remAddRow({
+$("#emails_wrap").addRemRow({
 	addBtn: "#emails_add",
 	maxFields: 20,
 	removeClass: "remove_email",

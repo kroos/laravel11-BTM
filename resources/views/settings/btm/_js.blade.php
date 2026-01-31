@@ -176,7 +176,7 @@ function initializeChainedSelects(counter) {
 	updateDescription(equipmentSelector, descriptionSelector);
 }
 
-$("#equipments_wrap").remAddRow({
+$("#equipments_wrap").addRemRow({
 	addBtn: "#equipments_add",
 	maxFields: 20,
 	removeClass: "equipments_remove",

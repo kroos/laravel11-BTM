@@ -122,7 +122,7 @@ function populatestaffdept(){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add approver staff dept
-$("#approvers_wrap").remAddRow({
+$("#approvers_wrap").addRemRow({
 	addBtn: "#approver_add",
 	maxFields: 10,
 	removeSelector: ".approver_remove",
