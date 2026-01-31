@@ -47,11 +47,15 @@ import  './chart';
 // fullcalendar
 import './fullcalendar';
 
-// addRemoveRow
-import	'./addRemoveRowBootstrapValidatorSweetAlert2AjaxjQueryPlugin';
-
 // bootstrap validator 5
-import	'./bootstrapValidator5';
+import	'bootstrapValidator5';
 
-// bootstrap validator 5
+// bootstrap
 import	'./bootstrap';
+
+// addRemoveRow
+import	'addremrow-validator5-swal2-ajax';
+
+import  './dataTable-any-number';
+
+import  './dataTable-moment';
