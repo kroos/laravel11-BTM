@@ -15,5 +15,8 @@ export default defineConfig({
 	],
 	build: {
 		chunkSizeWarningLimit: 4000,
+    sourcemap: true,        // full source map
+    // sourcemap: 'inline', // embed in JS file
+    // sourcemap: 'hidden', // generate but don't expose in devtools
 	},
 });

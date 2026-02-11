@@ -128,57 +128,9 @@ $user->setConnection('mysql3');
 @livewireScripts
 @vite(['resources/js/app.js'])
 <script type="module">
-
-$(async function () {
-
-	/* ================================
-	 * 1️⃣ CSRF HEADER (GLOBAL, ONCE)
-	 * ================================ */
-	const token = document
-	.querySelector('meta[name="csrf-token"]')
-	?.getAttribute('content');
-
-	if (!token) {
-		console.error(
-		              'CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token'
-		              );
-		return;
-	}
-
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': token
-		}
+	$(document).ready(function(){
+		@section('js')
+		@show
 	});
-
-	/* ================================
-	 * 2️⃣ SANCTUM COOKIE (ONCE)
-	 * ================================ */
-	try {
-		await $.get('/sanctum/csrf-cookie');
-	} catch (e) {
-		console.warn('Sanctum CSRF cookie failed');
-	}
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	(function($){
-		$(document).ready(function(){
-			@section('js')
-			@show
-		});
-	})(jQuery);
 </script>
 </html>
