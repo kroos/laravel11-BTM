@@ -21,7 +21,7 @@
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>{!! config('app.name') !!}</title>
-	@vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])
+	@vite(['resources/css/app.css', 'resources/scss/app.scss'])
 	<link href="{{ URL::asset('css/bootstrap.css') }}" rel="stylesheet">
 	@livewireStyles
 
@@ -125,16 +125,60 @@ $user->setConnection('mysql3');
 	<!-- footer end -->
 
 </body>
+@livewireScripts
+@vite(['resources/js/app.js'])
 <script type="module">
-	jQuery.noConflict ();
+
+$(async function () {
+
+	/* ================================
+	 * 1️⃣ CSRF HEADER (GLOBAL, ONCE)
+	 * ================================ */
+	const token = document
+	.querySelector('meta[name="csrf-token"]')
+	?.getAttribute('content');
+
+	if (!token) {
+		console.error(
+		              'CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token'
+		              );
+		return;
+	}
+
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': token
+		}
+	});
+
+	/* ================================
+	 * 2️⃣ SANCTUM COOKIE (ONCE)
+	 * ================================ */
+	try {
+		await $.get('/sanctum/csrf-cookie');
+	} catch (e) {
+		console.warn('Sanctum CSRF cookie failed');
+	}
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	(function($){
 		$(document).ready(function(){
-			$.get('/sanctum/csrf-cookie').done(function () {
-				@section('js')
-				@show
-			});
+			@section('js')
+			@show
 		});
 	})(jQuery);
 </script>
-@livewireScripts
 </html>
