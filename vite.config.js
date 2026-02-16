@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { path  } from 'path';
+// import { path  } from 'path';
 
 export default defineConfig({
 	plugins: [
@@ -13,6 +13,10 @@ export default defineConfig({
 			refresh: true,
 		}),
 	],
+	// define: {
+	// 	jQuery: 'window.jQuery',
+	// 	$: 'window.jQuery'
+	// },
 	build: {
 		chunkSizeWarningLimit: 4000,
     sourcemap: true,        // full source map
@@ -20,3 +24,4 @@ export default defineConfig({
     // sourcemap: 'hidden', // generate but don't expose in devtools
 	},
 });
+
