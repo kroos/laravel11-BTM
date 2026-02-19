@@ -26,7 +26,7 @@
 	@livewireStyles
 
 </head>
-<body class=" bg-primary-subtle bg-opacity-75 min-vh-100 d-flex flex-column">
+<body class="bg-primary-subtle bg-opacity-75 min-vh-100 d-flex flex-column" data-route="{{ Route::currentRouteName() }}">
 
 	<!-- navigator -->
 	<nav class="navbar navbar-expand-lg bg-primary rounded" data-bs-theme="dark">
@@ -88,32 +88,35 @@ $user->setConnection('mysql3');
 	</nav>
 	<!-- navigator end -->
 
-	<div class="container-fluid mx-auto d-flex flex-fill justify-content-evenly p-1">
+	<div class="container-fluid flex-fill d-flex flex-column">
 
-		<div class="col-sm-2 m-0">
-		</div>
+		<div class="container-fluid p-1 mx-auto d-flex justify-content-between flex-fill">
 
-		<div class="col-sm-8 m-0 my-2 p-1 align-self-center">
-
-			<div class="col-sm-12 row justify-content-center m-0">
-				@include('layouts.messages')
-				@isset($header)
-					<div class="shadow">
-						{{ $header }}
-					</div>
-				@endisset
+			<div class="col-sm-2 m-0">
 			</div>
 
-			<div class="col-sm-12 row justify-content-center m-0">
-				@yield('content')
-				{{ $slot }}
+			<div class="col-sm-8 m-0 my-2 p-1 align-self-center">
+
+				<div class="col-sm-12 row justify-content-center m-0">
+					@include('layouts.messages')
+					@isset($header)
+						<div class="shadow">
+							{{ $header }}
+						</div>
+					@endisset
+				</div>
+
+				<div class="col-sm-12 row justify-content-center m-0">
+					@yield('content')
+					{{ $slot }}
+				</div>
+
+			</div>
+
+			<div class="col-sm-2 m-0 p-1">
 			</div>
 
 		</div>
-
-		<div class="col-sm-2 m-0 p-1">
-		</div>
-
 
 	</div>
 
