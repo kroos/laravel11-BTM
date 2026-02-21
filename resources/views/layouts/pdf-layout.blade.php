@@ -1,15 +1,14 @@
 <?php
-\Auth::user()->setConnection('mysql3');
-\Auth::user()->unreadNotifications->markAsRead();
+// \Auth::user()->setConnection('mysql3');
+\Auth::user()->belongstostaff->unreadNotifications->markAsRead();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>@yield('title', 'BTM Document')</title>
+	<title>{{ config('app.name', 'Laravel') }}</title>
 	<style>
-
 		* { margin: 0; padding: 0; box-sizing: border-box; }
 		@page { size: A4; margin: 0; }
 
@@ -136,20 +135,18 @@
 		.bold { font-weight: bold; }
 		.red { color: red; }
 		.center { text-align: center; }
-		.m-0 { margin: 0px; }
-		.p-0 { padding: 0px; }
 	</style>
 </head>
 <body>
 	<!-- Background -->
 	<div class="bg">
-		<img src="{{ public_path('images/chancellery.jpg') }}" alt="background">
+		<img src="{{ public_path('images/background.jpg') }}" alt="background">
 	</div>
 
 	<!-- Header -->
 	<div class="header">
 		<img src="{{ public_path('images/logo.png') }}" class="logo">
-		@yield('header-title', 'BTM Document')
+		@yield('title', 'Document')
 	</div>
 
 	<!-- Content -->
@@ -159,7 +156,9 @@
 
 	<!-- Footer -->
 	<div class="footer">
-			© Bahagian Teknologi Maklumat, UniSHAMS.
+		<div class="footer-box">
+			&copy; {{ config('app.name', 'Laravel') }} {{ $currentYear }}
+		</div>
 	</div>
 </body>
 </html>
